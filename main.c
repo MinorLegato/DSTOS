@@ -6,33 +6,30 @@ TCB * Running;
 
 void task1(void);
 
+i32 tickCounter = 0;
+
 void TimerInt (void)
 {
+    tickCounter++;
+    //Check the Timerlist for tasks that are ready for
+    //execution, move these to Readylist
+    //Check the Waitinglist for tasks that have expired
+    //deadlines, move these to Readylist and clean up
+    //their Mailbox entry.
 }
 
 int main(void)
 {
+	//Running = &taskA;
+	//Running->PC = task1;
+	//Running->SP = &(Running->StackSeg[STACK_SIZE-1]);
 
-	Running = &taskA;
-	Running->PC = task1;
-	Running->SP = &(Running->StackSeg[STACK_SIZE-1]);
+	//LoadContext();
 
-	LoadContext();
-}
-
-void task1(void)
-{
-	register int reg_var = 1;
-	volatile int vol_var = 1;
-
-	SaveContext();
-	reg_var++;
-	vol_var++;
-
-	SaveContext();
-	reg_var++;
-	vol_var++;
-
-	LoadContext();
+    while (1) {
+        SaveContext();
+        TimerInt();
+        LoadContext();
+    }
 }
 

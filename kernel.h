@@ -39,12 +39,12 @@
 #define SENDER      (+1)
 #define RECEIVER    (-1)
 
-#define "defs.h"
+#include "defs.h"
 
-typedef i32             exception;
-typedef i32             bool;
-typedef unsigned i32    uint;
-typedef i32 			action;
+typedef i32 exception;
+typedef i32 bool;
+typedef u32 uint;
+typedef i32 action;
 
 struct  l_obj;         // Forward declaration
 
@@ -154,14 +154,7 @@ exception init_kernel(void)
 
 exception create_task(void (*body)(), u32 d)
 {
-    TCB* tcb = malloc(sizeof (TCB));
-    if (tcb == NULL) { return FAIL; }
-
-    asm ( mov r0, r1);
-
-    tcb->DeadLine = d;
-    tcb->PC = body;
-
+    // TODO
     return SUCCESS;
 }
 

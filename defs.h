@@ -4,13 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define ERROR(COND, ERROR_MSG) { if (COND) { printf(ERROR_MSG); exit(EXIT_FAILURE); } }
-
-#define FOR_MATRIX(X, Y) \
-    for (i32 y = 0; y < Y; y++) for (i32 x = 0; x < X; x++)
-
 #define STRUCT(NAME) typedef struct NAME NAME; struct NAME
-#define ENUM(NAME) typedef enum NAME NAME; enum NAME
 
 // real
 typedef float r32;

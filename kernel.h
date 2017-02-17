@@ -40,6 +40,7 @@
 #define RECEIVER    (-1)
 
 #include "defs.h"
+#include "linked_list.h"
 
 typedef i32 exception;
 typedef i32 bool;
@@ -146,10 +147,31 @@ extern void SaveContext(void);	// Stores DSP registers in TCB pointed to by Runn
 extern void LoadContext(void);	// Restores DSP registers from TCB pointed to by Running
 
 
+// ================================== GLOBAL KERNEL DATA ================================= //
+
+
+STRUCT(TaskList)
+{
+    TCB task;
+    LinkedList list;
+};
+
+
+STRUCT(KernelState)
+{
+    i32 mode;
+    TCB* running;
+};
+
+
+// ==================================== KERNEL FUNCTIONS =============================== //
+
 exception init_kernel(void) 
 { 
     // Set tick counter to zero
+    tickCounter = 0;
     // Create necessary data structures
+    // TODO
     // Create an idle task
     // Set the kernel in start up mode
     // Return status
@@ -390,6 +412,5 @@ void isr_on(void)
 {
     // ISR OFF
 }
-
 
 #endif

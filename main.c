@@ -23,7 +23,7 @@ int main(void)
 	//Running = &taskA;
 	//Running->PC = task1;
 	//Running->SP = &(Running->StackSeg[STACK_SIZE-1]);
-
+    
 	//LoadContext();
 
     while (1) {

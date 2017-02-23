@@ -1,13 +1,12 @@
 // main.c
 #include "kernel.h"
 #include "defs.h"
-#include "LinkedList.h"
 
-TCB* Running;
+#include "LinkedList.h"
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 
-static i32 tickCounter;
+static i32 tickCounter = 0;
 
 
 STRUCT(TaskList)
@@ -17,8 +16,16 @@ STRUCT(TaskList)
 };
 
 
-static int  kernelMode  = INIT;
-static TCB* Running    = NULL;
+enum KernelModes
+{
+    NOT_RUNNING,
+    INIT,
+    RUNNING
+};
+
+
+static int  kernelMode  = NOT_RUNNING;
+static TCB* Running     = NULL;
 
 static TaskList readyList;
 static TaskList blockedList;

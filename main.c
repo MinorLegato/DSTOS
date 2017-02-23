@@ -2,16 +2,13 @@
 #include "kernel.h"
 #include "defs.h"
 
-#include "LinkedList.h"
-
-// ================================== GLOBAL KERNEL DATA ================================= //
-
-static i32 tickCounter = 0;
+#include "linked_list.h"
 
 
 STRUCT(TaskList)
 {
     TCB task;
+    int firstExec;
     LinkedList list;
 };
 
@@ -19,10 +16,13 @@ STRUCT(TaskList)
 enum KernelModes
 {
     NOT_RUNNING,
-    INIT,
-    RUNNING
+    START_UP,
 };
 
+
+// ================================== GLOBAL KERNEL DATA ================================= //
+
+static i32 tickCounter = 0;
 
 static int  kernelMode  = NOT_RUNNING;
 static TCB* Running     = NULL;
@@ -31,7 +31,6 @@ static TaskList readyList;
 static TaskList blockedList;
 
 void idleTask() { while (1); }
-
 
 // ==================================== KERNEL FUNCTIONS =============================== //
 
@@ -51,24 +50,35 @@ exception init_kernel(void)
 exception create_task(void (*body)(), uint d)
 {
     // Allocate memory for TCB
-    TCB* newTcb = malloc(sizeof);
+    TCB* newTbc = calloc(sizeof (Task));
+
+    if (newTbc == NULL) return 0;
     // Set deadline in TCB
+    newTbc->DeadLine = d;
     // Set the TCBís PC to point to the task body
+    newTbc->.PC = body;
     // Set TCBís SP to point to the stack segment
+    newTask->TCB.SP = newTcb->StackSeg;
     // IF start-up mode THEN
-    // Insert new task in Readylist
-    // Return status
-    // ELSE
-    // Disable interrupts
-    // Save context
-    // IF ìfirst executionî THEN
-    // Set: ìnot first execution any moreî
-    // Insert new task in Readylist
-    // Load context
+    if (kernelMode == INIT) {
+        // Insert new task in Readylist
+        listPushBack(readyList, newTask, list);
+        // Return status
+        return 1;
+    } else  {
+        // Disable interrupts
+        SaveContext();
+
+        if (newTask->firstExec) { // IF ìfirst executionî THEN
+            // Set: ìnot first execution any moreî
+            // Insert new task in Readylist
+            // Load context
+            LoadContext();
+        }
+    }
     // ENDIF
-    // ENDIF
     // Return status
-    // return SUCCESS;
+    return 1;
 }
 
 void terminate(void)

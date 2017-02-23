@@ -12,7 +12,7 @@ STRUCT(LinkedList)
 };
 
 
-static inline void init_list(LinkedList* list)
+static inline void initList(LinkedList* list)
 {
     list->next = list;
     list->prev = list;
@@ -28,7 +28,6 @@ static inline void __list_add(LinkedList* new_elem,
     new_elem->prev = prev;
     prev->next = new_elem;
 }
-
 
 #define listEntry(ptr, type, member) ((type*)((char*)(ptr) - (size_t)(&((type*)0)->member)))
 

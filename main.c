@@ -1,12 +1,9 @@
 // main.c
 #include "kernel.h"
 #include "defs.h"
-
-<<<<<<< HEAD
 #include "LinkedList.h"
-=======
+
 TCB* Running;
->>>>>>> origin/master
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 
@@ -239,12 +236,8 @@ exception wait(uint nTicks)
     return 0;
 }
 
-<<<<<<< HEAD
-void set_ticks(uint no_of_ticks)
-=======
 // Set the tick counter
 void set_ticks(u32 no_of_ticks)
->>>>>>> origin/master
 {
     tickCounter = no_of_ticks;
 }
@@ -261,12 +254,8 @@ u32 deadline(void)
     return Running->DeadLine;
 }
 
-<<<<<<< HEAD
-void set_deadline(uint nNew)
-=======
 // Set deadline for running task3
 void set_deadline(u32 nNew)
->>>>>>> origin/master
 {
     // Disable interrupt
     SaveContext();
@@ -279,10 +268,6 @@ void set_deadline(u32 nNew)
     // ENDIF
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 // =====================================  MAIN ======================================= //
 
 

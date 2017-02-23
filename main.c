@@ -4,9 +4,6 @@
 
 <<<<<<< HEAD
 #include "LinkedList.h"
-=======
-TCB* Running;
->>>>>>> origin/master
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 

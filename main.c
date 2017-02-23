@@ -2,6 +2,8 @@
 #include "kernel.h"
 #include "defs.h"
 
+TCB* Running;
+
 // ================================== GLOBAL KERNEL DATA ================================= //
 
 STRUCT(TaskList)
@@ -226,52 +228,41 @@ exception wait(uint nTicks)
     return 0;
 }
 
+// Set the tick counter
 void set_ticks(u32 no_of_ticks)
 {
-    // Set the tick counter
-    // TODO
+    tickCounter = no_of_ticks;
 }
 
+// Return the tick counter
 u32 ticks(void)
 {
-    // Return the tick counter
-    return 0;
+    return tickCounter;
 }
 
-u32	deadline(void)
+// Return the deadline of the current task
+u32 deadline(void)
 {
-    // Return the deadline of the current task
-    return 0;
+    return Running->DeadLine;
 }
 
+// Set deadline for running task3
 void set_deadline(u32 nNew)
 {
     // Disable interrupt
-    // Save context
+    SaveContext();
     // IF first execution THEN
     // Set: ìnot first execution any moreî
-    // Set the deadline field in the calling TCB.
-    // Reschedule Readylist
-    // Load context
     // ENDIF
-}
-
-//Interrupt
-void isr_off(void)
-{
-    // ISR ON
-}
-
-void isr_on(void)
-{
-    // ISR OFF
+    Running->DeadLine = nNew;
+    // Reschedule Readylist
+    LoadContext();
+    // ENDIF
 }
 
 
 // =====================================  MAIN ======================================= //
 
-
-TCB* Running;
 
 void TimerInt(void)
 {

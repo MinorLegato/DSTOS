@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #ifdef texas_dsp
 
-#define CONTEXT_SIZE    34-2 
+#define CONTEXT_SIZE    (34 - 2)
 
 #else
 
@@ -47,17 +47,18 @@ struct  l_obj;         // Forward declaration
 
 // Task Control Block, TCB
 #ifdef texas_dsp
-typedef struct
-{
+
+typedef struct {
 	void	(*PC)();
 	uint	*SP;
 	uint	Context[CONTEXT_SIZE];
 	uint	StackSeg[STACK_SIZE];
-	uint	DeadLine;
+    uint	DeadLine;
 } TCB;
+
 #else
-typedef struct
-{
+
+typedef struct {
         uint    Context[CONTEXT_SIZE];        
         uint    *SP;
         void    (*PC)();
@@ -89,18 +90,18 @@ typedef struct {
 
 // Generic list item
 typedef struct l_obj {
-         TCB            *pTask;
-         uint           nTCnt;
-         msg            *pMessage;
-         struct l_obj   *pPrevious;
-         struct l_obj   *pNext;
+    TCB            *pTask;
+    uint           nTCnt;
+    msg            *pMessage;
+    struct l_obj   *pPrevious;
+    struct l_obj   *pNext;
 } listobj;
 
 
 // Generic list
 typedef struct {
-         listobj        *pHead;
-         listobj        *pTail;
+    listobj        *pHead;
+    listobj        *pTail;
 } list;
 
 
@@ -109,7 +110,7 @@ typedef struct {
 
 // Task administration
 int             init_kernel(void);
-exception	create_task( void (* body)(), uint d );
+exception	    create_task( void (* body)(), uint d );
 void            terminate( void );
 void            run( void );
 
@@ -134,7 +135,7 @@ void            set_deadline( uint nNew );
 //Interrupt
 extern void     isr_off(void);
 extern void     isr_on(void);
-extern void     SaveContext( void );	// Stores DSP registers in TCB pointed to by Running
-extern void     LoadContext( void );	// Restores DSP registers from TCB pointed to by Running
+extern void     SaveContext(void);	// Stores DSP registers in TCB pointed to by Running
+extern void     LoadContext(void);	// Restores DSP registers from TCB pointed to by Running
 
 #endif

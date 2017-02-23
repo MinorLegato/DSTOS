@@ -2,7 +2,12 @@
 #include "kernel.h"
 #include "defs.h"
 
+#include "LinkedList.h"
+
 // ================================== GLOBAL KERNEL DATA ================================= //
+
+static i32 tickCounter;
+
 
 STRUCT(TaskList)
 {
@@ -11,30 +16,34 @@ STRUCT(TaskList)
 };
 
 
-STRUCT(KernelState)
-{
-    i32 mode;
-    TCB* running;
-};
+static int  kernelMode  = INIT;
+static TCB* Running    = NULL;
+
+static TaskList readyList;
+static TaskList blockedList;
+
+void idleTask() { while (1); }
 
 
 // ==================================== KERNEL FUNCTIONS =============================== //
+
 
 exception init_kernel(void) 
 { 
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
-    // TODO
     // Create an idle task
     // Set the kernel in start up mode
+    kernelMode = START_UP_MODE;
     // Return status
     return SUCCESS;
 }
 
-exception create_task(void (*body)(), u32 d)
+exception create_task(void (*body)(), uint d)
 {
     // Allocate memory for TCB
+    TCB* newTcb = malloc(sizeof);
     // Set deadline in TCB
     // Set the TCBís PC to point to the task body
     // Set TCBís SP to point to the stack segment
@@ -226,7 +235,7 @@ exception wait(uint nTicks)
     return 0;
 }
 
-void set_ticks(u32 no_of_ticks)
+void set_ticks(uint no_of_ticks)
 {
     // Set the tick counter
     // TODO
@@ -244,7 +253,7 @@ u32	deadline(void)
     return 0;
 }
 
-void set_deadline(u32 nNew)
+void set_deadline(uint nNew)
 {
     // Disable interrupt
     // Save context
@@ -256,28 +265,24 @@ void set_deadline(u32 nNew)
     // ENDIF
 }
 
-//Interrupt
-void isr_off(void)
-{
-    // ISR ON
-}
-
-void isr_on(void)
-{
-    // ISR OFF
-}
-
-
 // =====================================  MAIN ======================================= //
 
 
-TCB* Running;
-
 void TimerInt(void)
 {
+    tickCounter++;
 }
+
 
 int main(void)
 {
-return 1;
+
+    while (1)
+    {
+        SaveContext();
+        TimerInt();
+        LoadContext();
+    }
+
+    return 0;
 }

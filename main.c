@@ -188,47 +188,63 @@ exception receive_wait(mailbox* mBox, void* pData)
 exception send_no_wait(mailbox* mBox, void* pData)
 {
     // Disable interrupt
-    // Save context
+    SaveContext();
     // IF first execution THEN
-    // Set: înot first execution anymoreî
-    // IF receiving task is waiting THEN
-    // Copy data to receiving tasksí
-    // data area.
-    // Remove receiving taskís Message
-    // struct from the Mailbox
-    // Move receiving task to Readylist
-    // Load context
-    // ELSE
-    // Allocate a Message structure
-    // Copy Data to the Message
-    // IF mailbox is full THEN
-    // Remove the oldest Message struct
-    // ENDIF
-    // Add Message to the Mailbox
-    // ENDIF
-    // ENDIF
+    if()
+    {
+      // Set: înot first execution anymoreî
+      // IF receiving task is waiting THEN
+      if()
+      {
+        // Copy data to receiving tasksí
+        // data area.
+        // Remove receiving taskís Message
+        // struct from the Mailbox
+        // Move receiving task to Readylist
+        // Load context
+      }
+      else
+      {
+        // Allocate a Message structure
+        // Copy Data to the Message
+        // IF mailbox is full THEN
+        if()
+        {
+          // Remove the oldest Message struct
+        }
+      // Add Message to the Mailbox
+      }
+    }
     return SUCCESS;
 }
 
 i32 receive_no_wait(mailbox* mBox, void* pData)
 {
     // Disable interrupt
-    // Save context
+    SaveContext();
     // IF first execution THEN
-    // Set: ìnot first execution any moreî
-    // IF send Message is waiting THEN
-    // Copy senderís data to receiving taskís
-    // data area
-    // Remove sending taskís Message
-    // struct from the Mailbox
-    // IF Message was of wait type THEN
-    // Move sending task to Readylist
-    // ELSE
-    // Free senderís data area
-    // ENDIF
-    // ENDIF
-    // Load context
-    // ENDIF
+    if()
+    {
+      // Set: ìnot first execution any moreî
+      // IF send Message is waiting THEN
+      if()
+      {
+        // Copy senderís data to receiving taskís
+        // data area
+        // Remove sending taskís Message
+        // struct from the Mailbox
+        // IF Message was of wait type THEN
+        if()
+        {
+          // Move sending task to Readylist
+        }        
+        else
+        {
+          // Free senderís data area
+        }       
+      }
+      LoadContext();
+    }
     // Return status on received Message
     return 0;
 }
@@ -237,18 +253,26 @@ i32 receive_no_wait(mailbox* mBox, void* pData)
 exception wait(uint nTicks)
 {
     // Disable interrupt
-    // Save context
+    SaveContext();
     // IF first execution THEN
-    // Set: ìnot first execution any moreî
-    // Place running task in the Timerlist
-    // Load context
-    // ELSE
-    // IF deadline is reached THEN
-    // Status is DEADLINE_REACHED
-    // ELSE
-    // Status is OK
-    // ENDIF
-    // ENDIF
+    if()
+    {
+      // Set: ìnot first execution any moreî
+      // Place running task in the Timerlist
+      LoadContext();
+    }
+    else
+    {
+      // IF deadline is reached THEN
+      if()
+      {
+        // Status is DEADLINE_REACHED
+      }
+      else
+      {
+        // Status is OK
+      }
+    }
     // Return status
     return 0;
 }
@@ -277,14 +301,16 @@ void set_deadline(u32 nNew)
     // Disable interrupt
     SaveContext();
     // IF first execution THEN
+    if()
+    {
     // Set: ìnot first execution any moreî
-    // ENDIF
     Running->DeadLine = nNew;
     // Reschedule Readylist
     LoadContext();
-    // ENDIF
+    }
 }
 
+//FUCKANTON
 // =====================================  MAIN ======================================= //
 
 

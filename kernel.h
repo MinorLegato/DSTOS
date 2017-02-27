@@ -53,7 +53,7 @@ typedef struct {
 	uint	*SP;
 	uint	Context[CONTEXT_SIZE];
 	uint	StackSeg[STACK_SIZE];
-    uint	DeadLine;
+        uint	DeadLine;
 } TCB;
 
 #else
@@ -110,7 +110,7 @@ typedef struct {
 
 // Task administration
 int             init_kernel(void);
-exception	    create_task( void (* body)(), uint d );
+exception	create_task( void (* body)(), uint d );
 void            terminate( void );
 void            run( void );
 
@@ -139,3 +139,4 @@ extern void     SaveContext(void);	// Stores DSP registers in TCB pointed to by 
 extern void     LoadContext(void);	// Restores DSP registers from TCB pointed to by Running
 
 #endif
+//FUCKANTON

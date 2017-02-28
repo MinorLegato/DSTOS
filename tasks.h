@@ -21,7 +21,7 @@ exception create_task(void (*body)(), uint d)
     // IF start-up mode THEN
     if (kernelMode == INIT) {
         // Insert new task in Readylist
-        //listPushBack(readyList, newTask, list);
+        // TODO 
         // Return status
         return 1;
     } else  {

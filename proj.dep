@@ -39,6 +39,8 @@
       <file>$PROJ_DIR$\timing.h</file>
       <file>$PROJ_DIR$\messages.h</file>
       <file>$PROJ_DIR$\tasks.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -96,11 +98,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 12 22 5 9 13 7 16 24 4 23 29 14 11 28 31 32 30 19</file>
+          <file> 12 22 5 9 13 7 16 24 4 23 29 14 11 28 31 32 30 33 34 19</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 9 19 32 13 16 5 12 28 22 24 14 11 29 31 30 23 7 4</file>
+          <file> 22 14 32 9 24 7 5 29 28 33 12 31 30 19 23 13 16 34 4 11</file>
         </tool>
       </inputs>
     </file>

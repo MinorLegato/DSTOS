@@ -1,34 +1,48 @@
 #ifndef __KERNEL_DATA_H__
 #define __KERNEL_DATA_H__
 
-
 #include "kernel.h"
-
 #include <string.h>
 
 
 // ================================== ================= ================================= //
 
 typedef struct Tasks {
-    TCB     tcb;
-    int     firstExec;
+    int            firstExec;
+    TCB            tcb;
     struct Tasks*  next;
 } Tasks;
 
 
-static void initTasks(Tasks* tasks)
+#define getTask(T)      ((Tasks*)((int*)(T) - 1))
+
+#define isFirstExec(T)  (getTask(T)->firstExec)
+#define deflowerTask(T) (getTask(T)->firstExec = 0)
+
+#define iterateTasks(HEAD) for (Tasks* iter = (HEAD)->next; iter != (HEAD); iter = iter->next)
+
+static void initTasks(Tasks* head)
 {
-    memset(tasks, 0, sizeof *tasks);
+    head = calloc(1, sizeof *head);
+    head->next = head;
 }
 
-static void removeTasks(Tasks* tasks)
+static Tasks* removeTask(Tasks* task, Tasks* prev)
 {
-    // TODO
+    Tasks* removedTask = tasks;
+
+    prev->next = task->next;
+
+    return removedTask;
 }
 
-static void addTask(Tasks* tcb)
+static int noTasks(Tasks* )
 {
-    // TODO
+    return head == head->next;
+}
+
+static void pushTask(Tasks* head, Tasks* task)
+{
 }
 
 
@@ -47,12 +61,11 @@ int tickCounter = 0;
 
 int  kernelMode  = KERNEL_NOT_RUNNING;
 
-Tasks readyList;
-Tasks blockedList;
-
+Tasks* readyList = NULL;
+Tasks* waitList  = NULL;
+Tasks* timerList = NULL;
 
 void idleTask() { while (1); }
-
 
 #endif
 

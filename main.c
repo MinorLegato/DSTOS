@@ -1,34 +1,62 @@
 // main.c
 #include "kernel.h"
-#include "defs.h"
 
-#include "linked_list.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 
 
-STRUCT(TaskList)
+// ====================================== TASK LIST ===================================== //
+
+
+typedef struct Tasks {
+    TCB     tcb;
+    int     fistExec;
+    Tasks*  next;
+} Tasks;
+
+
+static void initTasks(Tasks* tasks)
 {
-    TCB task;
-    int firstExec;
-    LinkedList list;
-};
+    memset(tasks, 0, sizeof *tasks);
+}
 
 
-enum KernelModes
+static void destroyTasks(Tasks* tasks)
 {
-    NOT_RUNNING,
-    START_UP,
-};
+    // TODO
+}
+
+static void pushTask(Tasks* tasks)
+{
+    // TODO
+}
+
+static void insertTask(Tasks* tasks)
+{
+    // TODO
+}
 
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 
+
+enum KernelModes
+{
+    KERNEL_NOT_RUNNING,
+    KERNEL_START_UP,
+};
+
+
 static i32 tickCounter = 0;
 
-static int  kernelMode  = NOT_RUNNING;
+static int  kernelMode  = KERNEL_NOT_RUNNING;
+
+// TODO make sure you can't remove the running task from any list!
 static TCB* Running     = NULL;
 
-static TaskList readyList;
-static TaskList blockedList;
+static Tasks readyList;
+static Tasks blockedList;
 
 void idleTask() { while (1); }
 
@@ -42,7 +70,7 @@ exception init_kernel(void)
     // Create necessary data structures
     // Create an idle task
     // Set the kernel in start up mode
-    kernelMode = START_UP_MODE;
+    kernelMode = KERNEL_START_UP;
     // Return status
     return SUCCESS;
 }
@@ -50,15 +78,15 @@ exception init_kernel(void)
 exception create_task(void (*body)(), uint d)
 {
     // Allocate memory for TCB
-    TCB* newTbc = calloc(sizeof (Task));
+    TCB* newTask = calloc(1, sizeof *newTask);
 
-    if (newTbc == NULL) return 0;
+    if (newTask == NULL) return 0;
     // Set deadline in TCB
-    newTbc->DeadLine = d;
+    newTask->DeadLine = d;
     // Set the TCBís PC to point to the task body
-    newTbc->.PC = body;
+    newTask->PC = body;
     // Set TCBís SP to point to the stack segment
-    newTask->TCB.SP = newTcb->StackSeg;
+    newTask->SP = newTask->StackSeg;
     // IF start-up mode THEN
     if (kernelMode == INIT) {
         // Insert new task in Readylist
@@ -190,30 +218,25 @@ exception send_no_wait(mailbox* mBox, void* pData)
     // Disable interrupt
     SaveContext();
     // IF first execution THEN
-    if()
-    {
-      // Set: înot first execution anymoreî
-      // IF receiving task is waiting THEN
-      if()
-      {
-        // Copy data to receiving tasksí
-        // data area.
-        // Remove receiving taskís Message
-        // struct from the Mailbox
-        // Move receiving task to Readylist
-        // Load context
-      }
-      else
-      {
-        // Allocate a Message structure
-        // Copy Data to the Message
-        // IF mailbox is full THEN
-        if()
-        {
-          // Remove the oldest Message struct
+    if (0) {
+        // Set: înot first execution anymoreî
+        // IF receiving task is waiting THEN
+        if (0) {
+            // Copy data to receiving tasksí
+            // data area.
+            // Remove receiving taskís Message
+            // struct from the Mailbox
+            // Move receiving task to Readylist
+            // Load context
+        } else {
+            // Allocate a Message structure
+            // Copy Data to the Message
+            // IF mailbox is full THEN
+            if (0) {
+                // Remove the oldest Message struct
+            }
+            // Add Message to the Mailbox
         }
-      // Add Message to the Mailbox
-      }
     }
     return SUCCESS;
 }
@@ -223,27 +246,23 @@ i32 receive_no_wait(mailbox* mBox, void* pData)
     // Disable interrupt
     SaveContext();
     // IF first execution THEN
-    if()
-    {
-      // Set: ìnot first execution any moreî
-      // IF send Message is waiting THEN
-      if()
-      {
-        // Copy senderís data to receiving taskís
-        // data area
-        // Remove sending taskís Message
-        // struct from the Mailbox
-        // IF Message was of wait type THEN
-        if()
-        {
-          // Move sending task to Readylist
-        }        
-        else
-        {
-          // Free senderís data area
-        }       
-      }
-      LoadContext();
+    if (0) {
+        // Set: ìnot first execution any moreî
+        // IF send Message is waiting THEN
+        if (0) {
+            // Copy senderís data to receiving taskís
+            // data area
+            // Remove sending taskís Message
+            // struct from the Mailbox
+            // IF Message was of wait type THEN
+            if (0) {
+                // Move sending task to Readylist
+            }        
+            else {
+                // Free senderís data area
+            }       
+        }
+        LoadContext();
     }
     // Return status on received Message
     return 0;
@@ -255,23 +274,19 @@ exception wait(uint nTicks)
     // Disable interrupt
     SaveContext();
     // IF first execution THEN
-    if()
-    {
-      // Set: ìnot first execution any moreî
-      // Place running task in the Timerlist
-      LoadContext();
+    if (0) {
+        // Set: ìnot first execution any moreî
+        // Place running task in the Timerlist
+        LoadContext();
     }
-    else
-    {
-      // IF deadline is reached THEN
-      if()
-      {
-        // Status is DEADLINE_REACHED
-      }
-      else
-      {
-        // Status is OK
-      }
+    else {
+        // IF deadline is reached THEN
+        if (0) {
+            // Status is DEADLINE_REACHED
+        }
+        else {
+            // Status is OK
+        }
     }
     // Return status
     return 0;
@@ -301,12 +316,11 @@ void set_deadline(u32 nNew)
     // Disable interrupt
     SaveContext();
     // IF first execution THEN
-    if()
-    {
-    // Set: ìnot first execution any moreî
-    Running->DeadLine = nNew;
-    // Reschedule Readylist
-    LoadContext();
+    if (0) {
+        // Set: ìnot first execution any moreî
+        Running->DeadLine = nNew;
+        // Reschedule Readylist
+        LoadContext();
     }
 }
 
@@ -322,6 +336,8 @@ void TimerInt(void)
 
 int main(void)
 {
+    init_kernel();
+    run();
 
     while (1)
     {

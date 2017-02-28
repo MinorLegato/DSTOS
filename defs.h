@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <>
 
 #define STRUCT(NAME) typedef struct NAME NAME; struct NAME
 

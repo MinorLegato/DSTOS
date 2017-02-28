@@ -1,15 +1,10 @@
 #ifndef __LINKED_LIST_H__
 #define __LINKED_LIST_H__
 
-#include "defs.h"
-
 
 // inspired by the linux kernel
-STRUCT(LinkedList)
-{
-    LinkedList* next;
-    LinkedList* prev;
-};
+typedef struct LinkedList {
+} LinkedList;
 
 
 static inline void initList(LinkedList* list)

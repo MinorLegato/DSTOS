@@ -53,7 +53,7 @@ typedef struct {
 	uint	*SP;
 	uint	Context[CONTEXT_SIZE];
 	uint	StackSeg[STACK_SIZE];
-        uint	DeadLine;
+    uint	DeadLine;
 } TCB;
 
 #else
@@ -109,10 +109,10 @@ typedef struct {
 
 
 // Task administration
-int             init_kernel(void);
-exception	create_task( void (* body)(), uint d );
-void            terminate( void );
-void            run( void );
+int        init_kernel(void);
+exception  create_task( void (* body)(), uint d );
+void       terminate( void );
+void       run( void );
 
 // Communication
 mailbox*	create_mailbox( uint nMessages, uint nDataSize );

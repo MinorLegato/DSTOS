@@ -1,15 +1,18 @@
 #ifndef __KERNEL_DATA_H__
 #define __KERNEL_DATA_H__
 
+
 #include "kernel.h"
 
-// ================================== ================= ================================= //
+#include <string.h>
 
+
+// ================================== ================= ================================= //
 
 typedef struct Tasks {
     TCB     tcb;
     int     firstExec;
-    Tasks*  next;
+    struct Tasks*  next;
 } Tasks;
 
 
@@ -37,15 +40,16 @@ enum KernelModes
     KERNEL_START_UP,
 };
 
-static int tickCounter = 0;
 
-static int  kernelMode  = KERNEL_NOT_RUNNING;
+TCB* Running = NULL;
 
-// TODO make sure you can't remove the running task from any list!
-static TCB* Running = NULL;
+int tickCounter = 0;
 
-static Tasks readyList;
-static Tasks blockedList;
+int  kernelMode  = KERNEL_NOT_RUNNING;
+
+Tasks readyList;
+Tasks blockedList;
+
 
 void idleTask() { while (1); }
 

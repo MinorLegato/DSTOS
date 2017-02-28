@@ -1927,7 +1927,22 @@
     <name>$PROJ_DIR$\kernel.h</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\kernel_data.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\kernel_init.h</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\main.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\messages.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\tasks.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\timing.h</name>
   </file>
 </project>
 

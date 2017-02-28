@@ -15,13 +15,12 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
 
 int no_messages(mailbox* mBox)
 {
-    // IF Mailbox is empty THEN
-    // Free the memory for the Mailbox
-    // Return OK
-    // ELSE
-    // Return NOT_EMPTY
-    // ENDIF
-    return 0;
+    if(mBox->nMessages == 0)
+    {
+        free(mBox);
+        return OK;
+    }
+    return NOT_EMPTY;
 }
 
 exception send_wait(mailbox* mBox, void* pData)
@@ -97,9 +96,9 @@ exception send_no_wait(mailbox* mBox, void* pData)
 {
     // Disable interrupt
     SaveContext();
-    // IF first execution THEN
-    if (0) {
-        // Set: înot first execution anymoreî
+    if (isFirstExec(Running)) 
+    {
+        deflowerTask(Running);
         // IF receiving task is waiting THEN
         if (0) {
             // Copy data to receiving tasksí
@@ -125,9 +124,9 @@ int receive_no_wait(mailbox* mBox, void* pData)
 {
     // Disable interrupt
     SaveContext();
-    // IF first execution THEN
-    if (0) {
-        // Set: ìnot first execution any moreî
+    if (isFirstExec(Running)) 
+    {
+        deflowerTask(Running);
         // IF send Message is waiting THEN
         if (0) {
             // Copy senderís data to receiving taskís

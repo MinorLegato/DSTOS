@@ -11,7 +11,7 @@
 
 typedef struct Tasks {
     TCB     tcb;
-    int     fistExec;
+    int     firstExec;
     Tasks*  next;
 } Tasks;
 
@@ -21,25 +21,17 @@ static void initTasks(Tasks* tasks)
     memset(tasks, 0, sizeof *tasks);
 }
 
-
-static void destroyTasks(Tasks* tasks)
+static void removeTasks(Tasks* tasks)
 {
     // TODO
 }
 
-static void pushTask(Tasks* tasks)
+static void addTask(Tasks* tcb)
 {
     // TODO
 }
-
-static void insertTask(Tasks* tasks)
-{
-    // TODO
-}
-
 
 // ================================== GLOBAL KERNEL DATA ================================= //
-
 
 enum KernelModes
 {
@@ -47,13 +39,12 @@ enum KernelModes
     KERNEL_START_UP,
 };
 
-
-static i32 tickCounter = 0;
+static int tickCounter = 0;
 
 static int  kernelMode  = KERNEL_NOT_RUNNING;
 
 // TODO make sure you can't remove the running task from any list!
-static TCB* Running     = NULL;
+static TCB* Running = NULL;
 
 static Tasks readyList;
 static Tasks blockedList;
@@ -68,7 +59,10 @@ exception init_kernel(void)
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
+    initTasks(&readyList);
+    initTasks(&blockedList);
     // Create an idle task
+    create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode
     kernelMode = KERNEL_START_UP;
     // Return status
@@ -90,7 +84,7 @@ exception create_task(void (*body)(), uint d)
     // IF start-up mode THEN
     if (kernelMode == INIT) {
         // Insert new task in Readylist
-        listPushBack(readyList, newTask, list);
+        //listPushBack(readyList, newTask, list);
         // Return status
         return 1;
     } else  {

@@ -4,19 +4,20 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
+#include <stdlib.h>
 
 exception create_task(void (*body)(), uint d)
 {
     // Allocate memory for TCB
-    TCB* newTask = calloc(1, sizeof *newTask);
+    Tasks* newTask = calloc(1, sizeof *newTask);
 
     if (newTask == NULL) return 0;
     // Set deadline in TCB
-    newTask->DeadLine = d;
+    newTask->tcb.DeadLine = d;
     // Set the TCBís PC to point to the task body
-    newTask->PC = body;
+    newTask->tcb.PC = body;
     // Set TCBís SP to point to the stack segment
-    newTask->SP = newTask->StackSeg;
+    newTask->tcb.SP = newTask->tcb.StackSeg;
     // IF start-up mode THEN
     if (kernelMode == INIT) {
         // Insert new task in Readylist

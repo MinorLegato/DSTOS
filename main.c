@@ -1,7 +1,9 @@
 // main.c
+
 #include "kernel.h"
 
 #include "kernel_data.h"
+#include "kernel_init.h"
 #include "messages.h"
 #include "tasks.h"
 #include "timing.h"
@@ -22,12 +24,10 @@ int main(void)
     init_kernel();
     run();
 
-    while (1)
-    {
+    while (1) {
         SaveContext();
         TimerInt();
         LoadContext();
     }
-
-    return 0;
 }
+

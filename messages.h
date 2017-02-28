@@ -13,7 +13,7 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
     return NULL;
 }
 
-i32 no_messages(mailbox* mBox)
+int no_messages(mailbox* mBox)
 {
     // IF Mailbox is empty THEN
     // Free the memory for the Mailbox
@@ -121,7 +121,7 @@ exception send_no_wait(mailbox* mBox, void* pData)
     return SUCCESS;
 }
 
-i32 receive_no_wait(mailbox* mBox, void* pData)
+int receive_no_wait(mailbox* mBox, void* pData)
 {
     // Disable interrupt
     SaveContext();

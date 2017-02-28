@@ -8,6 +8,7 @@
 #include "tasks.h"
 #include "timing.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -21,6 +22,7 @@ void TimerInt(void)
 
 int main(void)
 {
+    /*
     init_kernel();
     run();
 
@@ -29,5 +31,7 @@ int main(void)
         TimerInt();
         LoadContext();
     }
+    */
+    return 0;
 }
 

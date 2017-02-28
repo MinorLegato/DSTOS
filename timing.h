@@ -30,25 +30,25 @@ exception wait(uint nTicks)
 }
 
 // Set the tick counter
-void set_ticks(u32 no_of_ticks)
+void set_ticks(uint no_of_ticks)
 {
     tickCounter = no_of_ticks;
 }
 
 // Return the tick counter
-u32 ticks(void)
+uint ticks(void)
 {
     return tickCounter;
 }
 
 // Return the deadline of the current task
-u32 deadline(void)
+uint deadline(void)
 {
     return Running->DeadLine;
 }
 
 // Set deadline for running task3
-void set_deadline(u32 nNew)
+void set_deadline(uint nNew)
 {
     // Disable interrupt
     SaveContext();

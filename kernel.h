@@ -42,7 +42,7 @@
 typedef int             exception;
 typedef int             bool;
 typedef unsigned int    uint;
-typedef int 			action;
+typedef int 		action;
 
 struct  l_obj;         // Forward declaration
 
@@ -54,7 +54,7 @@ typedef struct {
 	uint	*SP;
 	uint	Context[CONTEXT_SIZE];
 	uint	StackSeg[STACK_SIZE];
-    uint	DeadLine;
+        uint	DeadLine;
 } TCB;
 
 #else

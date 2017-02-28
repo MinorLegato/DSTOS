@@ -7,10 +7,10 @@
 
 mailbox* create_mailbox(uint nMessages, uint nDataSize)
 {
-    // Allocate memory for the Mailbox
-    // Initialize Mailbox structure
-    // Return Mailbox*
-    return NULL;
+    mailbox* mb = calloc(1, sizeof(mailbox));
+    mb->nMaxMessges = nMessages;
+    mb->nDataSize = nDataSize;
+    return mb;
 }
 
 int no_messages(mailbox* mBox)
@@ -100,18 +100,21 @@ exception send_no_wait(mailbox* mBox, void* pData)
     {
         deflowerTask(Running);
         // IF receiving task is waiting THEN
-        if (0) {
+        if (0) 
+        {
             // Copy data to receiving tasksí
             // data area.
             // Remove receiving taskís Message
             // struct from the Mailbox
             // Move receiving task to Readylist
             // Load context
-        } else {
+        } else 
+        {
             // Allocate a Message structure
             // Copy Data to the Message
             // IF mailbox is full THEN
-            if (0) {
+            if (0) 
+            {
                 // Remove the oldest Message struct
             }
             // Add Message to the Mailbox
@@ -128,16 +131,18 @@ int receive_no_wait(mailbox* mBox, void* pData)
     {
         deflowerTask(Running);
         // IF send Message is waiting THEN
-        if (0) {
+        if (0) 
+        {
             // Copy senderís data to receiving taskís
             // data area
             // Remove sending taskís Message
             // struct from the Mailbox
             // IF Message was of wait type THEN
-            if (0) {
+            if (0) 
+            {
                 // Move sending task to Readylist
-            }        
-            else {
+            } else 
+            {
                 // Free senderís data area
             }       
         }

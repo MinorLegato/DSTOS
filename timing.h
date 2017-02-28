@@ -10,15 +10,13 @@ exception wait(uint nTicks)
 {
     // Disable interrupt
     SaveContext();
-    // IF first execution THEN
-    if (0) {
-        // Set: ìnot first execution any moreî
-        // Place running task in the Timerlist
+    if (isFirstExec(Running)) {
+        deflowerTask(Running);
+        addTask(timerList, getTask(Running));
         LoadContext();
     }
     else {
-        // IF deadline is reached THEN
-        if (0) {
+        if (Running->DeadLine <= tickCounter) {
             // Status is DEADLINE_REACHED
         }
         else {
@@ -52,10 +50,9 @@ void set_deadline(uint nNew)
 {
     // Disable interrupt
     SaveContext();
-    // IF first execution THEN
-    if (0) {
-        // Set: ìnot first execution any moreî
-        Running->DeadLine = nNew;
+    if (isFirstExec(Running)) {
+        deflowerTask(Running);
+        Running->DeadLine = nNew + tickCounter;
         // Reschedule Readylist
         LoadContext();
     }

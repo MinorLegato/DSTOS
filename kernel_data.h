@@ -7,9 +7,9 @@
 // ================================== ================= ================================= //
 
 typedef struct Tasks {
-    int            firstExec;
-    TCB            tcb;
-    struct Tasks*  next;
+    int             firstExec;
+    TCB             tcb;
+    struct Tasks*   next;
 } Tasks;
 
 
@@ -20,20 +20,11 @@ typedef struct Tasks {
 
 #define forTasks(HEAD, ITER) for ((ITER) = (HEAD)->next; (ITER) != (HEAD); (ITER) = (ITER)->next)
 
+
 static void initTasks(Tasks* head)
 {
-    head = calloc(1, sizeof *head);
+    memset(head, 0, sizeof *head);
     head->next = head;
-
-    printf("%a\n", head);
-    printf("%a\n", head->next);
-}
-
-static Tasks* removeTask(Tasks* task, Tasks* prev)
-{
-    Tasks* removedTask = task;
-    prev->next = task->next;
-    return removedTask;
 }
 
 static int noTasks(Tasks* head)
@@ -46,6 +37,33 @@ static void addTask(Tasks* head, Tasks* task)
     task->next = head->next;
     head->next = task;
 }
+
+static inline uint taskDeadline(const Tasks* task)
+{
+    return task->tcb.DeadLine;
+}
+
+static Tasks* findLowestDeadline(const Tasks* head)
+{
+    Tasks* lowest = head->next;
+
+    Tasks* iter = NULL;
+
+    forTasks(head, iter) {
+        if (taskDeadline(iter) < taskDeadline(lowest))
+            lowest = iter;
+    }
+
+    return lowest;
+}
+
+static Tasks* removeTask(Tasks* task, Tasks* prev)
+{
+    Tasks* removedTask = task;
+    prev->next = task->next;
+    return removedTask;
+}
+
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 

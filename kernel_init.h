@@ -12,6 +12,7 @@ exception init_kernel(void)
     // Create necessary data structures
     initTasks(readyList);
     initTasks(waitList);
+    initTasks(timerList);
     // Create an idle task
     create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode

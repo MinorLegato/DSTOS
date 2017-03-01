@@ -20,26 +20,9 @@ void TimerInt(void)
     tickCounter++;
 }
 
-
 int main()
 {
-    Tasks* testList; initTasks(testList);
-
-    for (int i = 0; i < 10; i++) {
-        Tasks* newTask = calloc(1, sizeof *newTask);
-        
-        newTask->firstExec = i + 1;
-
-        if (newTask != NULL)
-            addTask(testList, newTask);
-    }
-
-    Tasks* iter = testList->next;
-
-    while (iter != testList) {
-        printf("%d\n", iter->firstExec);
-        iter = iter->next;
-    }
+    return 0;
 }
 
 /*

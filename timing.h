@@ -9,23 +9,24 @@
 // Timing
 exception wait(uint nTicks)
 {
+    volatile int isFirst = TRUE;
+    volatile exception status;
     // Disable interrupt
     SaveContext();
-    if (isFirstExec(Running)) {
-        deflowerTask(Running);
+    if (isFirst) {
+        isFirst = FALSE;
         addTask(timerList, getTask(Running));
         LoadContext();
     }
     else {
         if (Running->DeadLine <= tickCounter) {
-            // Status is DEADLINE_REACHED
+            status = DEADLINE_REACHED;
         }
         else {
-            // Status is OK
+            status = OK;
         }
     }
-    // Return status
-    return 0;
+    return status;
 }
 
 // Set the tick counter
@@ -49,10 +50,11 @@ uint deadline(void)
 // Set deadline for running task3
 void set_deadline(uint nNew)
 {
+    volatile int isFirst = TRUE;
     // Disable interrupt
     SaveContext();
-    if (isFirstExec(Running)) {
-        deflowerTask(Running);
+    if (isFirst) {
+        isFirst = FALSE;
         Running->DeadLine = nNew + tickCounter;
         // Reschedule Readylist
         LoadContext();

@@ -49,19 +49,28 @@ static Tasks* findLowestDeadline(const Tasks* head)
 
     Tasks* iter = NULL;
 
-    forTasks(head, iter) {
+    forTasks(head, iter)
         if (taskDeadline(iter) < taskDeadline(lowest))
             lowest = iter;
-    }
 
     return lowest;
 }
 
-static Tasks* removeTask(Tasks* task, Tasks* prev)
+static Tasks* removeTask(Tasks* head, Tasks* task)
 {
-    Tasks* removedTask = task;
-    prev->next = task->next;
-    return removedTask;
+    Tasks* prev = head;
+    Tasks* iter = head->next;
+
+    while (iter != head) {
+        if (iter == task) {
+            prev->next = iter->next;
+            return iter;
+        }
+        prev = iter;
+        iter = iter->next;
+    }
+
+    return NULL;
 }
 
 

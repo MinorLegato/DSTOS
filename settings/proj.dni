@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1966510655
+Checksum=-1328660054
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -72,7 +72,7 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Aliases]
-A0=_ "C:\Users\nicholas\Desktop\art-arm-hwdep-iar-6.30\art-arm-simulator-iar-6.30\context.s79" ""
+A0=_ "C:\Users\nicholas\Desktop\art-arm-hwdep-iar-6.30\art-arm-simulator-iar-6.30\context.s79" "C:\Users\Anton\Documents\GitHub\DSTOS\context.s79"
 A1=_ "C:\Users\nicholas\Desktop\cse2_bb\proj\context.s79" "D:\GITHUB\DSTOS\context.s79"
 Count=2
 SuppressDialog=1

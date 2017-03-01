@@ -4,7 +4,6 @@
 #include "kernel.h"
 #include <string.h>
 
-
 // ================================== ================= ================================= //
 
 typedef struct Tasks {
@@ -19,32 +18,34 @@ typedef struct Tasks {
 #define isFirstExec(T)  (getTask(T)->firstExec)
 #define deflowerTask(T) (getTask(T)->firstExec = 0)
 
-#define iterateTasks(HEAD) for (Tasks* iter = (HEAD)->next; iter != (HEAD); iter = iter->next)
+#define forTasks(HEAD, ITER) for ((ITER) = (HEAD)->next; (ITER) != (HEAD); (ITER) = (ITER)->next)
 
 static void initTasks(Tasks* head)
 {
     head = calloc(1, sizeof *head);
     head->next = head;
+
+    printf("%a\n", head);
+    printf("%a\n", head->next);
 }
 
 static Tasks* removeTask(Tasks* task, Tasks* prev)
 {
-    Tasks* removedTask = tasks;
-
+    Tasks* removedTask = task;
     prev->next = task->next;
-
     return removedTask;
 }
 
-static int noTasks(Tasks* )
+static int noTasks(Tasks* head)
 {
     return head == head->next;
 }
 
-static void pushTask(Tasks* head, Tasks* task)
+static void addTask(Tasks* head, Tasks* task)
 {
+    task->next = head->next;
+    head->next = task;
 }
-
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 

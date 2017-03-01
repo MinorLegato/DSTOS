@@ -30,7 +30,7 @@
 
 #define FAIL    0
 #define SUCCESS 1
-#define OK              1
+#define OK      1
 
 #define DEADLINE_REACHED        0
 #define NOT_EMPTY               0
@@ -50,42 +50,42 @@ struct  l_obj;         // Forward declaration
 #ifdef texas_dsp
 
 typedef struct {
-	void	(*PC)();
-	uint	*SP;
-	uint	Context[CONTEXT_SIZE];
-	uint	StackSeg[STACK_SIZE];
-        uint	DeadLine;
+    void	(*PC)();
+    uint	*SP;
+    uint	Context[CONTEXT_SIZE];
+    uint	StackSeg[STACK_SIZE];
+    uint	DeadLine;
 } TCB;
 
 #else
 
 typedef struct {
-        uint    Context[CONTEXT_SIZE];        
-        uint    *SP;
-        void    (*PC)();
-        uint    SPSR;     
-        uint    StackSeg[STACK_SIZE];
-        uint    DeadLine;
+    uint    Context[CONTEXT_SIZE];        
+    uint    *SP;
+    void    (*PC)();
+    uint    SPSR;     
+    uint    StackSeg[STACK_SIZE];
+    uint    DeadLine;
 } TCB;
 #endif
 
 // Message items
 typedef struct msgobj {
-        char            *pData;
-        exception       Status;
-        struct l_obj    *pBlock;
-        struct msgobj   *pPrevious;
-        struct msgobj   *pNext;
+    char            *pData;
+    exception       Status;
+    struct l_obj    *pBlock;
+    struct msgobj   *pPrevious;
+    struct msgobj   *pNext;
 } msg;
 
 // Mailbox structure
 typedef struct {
-        msg             *pHead;
-        msg             *pTail;
-        int             nDataSize;
-        int             nMaxMessages;
-        int             nMessages;
-        int             nBlockedMsg;
+    msg             *pHead;
+    msg             *pTail;
+    int             nDataSize;
+    int             nMaxMessages;
+    int             nMessages;
+    int             nBlockedMsg;
 } mailbox;
 
 

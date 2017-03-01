@@ -8,7 +8,7 @@
 mailbox* create_mailbox(uint nMessages, uint nDataSize)
 {
     mailbox* mb = calloc(1, sizeof(mailbox));
-    mb->nMaxMessges = nMessages;
+    mb->nMaxMessages = nMessages;
     mb->nDataSize = nDataSize;
     return mb;
 }

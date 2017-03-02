@@ -3,10 +3,12 @@
 #include <stdio.h>
 
 #include "kernel_data.h"
-#include "kernel_init.h"
+
 #include "messages.h"
 #include "tasks.h"
 #include "timing.h"
+
+#include "kernel_init.h"
 
 #include <stdlib.h>
 #include <string.h>

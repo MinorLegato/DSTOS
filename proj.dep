@@ -103,7 +103,7 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 3 4 25 7 33 26 30 31 12 2 24 27 29 28 22 11 13 14 19 6</file>
+          <file> 3 4 25 26 30 31 22 14 6 33 2 24 27 29 28 12 13 19 11 7</file>
         </tool>
         <tool>
           <name>ICCARM</name>

@@ -1,5 +1,3 @@
-// main.c
-
 #include "kernel.h"
 
 #include <stdio.h>
@@ -14,30 +12,23 @@
 #include <string.h>
 #include <stdint.h>
 
-
 void TimerInt(void)
 {
     tickCounter++;
 }
 
-int main()
-{
-    return 0;
-}
 
-/*
 int main(void)
 {
     init_kernel();
     run();
-
+    
     while (1) {
         SaveContext();
         TimerInt();
         LoadContext();
     }
-
+    
     return 0;
 }
-*/
 

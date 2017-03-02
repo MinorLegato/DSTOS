@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1666372133
+Checksum=-1500096186
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -42,8 +42,7 @@ ShowTimeSum=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "STD_CODE2" "{$PROJ_DIR$\main.c}.41.1" 0 0 1 "" 0 ""
-Count=1
+Count=0
 [Interrupts]
 Enabled=1
 [MemConfig]

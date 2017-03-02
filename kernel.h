@@ -42,7 +42,7 @@
 typedef int             exception;
 typedef int             bool;
 typedef unsigned int    uint;
-typedef int 		action;
+typedef int 		    action;
 
 struct  l_obj;         // Forward declaration
 
@@ -135,8 +135,10 @@ void            set_deadline(uint nNew);
 //Interrupt
 extern void     isr_off(void);
 extern void     isr_on(void);
-extern void     SaveContext(void);	// Stores DSP registers in TCB pointed to by Running
-extern void     LoadContext(void);	// Restores DSP registers from TCB pointed to by Running
+// Stores DSP registers in TCB pointed to by Running
+extern void     SaveContext(void);	
+// Restores DSP registers from TCB pointed to by Running
+extern void     LoadContext(void);	
 
 #endif
 //FUCKANTON

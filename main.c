@@ -17,7 +17,6 @@ void TimerInt(void)
     tickCounter++;
 }
 
-
 int main(void)
 {
     init_kernel();

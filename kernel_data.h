@@ -7,7 +7,6 @@
 // ================================== ================= ================================= //
 
 typedef struct Tasks {
-    int             firstExec;
     TCB             tcb;
     struct Tasks*   next;
 } Tasks;

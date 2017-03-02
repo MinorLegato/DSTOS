@@ -26,12 +26,99 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
 // Removes a mailbox if it's empty
 int no_messages(mailbox* mBox)
 {
-    if(mBox->nMessages == 0)
+    if(mBox->pHead->pNext == mBox->pTail)
     {
+        free(mBox->pHead);
+        free(mBox->pTail);
         free(mBox);
         return OK;
     }
     return NOT_EMPTY;
+}
+
+
+// Deletes all content of a mailbox
+int delete_mailbox(mailbox* mBox)
+{
+    while(!no_messages(mBox))
+    {
+        if(mBox->nMessages == 0)
+        {
+            return FAIL;
+        }
+        msg* temp = mBox->pHead->pNext;
+        mBox->pHead->pNext = mBox->pHead->pNext->pNext;
+        mBox->pHead->pNext->pPrevious = mBox-pHead;
+        mBox->nMessages--;
+        free(temp);
+    }
+    return OK;
+}
+
+
+//Allocates a msg
+msg* alloc_msg(void* pData)
+{
+    msg* Message = calloc(1, sizeof(msg));
+    if(Message != NULL)
+    {
+        Message->pData = pData;
+    }
+    return Message;
+}
+
+
+// Adds message first in mailbox
+exception add_msg_first(mailbox* mBox, msg* Message)
+{
+    if(Message != NULL)
+    {
+        Message->pNext = mBox->pHead->pNext;
+        mBox->pHead->pNext = Message;
+        mBox->nMessages++;
+        return OK;
+    }
+    return FAIL;
+}
+
+
+// Adds message last in mailbox
+exception add_msg_last(mailbox* mBox, msg* Message)
+{
+    if(Message != NULL)
+    {
+        Message->pNext = mBox->pTail;
+        mBox->pTail->pPrevious->pNext = Message;
+        mBox->nMessages++;
+        return OK;
+    }
+    return FAIL;
+}
+
+
+// Creates new message first in mailbox
+exception create_msg_first(mailbox* mBox, void* pData)
+{
+    msg* Message = alloc_msg(pData);
+    if(Message != NULL)
+    {
+        add_msg_first(mbox, Message);
+        return OK;
+    }
+    return FAIL;
+}
+
+
+// Creates new message last in mailbox
+exception create_msg_last(mailbox* mBox, void* pData)
+{
+    msg* Message = alloc_msg(pData);
+    if(Message != NULL)
+    {
+        add_msg_last(mbox, Message);
+        return OK;
+    }
+    return FAIL;
 }
 
 

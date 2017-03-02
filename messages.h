@@ -13,6 +13,7 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
     return mb;
 }
 
+
 int no_messages(mailbox* mBox)
 {
     if(mBox->nMessages == 0)
@@ -23,10 +24,11 @@ int no_messages(mailbox* mBox)
     return NOT_EMPTY;
 }
 
+
 exception send_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if(isFirst)
     {
@@ -53,22 +55,20 @@ exception send_wait(mailbox* mBox, void* pData)
         // IF deadline is reached THEN
         if(0)
         {
-            // Disable interrupt
+            isr_off();
             // Remove send Message
             // Enable interrupt
             return DEADLINE_REACHED;
-        } else
-        {
-            return OK;
         }
     }
-    //return SUCCESS;
+    return OK;
 }
+
 
 exception receive_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if(isFirst)
     {   
@@ -101,22 +101,20 @@ exception receive_wait(mailbox* mBox, void* pData)
         // IF deadline is reached THEN
         if(0)
         {
-            // Disable interrupt
+            isr_off();
             // Remove receive Message
             // Enable interrupt
             return DEADLINE_REACHED;
-        } else
-        {
-            return OK;
-        }
+        } 
     }
-    //return SUCCESS;
+    return OK;
 }
+
 
 exception send_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if (isFirst) 
     {
@@ -145,10 +143,11 @@ exception send_no_wait(mailbox* mBox, void* pData)
     return OK;
 }
 
+
 int receive_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if (isFirst) 
     {

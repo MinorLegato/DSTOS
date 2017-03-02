@@ -7,8 +7,12 @@
 #include <stdlib.h>
 
 
+// =============================== Task Kernel Functions ================================ //
+
+
 exception create_task(void (*body)(), uint d)
 {
+    volatile int firstExec = 1;
     // Allocate memory for TCB
     Tasks* newTask = calloc(1, sizeof *newTask);
 
@@ -29,7 +33,8 @@ exception create_task(void (*body)(), uint d)
         // Disable interrupts
         SaveContext();
 
-        if (newTask->firstExec) { // IF ìfirst executionî THEN
+        if (firstExec) { // IF ìfirst executionî THEN
+            firstExec = 0;
             // Set: ìnot first execution any moreî
             // Insert new task in Readylist
             // Load context

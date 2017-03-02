@@ -34,9 +34,9 @@ exception send_wait(mailbox* mBox, void* pData)
         // IF receiving task is waiting THEN
         if(0)
         {
-            // Copy senderís data to the data area
+            // Copy senderÃ­s data to the data area
             // of the receivers Message
-            // Remove receiving taskís Message
+            // Remove receiving taskÃ­s Message
             // struct from the mailbox
             // Move receiving task to Readylist
         } else
@@ -62,7 +62,7 @@ exception send_wait(mailbox* mBox, void* pData)
             return OK;
         }
     }
-    return SUCCESS;
+    //return SUCCESS;
 }
 
 exception receive_wait(mailbox* mBox, void* pData)
@@ -76,9 +76,9 @@ exception receive_wait(mailbox* mBox, void* pData)
         // IF send Message is waiting THEN
         if(0)
         {
-            // Copy senderís data to receiving taskís
+            // Copy senderÃ­s data to receiving taskÃ­s
             // data area
-            // Remove sending taskís Message
+            // Remove sending taskÃ­s Message
             // struct from the Mailbox
             // IF Message was of wait type THEN
             if(0)
@@ -110,25 +110,26 @@ exception receive_wait(mailbox* mBox, void* pData)
             return OK;
         }
     }
-    return SUCCESS;
+    //return SUCCESS;
 }
 
 exception send_no_wait(mailbox* mBox, void* pData)
 {
+    volatile int isFirst = TRUE;
     // Disable interrupt
     SaveContext();
-    if (isFirstExec(Running)) 
+    if (isFirst) 
     {
-        deflowerTask(Running);
+        isFirst = FALSE;
         // IF receiving task is waiting THEN
         if (0) 
         {
-            // Copy data to receiving tasksí
+            // Copy data to receiving tasksÃ­
             // data area.
-            // Remove receiving taskís Message
+            // Remove receiving taskÃ­s Message
             // struct from the Mailbox
             // Move receiving task to Readylist
-            // Load context
+            LoadContext();
         } else 
         {
             // Allocate a Message structure
@@ -141,22 +142,23 @@ exception send_no_wait(mailbox* mBox, void* pData)
             // Add Message to the Mailbox
         }
     }
-    return SUCCESS;
+    return OK;
 }
 
 int receive_no_wait(mailbox* mBox, void* pData)
 {
+    volatile int isFirst = TRUE;
     // Disable interrupt
     SaveContext();
-    if (isFirstExec(Running)) 
+    if (isFirst) 
     {
-        deflowerTask(Running);
+        isFirst = FALSE;
         // IF send Message is waiting THEN
         if (0) 
         {
-            // Copy senderís data to receiving taskís
+            // Copy senderÃ­s data to receiving taskÃ­s
             // data area
-            // Remove sending taskís Message
+            // Remove sending taskÃ­s Message
             // struct from the Mailbox
             // IF Message was of wait type THEN
             if (0) 
@@ -164,15 +166,13 @@ int receive_no_wait(mailbox* mBox, void* pData)
                 // Move sending task to Readylist
             } else 
             {
-                // Free senderís data area
+                // Free senderÃ­s data area
             }       
         }
         LoadContext();
     }
-    // Return status on received Message
-    return 0;
+    return OK;
 }
 
 
 #endif
-

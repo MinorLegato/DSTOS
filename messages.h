@@ -9,8 +9,6 @@
 mailbox* create_mailbox(uint nMessages, uint nDataSize)
 {
     mailbox* mb = calloc(1, sizeof(mailbox));
-    mb->nMaxMessages = nMessages;
-    mb->nDataSize = nDataSize;
     msg* head = calloc(1, sizeof(msg));
     msg* tail = calloc(1, sizeof(msg));
     head->pNext = tail;
@@ -19,6 +17,8 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
     tail->pPrevious = head;
     mb->pHead = head;
     mb->pTail = tail;
+    mb->nMaxMessages = nMessages;
+    mb->nDataSize = nDataSize;
     return mb;
 }
 

@@ -5,15 +5,25 @@
 #include "kernel_data.h"
 
 
+// Creates a new mailbox
 mailbox* create_mailbox(uint nMessages, uint nDataSize)
 {
     mailbox* mb = calloc(1, sizeof(mailbox));
     mb->nMaxMessages = nMessages;
     mb->nDataSize = nDataSize;
+    msg* head = calloc(1, sizeof(msg));
+    msg* tail = calloc(1, sizeof(msg));
+    head->pNext = tail;
+    head->pPrevious = NULL;
+    tail->pNext = NULL;
+    tail->pPrevious = head;
+    mb->pHead = head;
+    mb->pTail = tail;
     return mb;
 }
 
 
+// Removes a mailbox if it's empty
 int no_messages(mailbox* mBox)
 {
     if(mBox->nMessages == 0)
@@ -25,6 +35,7 @@ int no_messages(mailbox* mBox)
 }
 
 
+// Send ....
 exception send_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -57,7 +68,7 @@ exception send_wait(mailbox* mBox, void* pData)
         {
             isr_off();
             // Remove send Message
-            // Enable interrupt
+            isr_on();
             return DEADLINE_REACHED;
         }
     }
@@ -65,6 +76,7 @@ exception send_wait(mailbox* mBox, void* pData)
 }
 
 
+// Receive ....
 exception receive_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -103,7 +115,7 @@ exception receive_wait(mailbox* mBox, void* pData)
         {
             isr_off();
             // Remove receive Message
-            // Enable interrupt
+            isr_on();
             return DEADLINE_REACHED;
         } 
     }
@@ -111,6 +123,7 @@ exception receive_wait(mailbox* mBox, void* pData)
 }
 
 
+// Send ....
 exception send_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -144,6 +157,7 @@ exception send_no_wait(mailbox* mBox, void* pData)
 }
 
 
+// Receive ....
 int receive_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;

@@ -4,14 +4,12 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
-//FUCKANTON
 
 // Timing
 exception wait(uint nTicks)
 {
     volatile int isFirst = TRUE;
-    volatile exception status;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if (isFirst) {
         isFirst = FALSE;
@@ -20,14 +18,12 @@ exception wait(uint nTicks)
     }
     else {
         if (Running->DeadLine <= tickCounter) {
-            status = DEADLINE_REACHED;
-        }
-        else {
-            status = OK;
+            return DEADLINE_REACHED;
         }
     }
-    return status;
+    return OK;
 }
+
 
 // Set the tick counter
 void set_ticks(uint no_of_ticks)
@@ -35,11 +31,13 @@ void set_ticks(uint no_of_ticks)
     tickCounter = no_of_ticks;
 }
 
+
 // Return the tick counter
 uint ticks(void)
 {
     return tickCounter;
 }
+
 
 // Return the deadline of the current task
 uint deadline(void)
@@ -47,11 +45,12 @@ uint deadline(void)
     return Running->DeadLine;
 }
 
+
 // Set deadline for running task3
 void set_deadline(uint nNew)
 {
     volatile int isFirst = TRUE;
-    // Disable interrupt
+    isr_off();
     SaveContext();
     if (isFirst) {
         isFirst = FALSE;

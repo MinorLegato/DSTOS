@@ -37,7 +37,7 @@ int no_messages(mailbox* mBox)
 }
 
 
-// Deletes all content of a mailbox
+// Deletes a mailbox and all its content
 int delete_mailbox(mailbox* mBox)
 {
     while(!no_messages(mBox))
@@ -48,11 +48,71 @@ int delete_mailbox(mailbox* mBox)
         }
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
-        mBox->pHead->pNext->pPrevious = mBox-pHead;
+        mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
-        free(temp);
+        free(temp);
     }
     return OK;
+}
+
+
+// Keeps the mailbox but deletes all its content
+int clear_mailbox(mailbox* mBox)
+{
+    while(mBox->pHead->pNext != mBox->pTail)
+    {
+        if(mBox->nMessages == 0)
+        {
+            return FAIL;
+        }
+        msg* temp = mBox->pHead->pNext;
+        mBox->pHead->pNext = mBox->pHead->pNext->pNext;
+        mBox->pHead->pNext->pPrevious = mBox->pHead;
+        mBox->nMessages--;
+        free(temp);
+    }
+    return OK;
+}
+
+
+// Deletes a message from a mailbox
+int delete_msg(mailbox* mBox, msg* Message)
+{
+    msg* temp = mBox->pHead->pNext;
+    while(temp != mBox->pTail)
+    {
+        if(temp == Message)
+        {
+            temp->pPrevious->pNext = temp->pNext;
+            temp->pNext->pPrevious = temp->pPrevious;
+            mBox->nMessages--;
+            free(temp);
+            return OK;
+        }
+        temp->pNext = temp->pNext->pNext;
+    }
+    return FAIL;
+}
+
+
+// Deletes a message from a mailbox based on the data in the message
+int delete_data(mailbox* mBox, void* pData)
+{
+    msg* temp = mBox->pHead->pNext;
+    char data = (char)*pData;
+    while(temp != mBox->pTail)
+    {
+        if(*temp->pData == data)
+        {
+            temp->pPrevious->pNext = temp->pNext;
+            temp->pNext->pPrevious = temp->pPrevious;
+            mBox->nMessages--;
+            free(temp);
+            return OK;
+        }
+        temp->pNext = temp->pNext->pNext;
+    }
+    return FAIL;
 }
 
 
@@ -102,7 +162,7 @@ exception create_msg_first(mailbox* mBox, void* pData)
     msg* Message = alloc_msg(pData);
     if(Message != NULL)
     {
-        add_msg_first(mbox, Message);
+        add_msg_first(mBox, Message);
         return OK;
     }
     return FAIL;
@@ -115,14 +175,14 @@ exception create_msg_last(mailbox* mBox, void* pData)
     msg* Message = alloc_msg(pData);
     if(Message != NULL)
     {
-        add_msg_last(mbox, Message);
+        add_msg_last(mBox, Message);
         return OK;
     }
     return FAIL;
 }
 
 
-// Send ....
+// Send wait
 exception send_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -163,7 +223,7 @@ exception send_wait(mailbox* mBox, void* pData)
 }
 
 
-// Receive ....
+// Receive wait
 exception receive_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -210,7 +270,7 @@ exception receive_wait(mailbox* mBox, void* pData)
 }
 
 
-// Send ....
+// Send no wait
 exception send_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;
@@ -244,7 +304,7 @@ exception send_no_wait(mailbox* mBox, void* pData)
 }
 
 
-// Receive ....
+// Receive no wait
 int receive_no_wait(mailbox* mBox, void* pData)
 {
     volatile int isFirst = TRUE;

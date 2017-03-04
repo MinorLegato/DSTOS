@@ -249,9 +249,7 @@ exception send_wait(mailbox* mBox, void* pData)
             // Move receiving task to Readylist
         } else
         {
-            // Allocate a Message structure
-            // Set data pointer
-            // Add Message to the Mailbox
+            create_msg_first(mBox, pData);
             // Move sending task from Readylist to
             // Waitinglist
         }
@@ -338,14 +336,11 @@ exception send_no_wait(mailbox* mBox, void* pData)
             LoadContext();
         } else 
         {
-            // Allocate a Message structure
-            // Copy Data to the Message
-            // IF mailbox is full THEN
-            if (0) 
+            if(isFull(mBox))
             {
-                // Remove the oldest Message struct
+                delete_msg_last(mBox);
             }
-            // Add Message to the Mailbox
+            create_msg_first(mBox, pData);
         }
     }
     return OK;

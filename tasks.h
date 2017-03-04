@@ -12,9 +12,10 @@
 
 exception create_task(void (*body)(), uint d)
 {
+    /*
     volatile int firstExec = 1;
     // Allocate memory for TCB
-    Tasks* newTask = calloc(1, sizeof *newTask);
+    TaskNode* newTask = calloc(1, sizeof *newTask);
 
     if (newTask == NULL) return 0;
     // Set deadline in TCB
@@ -43,6 +44,7 @@ exception create_task(void (*body)(), uint d)
     }
     // ENDIF
     // Return status
+    */
     return 1;
 }
 

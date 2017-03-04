@@ -19,9 +19,25 @@ void TimerInt(void)
     tickCounter++;
 }
 
-
 int main(void)
 {
+    TaskList test;
+
+    initTasks(&test);
+
+    for (int i = 0; i < 10; i++) {
+        TaskNode* newTask = calloc(1, sizeof *newTask);
+        taskDeadline(newTask) = i + 1;
+        addTask(&test, newTask);
+    }
+
+    TaskNode* iter;
+
+    forTasks(&test, iter) {
+        printf("%d", taskDeadline(iter));
+    }
+
+    /*
     init_kernel();
     run();
     
@@ -30,7 +46,7 @@ int main(void)
         TimerInt();
         LoadContext();
     }
-    
+    */
     return 0;
 }
 

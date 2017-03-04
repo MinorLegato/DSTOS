@@ -2,12 +2,11 @@
 #define __KERNEL_DATA_H__
 
 #include "kernel.h"
-#include <string.h>
 
 // ================================== ================= ================================= //
 
+/*
 typedef struct Tasks {
-    int             firstExec;
     TCB             tcb;
     struct Tasks*   next;
 } Tasks;
@@ -73,6 +72,7 @@ static Tasks* removeTask(Tasks* head, Tasks* task)
     return NULL;
 }
 
+*/
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 
@@ -89,9 +89,9 @@ int tickCounter = 0;
 
 int  kernelMode  = KERNEL_NOT_RUNNING;
 
-Tasks* readyList = NULL;
-Tasks* waitList  = NULL;
-Tasks* timerList = NULL;
+TaskList* readyList = NULL;
+TaskList* waitList  = NULL;
+TaskList* timerList = NULL;
 
 void idleTask() { while (1); }
 

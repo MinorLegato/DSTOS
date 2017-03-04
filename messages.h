@@ -19,14 +19,38 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize)
     mb->pTail = tail;
     mb->nMaxMessages = nMessages;
     mb->nDataSize = nDataSize;
+    mb->nMessages = 0;
+    mb->nBlockedMsg = 0;
     return mb;
+}
+
+
+// Checks if mailbox is empty
+int isEmpty(mailbox* mBox)
+{
+    if(mBox->pHead->pNext == mBox->pTail)
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+// Checks if mailbox is full
+int isFull(mailbox* mBox)
+{
+    if(mBox->nMessages == mBox->nMaxMessages)
+    {
+        return TRUE;
+    }
+    return FALSE;
 }
 
 
 // Removes a mailbox if it's empty
 int no_messages(mailbox* mBox)
 {
-    if(mBox->pHead->pNext == mBox->pTail)
+    if(isEmpty(mBox))
     {
         free(mBox->pHead);
         free(mBox->pTail);
@@ -59,12 +83,8 @@ int delete_mailbox(mailbox* mBox)
 // Keeps the mailbox but deletes all its content
 int clear_mailbox(mailbox* mBox)
 {
-    while(mBox->pHead->pNext != mBox->pTail)
+    while(!isEmpty(mBox))
     {
-        if(mBox->nMessages == 0)
-        {
-            return FAIL;
-        }
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
@@ -75,21 +95,40 @@ int clear_mailbox(mailbox* mBox)
 }
 
 
+// Deletes last message in a mailbox
+int delete_msg_last(mailbox* mBox)
+{
+    if(!isEmpty(mBox))
+    {
+        msg* temp = mBox->pTail->pPrevious;
+        temp->pPrevious->pNext = temp->pNext;
+        temp->pNext->pPrevious = temp->pPrevious;
+        mBox->nMessages--;
+        free(temp);
+        return OK;
+    }
+    return FAIL;
+}
+
+
 // Deletes a message from a mailbox
 int delete_msg(mailbox* mBox, msg* Message)
 {
-    msg* temp = mBox->pHead->pNext;
-    while(temp != mBox->pTail)
+    if(!isEmpty(mBox))
     {
-        if(temp == Message)
+        msg* temp = mBox->pHead->pNext;
+        while(temp != mBox->pTail)
         {
-            temp->pPrevious->pNext = temp->pNext;
-            temp->pNext->pPrevious = temp->pPrevious;
-            mBox->nMessages--;
-            free(temp);
-            return OK;
+            if(temp == Message)
+            {
+                temp->pPrevious->pNext = temp->pNext;
+                temp->pNext->pPrevious = temp->pPrevious;
+                mBox->nMessages--;
+                free(temp);
+                return OK;
+            }
+            temp->pNext = temp->pNext->pNext;
         }
-        temp->pNext = temp->pNext->pNext;
     }
     return FAIL;
 }
@@ -98,19 +137,22 @@ int delete_msg(mailbox* mBox, msg* Message)
 // Deletes a message from a mailbox based on the data in the message
 int delete_data(mailbox* mBox, void* pData)
 {
-    msg* temp = mBox->pHead->pNext;
-    char data = (char)*pData;
-    while(temp != mBox->pTail)
+    if(!isEmpty(mBox))
     {
-        if(*temp->pData == data)
+        msg* temp = mBox->pHead->pNext;
+        char data = (char)*pData;
+        while(temp != mBox->pTail)
         {
-            temp->pPrevious->pNext = temp->pNext;
-            temp->pNext->pPrevious = temp->pPrevious;
-            mBox->nMessages--;
-            free(temp);
-            return OK;
+            if(*temp->pData == data)
+            {
+                temp->pPrevious->pNext = temp->pNext;
+                temp->pNext->pPrevious = temp->pPrevious;
+                mBox->nMessages--;
+                free(temp);
+                return OK;
+            }
+            temp->pNext = temp->pNext->pNext;
         }
-        temp->pNext = temp->pNext->pNext;
     }
     return FAIL;
 }
@@ -131,12 +173,15 @@ msg* alloc_msg(void* pData)
 // Adds message first in mailbox
 exception add_msg_first(mailbox* mBox, msg* Message)
 {
-    if(Message != NULL)
+    if(!isFull(mBox))
     {
-        Message->pNext = mBox->pHead->pNext;
-        mBox->pHead->pNext = Message;
-        mBox->nMessages++;
-        return OK;
+        if(Message != NULL)
+        {
+            Message->pNext = mBox->pHead->pNext;
+            mBox->pHead->pNext = Message;
+            mBox->nMessages++;
+            return OK;
+        }
     }
     return FAIL;
 }
@@ -145,12 +190,15 @@ exception add_msg_first(mailbox* mBox, msg* Message)
 // Adds message last in mailbox
 exception add_msg_last(mailbox* mBox, msg* Message)
 {
-    if(Message != NULL)
+    if(!isFull(mBox))
     {
-        Message->pNext = mBox->pTail;
-        mBox->pTail->pPrevious->pNext = Message;
-        mBox->nMessages++;
-        return OK;
+        if(Message != NULL)
+        {
+            Message->pNext = mBox->pTail;
+            mBox->pTail->pPrevious->pNext = Message;
+            mBox->nMessages++;
+            return OK;
+        }
     }
     return FAIL;
 }

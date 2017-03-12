@@ -64,17 +64,16 @@ int no_messages(mailbox* mBox)
 // Deletes a mailbox and all its content
 int delete_mailbox(mailbox* mBox)
 {
-    while(!no_messages(mBox))
-    {
-        if(mBox->nMessages == 0)
-        {
+    while(!no_messages(mBox)) {
+        if(mBox->nMessages == 0) {
             return FAIL;
         }
+
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
-        free(temp);
+        free(temp);
     }
     return OK;
 }
@@ -89,7 +88,7 @@ int clear_mailbox(mailbox* mBox)
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
-        free(temp);
+        free(temp);
     }
     return OK;
 }

@@ -14,22 +14,21 @@
 #include <string.h>
 #include <stdint.h>
 
-void TimerInt(void)
-{
+
+void TimerInt(void) {
     tickCounter++;
 }
 
-int main(void)
-{
+
+int main(void) {
     init_kernel();
     run();
-    
+
     while (1) {
         SaveContext();
         TimerInt();
         LoadContext();
     }
-    
     return 0;
 }
 

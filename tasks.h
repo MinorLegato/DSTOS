@@ -12,23 +12,22 @@
 
 exception create_task(void (*body)(), uint d)
 {
-    /*
     volatile int firstExec = 1;
     // Allocate memory for TCB
-    TaskNode* newTask = calloc(1, sizeof *newTask);
+    int taskIndex = newTask(&taskManager);
 
-    if (newTask == NULL) return 0;
+    TCB* tcb = getTCB(&taskManager, taskIndex);
+
+    if (tcb == NULL) return 0;
     // Set deadline in TCB
-    newTask->tcb.DeadLine = d;
+    tcb->DeadLine = d;
     // Set the TCBís PC to point to the task body
-    newTask->tcb.PC = body;
+    tcb->PC = body;
     // Set TCBís SP to point to the stack segment
-    newTask->tcb.SP = newTask->tcb.StackSeg;
+    tcb->SP = tcb->StackSeg;
     // IF start-up mode THEN
     if (kernelMode == INIT) {
-        // Insert new task in Readylist
-        // TODO 
-        // Return status
+        insertToReadyList(&taskManager, taskIndex);
         return 1;
     } else  {
         // Disable interrupts
@@ -36,15 +35,12 @@ exception create_task(void (*body)(), uint d)
 
         if (firstExec) { // IF ìfirst executionî THEN
             firstExec = 0;
-            // Set: ìnot first execution any moreî
-            // Insert new task in Readylist
-            // Load context
+            insertToReadyList(&taskManager, taskIndex);
             LoadContext();
         }
     }
     // ENDIF
     // Return status
-    */
     return 1;
 }
 
@@ -52,7 +48,7 @@ void terminate(void)
 {
     // Remove running task from Readylist
     // Set next task to be the running task
-    // Load context
+    LoadContext();
 }
 
 

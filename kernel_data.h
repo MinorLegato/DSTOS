@@ -2,7 +2,8 @@
 #define __KERNEL_DATA_H__
 
 #include "kernel.h"
-#include "list_ops.h"
+//#include "list_ops.h"
+#include "task_manager.h"
 
 // ================================== GLOBAL KERNEL DATA ================================= //
 
@@ -10,6 +11,7 @@ enum KernelModes
 {
     KERNEL_NOT_RUNNING,
     KERNEL_START_UP,
+    KERNEL_RUNNING
 };
 
 
@@ -19,9 +21,16 @@ int tickCounter = 0;
 
 int  kernelMode  = KERNEL_NOT_RUNNING;
 
-TaskList* readyList = NULL;
-TaskList* waitList  = NULL;
-TaskList* timerList = NULL;
+TaskManager taskManager;
+
+int readySize = 0;
+TCB* readyList = NULL;
+
+int waitSize = 0;
+TCB* waitList  = NULL;
+
+int timerSize = 0;
+TCB* timerList = NULL;
 
 void idleTask() { while (1); }
 

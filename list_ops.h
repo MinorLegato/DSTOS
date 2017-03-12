@@ -7,65 +7,92 @@
 // ==================================== TASK LIST API ========================================== //
 
 // from kernel.h
-typedef listobj TaskList;
-typedef listobj TaskNode;
+//typedef list    TaskList;
+//typedef listobj TaskNode;
 
-#define forTasks(HEAD, ITER) \
-    for ((ITER) = (HEAD)->pNext; (ITER) != (HEAD); (ITER) = (ITER)->pNext)
 
-#define taskDeadline(NODE) ((NODE)->pTask->DeadLine)
+typedef struct Task {
+    int     inUse;
+    TBC     task;
+} Task;
 
-static int initTasks(TaskList* head);
-static int noTasks(TaskList* head);
 
-static void removeTasks(TaskList* head);
-static void addTask(TaskList* head, TaskNode* node);
-
-static TaskNode* removeTask(TaskList* head, TaskNode* node);
-static TaskNode* findLowestDeadline(const TaskList* head);
+typedef struct TaskList {
+    Task*   tasks;
+    uint    size;
+} TaskList;
 
 
 // ==================================== TASK LIST IMPLEMENTATION ============================= //
 
-
-static int initTasks(TaskList* head)
+static initTaskList(TaskList* taskList, int maxTasks)
 {
-    memset(head, 0, sizeof *head);
+    taskList->tasks = calloc(maxTasks, sizeof *taskList->tasks);
+    taskList->size = maxTasks;
+}
 
-    if (head == NULL) return 0;
 
-    head->pPrevious = head;
-    head->pNext     = head;
+static Task* findEmptyTask(TaskList* taskList)
+{
+    int i = 0;
+    while (i < taskList->size && taskList->tasks[i].inUse) i++;
+
+    Task* task = &taskList->tasks[i];
+
+    if (!task->inUse) { task->inUse = 1; return task; }
+
+    return NULL;
+}
+
+
+
+static int newTask(TaskList* taskList, void(*body)(), uint d)
+{
+    Task* task = findEmptyTask(taskList);
+
+    if (!task) return 0;
+
 
     return 1;
 }
 
-static int noTasks(TaskList* head)
+
+/*
+static void initTaskList(TaskList* taskList)
 {
-    return head == head->pNext;
+    taskList->pHead = NULL;
+    taskList->pTail = NULL;
 }
 
-static void insertTask(TaskNode* prev, TaskNode* next, TaskNode* newNode)
+static int noTasks(TaskList* taskList)
 {
-    newNode->pNext = prev->pNext;
-    newNode->pPrevious = next->pPrevious;
+    return taskList->pHead == taskList->pTail;
+}
+
+static void insertTask(TaskNode* newNode, TaskNode* prev, TaskNode* next)
+{
     next->pPrevious = newNode;
+    newNode->pNext = next;
+    newNode->pPrevious = prev;
     prev->pNext = newNode;
 }
 
-static void addTask(TaskList* head, TaskNode* newNode)
+static void addTask(TaskList* taskList, TaskNode* newNode)
 {
-    TaskNode* iter;
-
-    forTasks(head, iter) {
-        if (taskDeadline(iter) >= taskDeadline(newNode))
-            break;
+    if (taskList->pHead == NULL) {
+        taskList->pHead = newNode;
+        taskList->pTail = newNode;
+    } else {
+        insertTask(newNode, taskList->pHead, taskList->pHead->pNext);
     }
 
-    insertTask(iter->pPrevious, iter->pNext, newNode);
+    //TaskNode* iter = head->pNext;
+    //while (iter != head && taskDeadline(newNode) < taskDeadline(iter))
+        //iter = iter->pNext;
+    //insertTask(newNode, iter->pPrevious, iter);
 }
 
-static void removeTasks(TaskList* head)
+static void clearTasks(TaskList* head)
 {
     // TODO
 }
@@ -80,6 +107,6 @@ static TaskNode* findLowestDeadline(const TaskList* head)
 {
     return 0;
 }
-
+*/
 #endif
 

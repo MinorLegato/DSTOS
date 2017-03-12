@@ -40,16 +40,16 @@ int no_messages(mailbox* mBox)
 // Deletes all content of a mailbox
 int delete_mailbox(mailbox* mBox)
 {
-    while(!no_messages(mBox))
-    {
-        if(mBox->nMessages == 0)
-        {
+    while(!no_messages(mBox)) {
+        if(mBox->nMessages == 0) {
             return FAIL;
         }
+
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
-        mBox->pHead->pNext->pPrevious = mBox-pHead;
+        mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
+
         free(temp);
     }
     return OK;
@@ -102,7 +102,7 @@ exception create_msg_first(mailbox* mBox, void* pData)
     msg* Message = alloc_msg(pData);
     if(Message != NULL)
     {
-        add_msg_first(mbox, Message);
+        add_msg_first(mBox, Message);
         return OK;
     }
     return FAIL;
@@ -115,7 +115,7 @@ exception create_msg_last(mailbox* mBox, void* pData)
     msg* Message = alloc_msg(pData);
     if(Message != NULL)
     {
-        add_msg_last(mbox, Message);
+        add_msg_last(mBox, Message);
         return OK;
     }
     return FAIL;

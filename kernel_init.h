@@ -4,30 +4,26 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
-
-exception init_kernel(void) 
-{ 
+exception init_kernel(void) { 
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
-    initTasks(readyList);
-    initTasks(waitList);
-    initTasks(timerList);
+    initTaskManager(&taskManager);
     // Create an idle task
     create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode
-    kernelMode = KERNEL_START_UP;
+    kernelMode = Kernel_start_up;
     // Return status
     return SUCCESS;
 }
 
 
-void run(void)
-{
+void run(void) {
     // Initialize interrupt timer
     // Set the kernel in running mode
+    kernelMode = Kernel_running;
     // Enable interrupts
-    // Load context
+    LoadContext();
 }
 
 #endif

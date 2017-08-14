@@ -2,20 +2,39 @@
 #define __TASK_MANAGER_H__
 
 #include "kernel.h"
+#include "tools.h"
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
-#define maxTasks (2048)
+#define MAX_TASKS (2048)
 
-typedef struct TaskManager {
-    int     next;
-    int     inUse[maxTasks];
-    TCB     tcb[maxTasks];
+enum Task_types {
+    Task_waiting,
+    Task_ready,
+    Task_running
+};
+
+
+STRUCT(Task) {
+    u32     type;
+    TCB     tcb;
+};
+
+#define IS_TASK(task, TYPE)     (task->type == Task_##TYPE)
+
+typedef ARRAY(Task, MAX_TASKS)  TaskList;
+
+STRUCT(TaskManager) {
+    TaskList    tasks;
+    int     used;
+    int     inUse[MAX_TASKS];
+    TCB     tcb[MAX_TASKS];
 
     int     readySize;
-    TCB*    readyList[maxTasks];
-} TaskManager;
+    TCB*    readyList[MAX_TASKS];
+};
 
 // init task manager
 static void initTaskManager(TaskManager* m) {
@@ -24,11 +43,11 @@ static void initTaskManager(TaskManager* m) {
 
 // add task!  returns index to new task!
 static int newTask(TaskManager* m) {
-    if (m->next == maxTasks) return NULL;
-    m->inUse[m->next] = 1;
-    int taskIndex = m->next;
+    if (m->used == MAX_TASKS) return NULL;
+    m->inUse[m->used] = 1;
+    int taskIndex = m->used;
     // find next empty slot for next task!
-    for (; !m->inUse[m->next] && m->next < maxTasks; m->next++);
+    for (; !m->inUse[m->used] && m->used < MAX_TASKS; m->used++);
     return taskIndex;
 }
 
@@ -36,7 +55,7 @@ static int newTask(TaskManager* m) {
 static void deleteTask(TaskManager* m, int taskIndex) {
     m->inUse[taskIndex] = 0;
     memset(&m->tcb[taskIndex], 0, sizeof m->tcb[taskIndex]);
-    m->next = taskIndex;
+    m->used = taskIndex;
 }
 
 static inline TCB* getTCB(TaskManager* m, int taskIndex) {
@@ -48,7 +67,7 @@ static inline int getDeadline(TaskManager* m, int taskIndex) {
     return m->tcb[taskIndex].DeadLine;
 }
 
-static int deadlineCmp(const void* a, const void* b) {
+static int taskCmp(const void* a, const void* b) {
     const TCB* aa = (const TCB*)a;
     const TCB* bb = (const TCB*)b;
     return aa->DeadLine < bb->DeadLine;
@@ -58,7 +77,7 @@ static int deadlineCmp(const void* a, const void* b) {
 // keeps the readyList sorted!
 static inline void insertToReadyList(TaskManager* m, int taskIndex) {
     m->readyList[m->readySize++] = &m->tcb[taskIndex];
-    qsort(m->readyList, m->readySize, sizeof *m->readyList, deadlineCmp);
+    qsort(m->readyList, m->readySize, sizeof *m->readyList, taskCmp);
 }
 
 

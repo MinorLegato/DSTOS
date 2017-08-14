@@ -6,72 +6,105 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\context-demo.c</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\context-demo.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\context-demo.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\task_manager.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\proj.pbd</file>
+      <file>$TOOLKIT_DIR$\lib\m4t_al.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl4t_aln.a</file>
+      <file>$TOOLKIT_DIR$\lib\shs_l.a</file>
+      <file>$TOOLKIT_DIR$\config\generic.icf</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt4t_al.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\timing.h</file>
       <file>$PROJ_DIR$\Debug\Obj\context.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\kernel_data.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\context.s79</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\context-demo.c</file>
+      <file>$PROJ_DIR$\kernel.h</file>
       <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
       <file>$PROJ_DIR$\Debug\Exe\proj.out</file>
       <file>$TOOLKIT_DIR$\inc\c\string.h</file>
       <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-      <file>$TOOLKIT_DIR$\lib\shs_l.a</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\context-demo.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\lib\rt4t_al.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\proj.pbd</file>
-      <file>$PROJ_DIR$\kernel.h</file>
-      <file>$PROJ_DIR$\main.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\context-demo.pbi</file>
-      <file>$TOOLKIT_DIR$\lib\dl4t_aln.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$TOOLKIT_DIR$\config\generic.icf</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
-      <file>$PROJ_DIR$\kernel_data.h</file>
-      <file>$PROJ_DIR$\context.s79</file>
       <file>$PROJ_DIR$\messages.h</file>
       <file>$PROJ_DIR$\tasks.h</file>
-      <file>$PROJ_DIR$\timing.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-      <file>$TOOLKIT_DIR$\lib\m4t_al.a</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
       <file>$PROJ_DIR$\kernel_init.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-      <file>$PROJ_DIR$\task_manager.h</file>
+      <file>$PROJ_DIR$\tools.h</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 7</file>
+          <file> 26</file>
         </tool>
       </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\context.s79</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 17</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 24 12 25 20 18 8 3 29 33 13 36 28 27 2 15 30 19 4 31 32 16 35</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19 12 25 31 20 27 15 16 28 13 24 36 32 35 33 4 29 18 8 3 2 30</file>
+        </tool>
+      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\context-demo.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 14</file>
+          <file> 0</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 20</file>
+          <file> 1</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 18 24 6 4 5 13 15 10 1 30</file>
+          <file> 24 12 25 20 18 8 3 29 33 13</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 18 24 6 4 5 15 10 1 30</file>
+          <file> 24 12 25 20 18 3 29 33 13</file>
         </tool>
       </inputs>
     </file>
@@ -80,41 +113,9 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 23 2 3 12 16 31 21</file>
+          <file> 11 17 34 10 14 7 9</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 3</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 22</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 18 24 6 4 5 13 15 10 1 30 34 11 25 35 9 8 32 27 28 29 33</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 15 8 24 28 4 25 33 5 6 18 34 27 29 9 10 13 11 30 1 35 32</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\context.s79</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 2</file>
-        </tool>
-      </outputs>
     </file>
   </configuration>
   <configuration>

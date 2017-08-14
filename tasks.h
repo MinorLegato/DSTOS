@@ -6,12 +6,9 @@
 
 #include <stdlib.h>
 
-
 // =============================== Task Kernel Functions ================================ //
 
-
-exception create_task(void (*body)(), uint d)
-{
+exception create_task(void (*body)(), uint d) {
     volatile int firstExec = 1;
     // Allocate memory for TCB
     int taskIndex = newTask(&taskManager);
@@ -44,8 +41,7 @@ exception create_task(void (*body)(), uint d)
     return 1;
 }
 
-void terminate(void)
-{
+void terminate(void) {
     // Remove running task from Readylist
     // Set next task to be the running task
     LoadContext();

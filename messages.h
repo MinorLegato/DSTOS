@@ -55,7 +55,7 @@ int delete_mailbox(mailbox* mBox) {
         if(mBox->nMessages == 0) {
             return FAIL;
         }
-
+        
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
@@ -148,7 +148,6 @@ exception add_msg_first(mailbox* mBox, msg* Message) {
     }
     return FAIL;
 }
-
 
 // Adds message last in mailbox
 exception add_msg_last(mailbox* mBox, msg* Message) {

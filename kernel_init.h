@@ -8,7 +8,9 @@ exception init_kernel(void) {
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
-    initTaskManager(&taskManager);
+    initTaskList(&timerList);
+    initTaskList(&waitList);
+    initTaskList(&readyList);
     // Create an idle task
     create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode
@@ -16,7 +18,6 @@ exception init_kernel(void) {
     // Return status
     return SUCCESS;
 }
-
 
 void run(void) {
     // Initialize interrupt timer

@@ -4,10 +4,8 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
-
 // Timing
-exception wait(uint nTicks)
-{
+exception wait(uint nTicks) {
     volatile int isFirst = TRUE;
     isr_off();
     SaveContext();
@@ -15,8 +13,7 @@ exception wait(uint nTicks)
         isFirst = FALSE;
         //addTask(timerList, getTask(Running));
         LoadContext();
-    }
-    else {
+    } else {
         if (Running->DeadLine <= tickCounter) {
             return DEADLINE_REACHED;
         }
@@ -24,31 +21,23 @@ exception wait(uint nTicks)
     return OK;
 }
 
-
 // Set the tick counter
-void set_ticks(uint no_of_ticks)
-{
+void set_ticks(uint no_of_ticks) {
     tickCounter = no_of_ticks;
 }
 
-
 // Return the tick counter
-uint ticks(void)
-{
+uint ticks(void) {
     return tickCounter;
 }
 
-
 // Return the deadline of the current task
-uint deadline(void)
-{
+uint deadline(void) {
     return Running->DeadLine;
 }
 
-
 // Set deadline for running task3
-void set_deadline(uint nNew)
-{
+void set_deadline(uint nNew) {
     volatile int isFirst = TRUE;
     isr_off();
     SaveContext();

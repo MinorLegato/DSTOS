@@ -9,10 +9,13 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize) {
     mailbox* mb = calloc(1, sizeof(mailbox));
     msg* head = calloc(1, sizeof(msg));
     msg* tail = calloc(1, sizeof(msg));
+    
     head->pNext = tail;
     head->pPrevious = NULL;
+    
     tail->pNext = NULL;
     tail->pPrevious = head;
+    
     mb->pHead = head;
     mb->pTail = tail;
     mb->nMaxMessages = nMessages;
@@ -22,20 +25,11 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize) {
     return mb;
 }
 
-// Checks if mailbox is empty
-int isEmpty(mailbox* mBox) {
-    if(mBox->pHead->pNext == mBox->pTail) {
-        return TRUE;
-    }
-    return FALSE;
-}
+static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail); }
+static int isFull(mailbox* mBox)  { return mBox->nMessages == mBox->nMaxMessages; }
 
-// Checks if mailbox is full
-int isFull(mailbox* mBox) {
-    if(mBox->nMessages == mBox->nMaxMessages) {
-        return TRUE;
-    }
-    return FALSE;
+exception remove_mailbox(mailbox* mBox) {
+    return isEmpty(mBox)? free(mBox), OK : NOT_EMPTY;
 }
 
 // Removes a mailbox if it's empty
@@ -55,7 +49,6 @@ int delete_mailbox(mailbox* mBox) {
         if(mBox->nMessages == 0) {
             return FAIL;
         }
-        
         msg* temp = mBox->pHead->pNext;
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
@@ -151,10 +144,8 @@ exception add_msg_first(mailbox* mBox, msg* Message) {
 
 // Adds message last in mailbox
 exception add_msg_last(mailbox* mBox, msg* Message) {
-    if(!isFull(mBox))
-    {
-        if(Message != NULL)
-        {
+    if(!isFull(mBox)) {
+        if(Message != NULL) {
             Message->pNext = mBox->pTail;
             mBox->pTail->pPrevious->pNext = Message;
             mBox->nMessages++;

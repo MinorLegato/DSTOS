@@ -21,6 +21,7 @@ exception init_kernel(void) {
 
 void run(void) {
     // Initialize interrupt timer
+    isr_on();
     // Set the kernel in running mode
     kernelMode = Kernel_running;
     // Enable interrupts

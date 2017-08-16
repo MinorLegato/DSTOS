@@ -40,13 +40,43 @@ static void insertTask(TaskNode* newNode, TaskNode* prev, TaskNode* next) {
     prev->pNext = newNode;
 }
 
-static void addTask(TaskList* taskList, TaskNode* newNode) {
+static void addTask_First(TaskList* taskList, TaskNode* newNode) {
     if (!newNode) { return; }
     if (taskList->pHead == NULL) {
         taskList->pHead = newNode;
         taskList->pTail = newNode;
     } else {
         insertTask(newNode, taskList->pHead, taskList->pHead->pNext);
+    }
+}
+
+static void addTask_Deadline(TaskList* taskList, TaskNode* newNode) {
+    if (!newNode) { return; }
+    if (taskList->pHead == NULL) {
+        taskList->pHead = newNode;
+        taskList->pTail = newNode;
+    } else {
+        TaskNode* temp = taskList->pHead;
+        while (temp->pNext != taskList->pTail 
+            && newNode->pTask->DeadLine > temp->pNext->pTask->DeadLine){
+            temp->pNext = temp->pNext->pNext;
+        }
+        insertTask(newNode, temp, temp->pNext);
+    }
+}
+
+static void addTask_nTCnt(TaskList* taskList, TaskNode* newNode) {
+    if (!newNode) { return; }
+    if (taskList->pHead == NULL) {
+        taskList->pHead = newNode;
+        taskList->pTail = newNode;
+    } else {
+        TaskNode* temp = taskList->pHead;
+        while (temp->pNext != taskList->pTail 
+            && newNode->nTCnt > temp->pNext->nTCnt){
+            temp->pNext = temp->pNext->pNext;
+        }
+        insertTask(newNode, temp, temp->pNext);
     }
 }
 

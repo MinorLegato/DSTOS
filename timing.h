@@ -11,7 +11,7 @@ exception wait(uint nTicks) {
     SaveContext();
     if (isFirst) {
         isFirst = FALSE;
-        //addTask(timerList, getTask(Running));
+        addTask(timerList, getTask(Running));
         LoadContext();
     } else {
         if (Running->DeadLine <= tickCounter) {

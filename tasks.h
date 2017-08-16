@@ -34,7 +34,9 @@ exception create_task(void (*body)(), uint d) {
 
 void terminate(void) {
     // Remove running task from Readylist
+    delete(removeTask(readyList->pHead->pNext));
     // Set next task to be the running task
+    Running = readyList->pHead->pNext->pTask;
     LoadContext();
 }
 

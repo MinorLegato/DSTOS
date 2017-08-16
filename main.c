@@ -23,9 +23,10 @@ int main(void) {
     TaskNode* node = NULL;
     
     for (int i = 0; i < 10; i++) {
-        addTask(readyList, node);
+        if (node = allocTask(idleTask, i + 1)) {
+            addTask(&readyList, node);
+        }
     }
-    
     
     /*
     init_kernel();

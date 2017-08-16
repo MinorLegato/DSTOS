@@ -16,7 +16,10 @@ static TaskNode* allocTask(void (*body)(), u32 d) {
     TaskNode* task = NULL;
     TCB*      tcb  = NULL;
     if (task = calloc(1, sizeof *task), !task) { return NULL; }
-    if (tcb  = calloc(1, sizeof *task), !tcb)  { free(task), return NULL; }
+    if (tcb  = calloc(1, sizeof *task), !tcb)  { free(task); return NULL; }
+    tcb->DeadLine = d;
+    tcb->PC = body;
+    tcb->SP = tcb->StackSeg;
     task->pTask = tcb;
     return task;
 }

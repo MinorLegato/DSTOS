@@ -6,9 +6,9 @@
 
 // Creates a new mailbox
 mailbox* create_mailbox(uint nMessages, uint nDataSize) {
-    mailbox* mb = calloc(1, sizeof(mailbox));
-    msg* head = calloc(1, sizeof(msg));
-    msg* tail = calloc(1, sizeof(msg));
+    mailbox* mb = alloc(sizeof(mailbox));
+    msg* head = alloc(sizeof(msg));
+    msg* tail = alloc(sizeof(msg));
     
     head->pNext = tail;
     head->pPrevious = NULL;
@@ -29,15 +29,15 @@ static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail); }
 static int isFull(mailbox* mBox)  { return mBox->nMessages == mBox->nMaxMessages; }
 
 exception remove_mailbox(mailbox* mBox) {
-    return isEmpty(mBox)? free(mBox), OK : NOT_EMPTY;
+    return isEmpty(mBox)? delete(mBox), OK : NOT_EMPTY;
 }
 
 // Removes a mailbox if it's empty
 int no_messages(mailbox* mBox) {
     if(isEmpty(mBox)) {
-        free(mBox->pHead);
-        free(mBox->pTail);
-        free(mBox);
+        delete(mBox->pHead);
+        delete(mBox->pTail);
+        delete(mBox);
         return OK;
     }
     return NOT_EMPTY;
@@ -53,7 +53,7 @@ int delete_mailbox(mailbox* mBox) {
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
-        free(temp);
+        delete(temp);
     }
     return OK;
 }
@@ -65,7 +65,7 @@ int clear_mailbox(mailbox* mBox) {
         mBox->pHead->pNext = mBox->pHead->pNext->pNext;
         mBox->pHead->pNext->pPrevious = mBox->pHead;
         mBox->nMessages--;
-        free(temp);
+        delete(temp);
     }
     return OK;
 }
@@ -77,7 +77,7 @@ int delete_msg_last(mailbox* mBox) {
         temp->pPrevious->pNext = temp->pNext;
         temp->pNext->pPrevious = temp->pPrevious;
         mBox->nMessages--;
-        free(temp);
+        delete(temp);
         return OK;
     }
     return FAIL;
@@ -92,7 +92,7 @@ int delete_msg(mailbox* mBox, msg* Message) {
                 temp->pPrevious->pNext = temp->pNext;
                 temp->pNext->pPrevious = temp->pPrevious;
                 mBox->nMessages--;
-                free(temp);
+                delete(temp);
                 return OK;
             }
             temp->pNext = temp->pNext->pNext;
@@ -111,7 +111,7 @@ int delete_data(mailbox* mBox, void* pData) {
                 temp->pPrevious->pNext = temp->pNext;
                 temp->pNext->pPrevious = temp->pPrevious;
                 mBox->nMessages--;
-                free(temp);
+                delete(temp);
                 return OK;
             }
             temp->pNext = temp->pNext->pNext;
@@ -122,7 +122,7 @@ int delete_data(mailbox* mBox, void* pData) {
 
 //Allocates a msg
 msg* alloc_msg(void* pData) {
-    msg* Message = calloc(1, sizeof(msg));
+    msg* Message = alloc(sizeof(msg));
     if(Message != NULL) {
         Message->pData = pData;
     }
@@ -182,11 +182,11 @@ exception send_wait(mailbox* mBox, void* pData) {
     if(isFirst) {
         isFirst = FALSE;
         // IF receiving task is waiting THEN
-        if(0) {
-            // Copy senderís data to the data area
-            // of the receivers Message
-            // Remove receiving taskís Message
-            // struct from the mailbox
+        if(mBox->pHead->Status == RECEIVER) {
+            // Copy senderís data to the data area of the receivers Message
+            memcpy(mBox->pHead->pData, pData, sizeof (mBox->nDataSize));
+            // Remove receiving task's Message struct from the mailbox
+            
             // Move receiving task to Readylist
         } else {
             create_msg_first(mBox, pData);
@@ -213,7 +213,7 @@ exception receive_wait(mailbox* mBox, void* pData) {
     if(isFirst) { 
         isFirst = FALSE;
         // IF send Message is waiting THEN
-        if(0) {
+        if(mBox->pHead->Status == SENDER) {
             // Copy senderís data to receiving taskís
             // data area
             // Remove sending taskís Message

@@ -20,12 +20,19 @@ void TimerInt(void) {
 }
 
 int main(void) {
+    TaskList list; initTaskList(&list);
     TaskNode* node = NULL;
     
     for (int i = 0; i < 10; i++) {
         if (node = allocTask(idleTask, i + 1)) {
-            addTask(&readyList, node);
+            addTask(&list, node);
         }
+    }
+    
+    node = list.pHead;
+    while (node != list.pTail) {
+        printf("%d\n", node->pTask->DeadLine);
+        node = node->pNext;
     }
     
     /*

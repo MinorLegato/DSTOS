@@ -214,10 +214,8 @@ exception receive_wait(mailbox* mBox, void* pData) {
         isFirst = FALSE;
         // IF send Message is waiting THEN
         if(mBox->pHead->Status == SENDER) {
-            // Copy senderís data to receiving taskís
-            // data area
-            // Remove sending taskís Message
-            // struct from the Mailbox
+            // Copy senderís data to receiving task's data area
+            // Remove sending task's Message struct from the Mailbox
             // IF Message was of wait type THEN
             if(0) {
                 // Move sending task to Ready list

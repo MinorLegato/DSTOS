@@ -95,7 +95,6 @@
       struct l_obj   *pNext;
   } listobj;
   
-  
   // Generic list
   typedef struct {
       listobj        *pHead;

@@ -15,9 +15,7 @@
 #include <string.h>
 #include <stdint.h>
 
-void TimerInt(void) {
-    tickCounter++;
-}
+void TimerInt(void) { tickCounter++; }
 
 int main(void) {
     TaskList list; initTaskList(&list);

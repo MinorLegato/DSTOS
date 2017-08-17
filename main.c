@@ -23,7 +23,7 @@ int main(void) {
     
     for (int i = 0; i < 10; i++) {
         if (node = allocTask(idleTask, i + 1)) {
-            addTask(&list, node);
+            addTask_First(&list, node);
         }
     }
     

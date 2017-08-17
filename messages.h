@@ -186,20 +186,23 @@ exception send_wait(mailbox* mBox, void* pData) {
             // Copy senderís data to the data area of the receivers Message
             memcpy(mBox->pHead->pData, pData, sizeof (mBox->nDataSize));
             // Remove receiving task's Message struct from the mailbox;
+            TaskNode* task = mBox->pHead->pBlock;
             delete_msg(mBox, mBox->pHead);
             // Move receiving task to Readylist
+            addTask_Deadline(&readyList, removeTask(task));
         } else {
             create_msg_first(mBox, pData);
-            // Move sending task from Readylist to
-            // Waitinglist
+            // Move sending task from Readylist to Waitinglist
+            addTask_Deadline(&waitList, removeTask(mBox->pHead->pBlock));
         }
         LoadContext();
     } else {
         // IF deadline is reached THEN
-        if(0) {
-            isr_off();
+        if(mBox->pHead->pBlock->pTask.Deadline) {
+            //isr_off();
             // Remove send Message
-            isr_on();
+            delete_msg(mBox, mBox->pHead);
+            //isr_on();
             return DEADLINE_REACHED;
         }
     }
@@ -214,7 +217,8 @@ exception receive_wait(mailbox* mBox, void* pData) {
         isFirst = FALSE;
         // IF send Message is waiting THEN
         if(mBox->pHead->Status == SENDER) {
-            // Copy senderís data to receiving task's data area
+            // Copy sender's data to receiving task's data area
+            memcpy(pData, mBox);
             // Remove sending task's Message struct from the Mailbox
             // IF Message was of wait type THEN
             if(0) {

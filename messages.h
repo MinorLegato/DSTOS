@@ -25,7 +25,7 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize) {
     return mb;
 }
 
-static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail); }
+static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail; }
 static int isFull(mailbox* mBox)  { return mBox->nMessages == mBox->nMaxMessages; }
 
 exception remove_mailbox(mailbox* mBox) {
@@ -185,8 +185,8 @@ exception send_wait(mailbox* mBox, void* pData) {
         if(mBox->pHead->Status == RECEIVER) {
             // Copy senderís data to the data area of the receivers Message
             memcpy(mBox->pHead->pData, pData, sizeof (mBox->nDataSize));
-            // Remove receiving task's Message struct from the mailbox
-            
+            // Remove receiving task's Message struct from the mailbox;
+            delete_msg(mBox, mBox->pHead);
             // Move receiving task to Readylist
         } else {
             create_msg_first(mBox, pData);

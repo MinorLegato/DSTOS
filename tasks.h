@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-// =============================== Task Kernel Functions ================================ //
+// ======================= Task Kernel Functions ======================== //
 
 exception create_task(void (*body)(), uint d) {
     volatile int firstExec = 1;
@@ -15,7 +15,7 @@ exception create_task(void (*body)(), uint d) {
     
     // IF start-up mode THEN
     if (kernelMode == Kernel_start_up) {
-        addTask(&readyList, task);
+        addTask_First(&readyList, task);
         return 1;
     } else  {
         // Disable interrupts
@@ -23,7 +23,7 @@ exception create_task(void (*body)(), uint d) {
         
         if (firstExec) { // IF first execution THEN
             firstExec = 0;
-            addTask(&readyList, task);
+            addTask_First(&readyList, task);
             LoadContext();
         }
     }
@@ -34,9 +34,9 @@ exception create_task(void (*body)(), uint d) {
 
 void terminate(void) {
     // Remove running task from Readylist
-    delete(removeTask(readyList->pHead->pNext));
+    delete(removeTask(readyList.pHead->pNext));
     // Set next task to be the running task
-    Running = readyList->pHead->pNext->pTask;
+    Running = readyList.pHead->pNext->pTask;
     LoadContext();
 }
 

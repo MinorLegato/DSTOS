@@ -25,7 +25,7 @@ mailbox* create_mailbox(uint nMessages, uint nDataSize) {
     return mb;
 }
 
-static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail); }
+static int isEmpty(mailbox* mBox) { return mBox->pHead->pNext == mBox->pTail; }
 static int isFull(mailbox* mBox)  { return mBox->nMessages == mBox->nMaxMessages; }
 
 exception remove_mailbox(mailbox* mBox) {

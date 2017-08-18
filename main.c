@@ -5,6 +5,9 @@
 
 #include "kernel_data.h"
 
+void isr_off() {}
+void isr_on()  {}
+
 #include "messages.h"
 #include "tasks.h"
 #include "timing.h"
@@ -18,20 +21,13 @@
 void TimerInt(void) { tickCounter++; }
 
 int main(void) {
-    TaskList list; initTaskList(&list);
-    TaskNode* node = NULL;
+    char strBuffer[] = "Hello, world!";
     
-    for (int i = 0; i < 10; i++) {
-        if (node = allocTask(idleTask, i + 1)) {
-            addTask_First(&list, node);
-        }
-    }
+    mailbox* mBox = create_mailbox(10, 20);
     
-    node = list.pHead;
-    while (node != list.pTail) {
-        printf("%d\n", node->pTask->DeadLine);
-        node = node->pNext;
-    }
+    create_msg_first(mBox, strBuffer);
+    
+    printf(getFirstMsg(mBox)->pData);
     
     /*
     init_kernel();

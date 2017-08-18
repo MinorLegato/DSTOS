@@ -175,6 +175,7 @@ exception create_msg_last(mailbox* mBox, void* pData) {
     return FAIL;
 }
 
+// NOTE: TEST!!
 exception send_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -209,6 +210,7 @@ exception send_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
+// NOTE: TEST!!
 exception receive_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -218,33 +220,40 @@ exception receive_wait(mailbox* mBox, void* pData) {
         // IF send Message is waiting THEN
         if(mBox->pHead->Status == SENDER) {
             // Copy sender's data to receiving task's data area
-            memcpy(pData, mBox);
+            memcpy(pData, mBox->pHead, mBox->pDataSize);
             // Remove sending task's Message struct from the Mailbox
+            TaskNode* task = mBox->pHead->pBlock;
+            delete_msg(mBox, mBox->pHead);
             // IF Message was of wait type THEN
-            if(0) {
+            if (m->Status == 0) {
                 // Move sending task to Ready list
             } else {
                 // Free senders data area
+                delete(mBox->pHead->pData);
             }
         } else {
             // Allocate a Message structure
+            msg* m = alloc_msg(pData);
+            m->pTask = mBox->pHead->pTask;
             // Add Message to the Mailbox
-            // Move receiving task from Readylist to
-            // Waitinglist
+            add_msg_first(mBox, m);
+            // Move receiving task from Readylist to Waitinglist
+            addTask_Deadline(&waitList, removeTask(readyList, m->pTask));
         }
         LoadContext();
     } else {
         // IF deadline is reached THEN
-        if(0) {
-            isr_off();
-            // Remove receive Message
-            isr_on();
+        if (mBox->pHead->pTask.DeadLine == 0) {
+            //isr_off();
+            delete_msg(mBox, mBox->pHead);
+            //isr_on();
             return DEADLINE_REACHED;
         } 
     }
     return OK;
 }
 
+// NOTE: TEST!!
 exception send_no_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -269,6 +278,7 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
+// NOTE: TEST!!
 int receive_no_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();

@@ -139,26 +139,23 @@ msg* alloc_msg(void* pData) {
 
 // Adds message first in mailbox
 exception add_msg_first(mailbox* mBox, msg* Message) {
-    if(!isFull(mBox)) {
-        if(Message != NULL) {
-            Message->pNext = mBox->pHead->pNext;
-            mBox->pHead->pNext = Message;
-            mBox->nMessages++;
-            return OK;
-        }
+    if(!isFull(mBox) && Message != NULL) {
+        Message->pNext = mBox->pHead->pNext;
+        mBox->pHead->pNext = Message;
+        mBox->nMessages++;
+        return OK;
     }
     return FAIL;
 }
 
 // Adds message last in mailbox
 exception add_msg_last(mailbox* mBox, msg* Message) {
-    if(!isFull(mBox)) {
-        if(Message != NULL) {
-            Message->pNext = mBox->pTail;
-            mBox->pTail->pPrevious->pNext = Message;
-            mBox->nMessages++;
-            return OK;
-        }
+    if(!isFull(mBox) && Message != NULL) {
+        Message->pNext = mBox->pTail;
+        Message->pPrevious = mBox->pTail->pPrevious;
+        mBox->pTail->pPrevious->pNext = Message;
+        mBox->nMessages++;
+        return OK;
     }
     return FAIL;
 }

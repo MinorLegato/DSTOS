@@ -5,8 +5,7 @@
 #include "tools.h"
 #include "list_ops.h"
 
-enum Kernel_modes {
-    Kernel_not_running,
+enum Kernel_states {
     Kernel_start_up,
     Kernel_running
 };
@@ -19,7 +18,7 @@ TCB* Running = NULL;
 
 i32 tickCounter = 0;
 
-i32 kernelMode  = Kernel_not_running;
+i32 kernelMode  = Kernel_start_up;
 
 void idleTask() { while (1); }
 

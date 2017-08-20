@@ -21,14 +21,26 @@ void isr_on()  {}
 void TimerInt(void) { tickCounter++; }
 
 int main(void) {
-    char strBuffer[] = "Hello, world!";
-    
+    //char strBuffer[] = "Hello, world!";
+
     mailbox* mBox = create_mailbox(10, 20);
     
-    create_msg_first(mBox, strBuffer);
-    
-    printf(getFirstMsg(mBox)->pData);
-    
+    create_msg_first(mBox, "1!\n");
+    create_msg_first(mBox, "2!\n");
+    create_msg_first(mBox, "3!\n");
+    create_msg_last(mBox, "4!\n");
+    create_msg_first(mBox, "5!\n");
+    create_msg_first(mBox, "4!\n");
+
+    msg* iter = getFirstMsg(mBox);
+
+    while (iter != mBox->pTail) {
+        printf(iter->pData);
+        iter = iter->pNext;
+    }
+
+    printf("DONE");
+
     /*
     init_kernel();
     run();
@@ -39,3 +51,4 @@ int main(void) {
         LoadContext();
     }*/
 }
+

@@ -21,14 +21,14 @@ int main(void) {
     TaskList list; initTaskList(&list);
     TaskNode* node = NULL;
     
-    for (int i = 0; i < 10; i++) {
-        if (node = allocTask(idleTask, i + 1)) {
-            addTask_First(&list, node);
+    for (int i = 1; i < 15; i++) {
+        if (node = allocTask(idleTask, i*10)) {
+            addTask_Deadline(&list, node);
         }
     }
     
-    node = list.pHead;
-    while (node != list.pTail) {
+    node = list.pHead->pNext;
+    while (node != list.pTail){
         printf("%d\n", node->pTask->DeadLine);
         node = node->pNext;
     }

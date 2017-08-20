@@ -15,7 +15,7 @@ exception create_task(void (*body)(), uint d) {
     
     // IF start-up mode THEN
     if (kernelMode == Kernel_start_up) {
-        addTask_First(&readyList, task);
+        addTask_Deadline(&readyList, task);
         return 1;
     } else  {
         // Disable interrupts
@@ -23,7 +23,7 @@ exception create_task(void (*body)(), uint d) {
         
         if (firstExec) { // IF first execution THEN
             firstExec = 0;
-            addTask_First(&readyList, task);
+            addTask_Deadline(&readyList, task);
             LoadContext();
         }
     }

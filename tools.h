@@ -44,6 +44,8 @@ typedef uint64_t    u64;
 // move element in array (D = dest, S = source)
 #define MOVE(A, D, S)   { b32 b = D < S; i32 s = SIZE(A); (A)->data[s] = (A)->data[(S)]; OREM(A, S); INSERT(A, (A)->data[s], (D)); }
 
+void isr_off() {}
+void isr_on()  {}
 
 static void* alloc(size_t size) {
     isr_off();

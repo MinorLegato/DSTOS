@@ -4,6 +4,14 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
+static int  getDataSize      (const mailbox* mBox) { return mBox->nDataSize; }
+static int  getNrOfMessages  (const mailbox* mBox) { return mBox->nMessages; }
+static msg* getFirstMsg      (const mailbox* mBox) { return mBox->pHead->pNext; }
+
+static TaskNode*  getTaskNode (const msg* m) { return m->pBlock; }
+static msg*       msgRest     (const msg* m) { return m->pNext; }
+static int        msgDeadLine (const msg* m) { return m->pBlock->pTask->DeadLine; }
+
 // Creates a new mailbox
 mailbox* create_mailbox(uint nMessages, uint nDataSize) {
     mailbox* mb = alloc(sizeof(mailbox));
@@ -131,26 +139,23 @@ msg* alloc_msg(void* pData) {
 
 // Adds message first in mailbox
 exception add_msg_first(mailbox* mBox, msg* Message) {
-    if(!isFull(mBox)) {
-        if(Message != NULL) {
-            Message->pNext = mBox->pHead->pNext;
-            mBox->pHead->pNext = Message;
-            mBox->nMessages++;
-            return OK;
-        }
+    if(!isFull(mBox) && Message != NULL) {
+        Message->pNext = mBox->pHead->pNext;
+        mBox->pHead->pNext = Message;
+        mBox->nMessages++;
+        return OK;
     }
     return FAIL;
 }
 
 // Adds message last in mailbox
 exception add_msg_last(mailbox* mBox, msg* Message) {
-    if(!isFull(mBox)) {
-        if(Message != NULL) {
-            Message->pNext = mBox->pTail;
-            mBox->pTail->pPrevious->pNext = Message;
-            mBox->nMessages++;
-            return OK;
-        }
+    if(!isFull(mBox) && Message != NULL) {
+        Message->pNext = mBox->pTail;
+        Message->pPrevious = mBox->pTail->pPrevious;
+        mBox->pTail->pPrevious->pNext = Message;
+        mBox->nMessages++;
+        return OK;
     }
     return FAIL;
 }
@@ -175,6 +180,7 @@ exception create_msg_last(mailbox* mBox, void* pData) {
     return FAIL;
 }
 
+// NOTE: TEST!!
 exception send_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -186,26 +192,30 @@ exception send_wait(mailbox* mBox, void* pData) {
             // Copy senderís data to the data area of the receivers Message
             memcpy(mBox->pHead->pData, pData, sizeof (mBox->nDataSize));
             // Remove receiving task's Message struct from the mailbox;
+            TaskNode* task = mBox->pHead->pBlock;
             delete_msg(mBox, mBox->pHead);
             // Move receiving task to Readylist
+            addTask_Deadline(&readyList, removeTask(task));
         } else {
             create_msg_first(mBox, pData);
-            // Move sending task from Readylist to
-            // Waitinglist
+            // Move sending task from Readylist to Waitinglist
+            addTask_Deadline(&waitList, removeTask(mBox->pHead->pBlock));
         }
         LoadContext();
     } else {
         // IF deadline is reached THEN
-        if(0) {
-            isr_off();
+        if (msgDeadLine(mBox->pHead)) {
+            //isr_off();
             // Remove send Message
-            isr_on();
+            delete_msg(mBox, mBox->pHead);
+            //isr_on();
             return DEADLINE_REACHED;
         }
     }
     return OK;
 }
 
+// NOTE: TEST!!
 exception receive_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -214,33 +224,42 @@ exception receive_wait(mailbox* mBox, void* pData) {
         isFirst = FALSE;
         // IF send Message is waiting THEN
         if(mBox->pHead->Status == SENDER) {
-            // Copy senderís data to receiving task's data area
+            // Copy sender's data to receiving task's data area
+            memcpy(pData, mBox->pHead, mBox->nDataSize);
             // Remove sending task's Message struct from the Mailbox
+            TaskNode* task = mBox->pHead->pBlock;
+            uint status = mBox->pHead->Status;
+            delete_msg(mBox, mBox->pHead);
             // IF Message was of wait type THEN
-            if(0) {
+            if (status == 0) {
                 // Move sending task to Ready list
             } else {
                 // Free senders data area
+                delete(mBox->pHead->pData);
             }
         } else {
             // Allocate a Message structure
+            msg* m = alloc_msg(pData);
+            //m->pTask = mBox->pHead->pBlock->pTask;
             // Add Message to the Mailbox
-            // Move receiving task from Readylist to
-            // Waitinglist
+            add_msg_first(mBox, m);
+            // Move receiving task from Readylist to Waitinglist
+            // addTask_Deadline(&waitList, removeTask(readyList, m->pTask));
         }
         LoadContext();
     } else {
         // IF deadline is reached THEN
-        if(0) {
-            isr_off();
-            // Remove receive Message
-            isr_on();
+        if (mBox->pHead->pBlock->pTask->DeadLine == 0) {
+            //isr_off();
+            delete_msg(mBox, mBox->pHead);
+            //isr_on();
             return DEADLINE_REACHED;
         } 
     }
     return OK;
 }
 
+// NOTE: TEST!!
 exception send_no_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();
@@ -248,11 +267,9 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     if (isFirst) {
         isFirst = FALSE;
         // IF receiving task is waiting THEN
-        if (0)  {
-            // Copy data to receiving tasksí
-            // data area.
-            // Remove receiving taskís Message
-            // struct from the Mailbox
+        if (mBox->pHead->Status == 0)  {
+            // Copy data to receiving task's data area.
+            // Remove receiving task's Message struct from the Mailbox
             // Move receiving task to Readylist
             LoadContext();
         } else {
@@ -265,6 +282,7 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
+// NOTE: TEST!!
 int receive_no_wait(mailbox* mBox, void* pData) {
     volatile int isFirst = TRUE;
     isr_off();

@@ -58,7 +58,7 @@ static void addTask_Deadline(TaskList* taskList, TaskNode* newNode) {
     } else {
         TaskNode* temp = taskList->pHead;
         while (temp->pNext != taskList->pTail 
-            && newNode->pTask->DeadLine > temp->pNext->pTask->DeadLine){
+               && newNode->pTask->DeadLine > temp->pNext->pTask->DeadLine){
             temp->pNext = temp->pNext->pNext;
         }
         insertTask(newNode, temp, temp->pNext);
@@ -73,7 +73,7 @@ static void addTask_nTCnt(TaskList* taskList, TaskNode* newNode) {
     } else {
         TaskNode* temp = taskList->pHead;
         while (temp->pNext != taskList->pTail 
-            && newNode->nTCnt > temp->pNext->nTCnt){
+               && newNode->nTCnt > temp->pNext->nTCnt){
             temp->pNext = temp->pNext->pNext;
         }
         insertTask(newNode, temp, temp->pNext);
@@ -95,4 +95,3 @@ static TaskNode* findLowestDeadline(const TaskList* head) {
 }
 
 #endif
-

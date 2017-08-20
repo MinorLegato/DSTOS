@@ -19,7 +19,15 @@ typedef uint16_t    u16;
 typedef uint32_t    u32;
 typedef uint64_t    u64;
 
+#ifndef DEBUG
+#define DEBUG (0)
+#endif
+
+#define DEBUG_MSG(STR)  if (DEBUG) { printf(STR); }
+
 #define STRUCT(name) typedef struct name name; struct name
+
+// ===================================================== GENERIC ARRAY ==================================================== //
 
 #define ARRAY(TYPE, SIZE) struct { i32 size; TYPE data[SIZE]; }
 
@@ -43,6 +51,34 @@ typedef uint64_t    u64;
 
 // move element in array (D = dest, S = source)
 #define MOVE(A, D, S)   { b32 b = D < S; i32 s = SIZE(A); (A)->data[s] = (A)->data[(S)]; OREM(A, S); INSERT(A, (A)->data[s], (D)); }
+
+
+// ===================================================== GENERIC LIST ==================================================== //
+
+#define firstNode(L)    ((L)->pHead->pNext)
+#define lastNode(L)     ((L)->pHead->pPrevious)
+#define dummyNode(L)    ((L)->pHead)
+
+#define initList(L)     (nextNode(dummyNode(L)) = dummyNode(L), prevNode(dummyNode(L)) = dummyNode(L), 0)
+
+#define nextNode(N)             ((N)->pNext)
+#define prevNode(N)             ((N)->pPrevious)
+
+#define insertNode(E, P, N)     ((E)->pNext = (N), (E)->pPrevious = (P), (P)->pNext = (E), (N)->pPrevious = (E), 0)
+
+#define removeNode(N)           ((N)->pPrevious->pNext = (N)->pNext, (N)->pNext->pPrevious = (N)->pPrevious, (N))
+
+#define addFirst(L, N)          insertNode((N), (L)->pHead, (L)->pHead->pNext)
+#define addLast(L, N)           insertNode((N), (L)->pHead->pPrevious,  (L)->pHead)
+
+// TYPE : type of node
+// LIST : list variable
+#define forEach(TYPE, LIST)        for (TYPE* iter = firstNode(LIST); iter != dummyNode(LIST); iter = nextNode(iter))
+
+// reverse iteration!
+#define forReve(TYPE, LIST)        for (TYPE* iter = lastNode(LIST); iter != dummyNode(LIST); iter = prevNode(iter))
+
+// ======================================================================================================================= //
 
 
 static void* alloc(size_t size) {

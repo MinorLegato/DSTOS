@@ -5,6 +5,9 @@
 
 #include "kernel_data.h"
 
+void isr_off() {}
+void isr_on()  {}
+
 #include "messages.h"
 #include "tasks.h"
 #include "timing.h"
@@ -17,22 +20,70 @@
 
 void TimerInt(void) { tickCounter++; }
 
+STRUCT(Node) {
+    int     data;
+    Node*   pNext;
+    Node*   pPrevious;
+};
+
+STRUCT(List) {
+    Node* pHead;
+    Node* pTail;
+};
+
+static void insert(Node* new, Node* prev, Node* next) {
+    next->pPrevious  = new;
+    new->pNext       = next;
+    new->pPrevious   = prev;
+    prev->pNext      = new;
+}
+
+//#define addFirst(L, N)          insert((N), dummyNode(L), firstNode(L))
+//#define addLast(L, N)           insert((N), lastNode(L),  dummyNode(L))
+
 int main(void) {
-    TaskList list; initTaskList(&list);
-    TaskNode* node = NULL;
-    
-    for (int i = 0; i < 10; i++) {
-        if (node = allocTask(idleTask, i + 1)) {
-            addTask_First(&list, node);
-        }
+
+    List list; 
+    list.pHead = alloc(sizeof (Node));
+    list.pTail = list.pHead;
+
+    initList(&list);
+
+    for (int i = 0; i < 1000; i++) {
+        Node* node = alloc(sizeof (Node));
+        node->data = i + 1;
+        addLast(&list, node);
     }
+
+    forEach(Node, &list) { printf("%d!\n", iter->data); }
+
+    printf("\n");
+
+    forReve(Node, &list) { printf("%d!\n", iter->data); }
+
+
+    //char strBuffer[] = "Hello, world!";
+
+    /*
+    mailbox* mBox = create_mailbox(10, 20);
     
-    node = list.pHead;
-    while (node != list.pTail) {
-        printf("%d\n", node->pTask->DeadLine);
-        node = node->pNext;
+    create_msg_first(mBox, "1!\n");
+    create_msg_first(mBox, "2!\n");
+    create_msg_first(mBox, "3!\n");
+    create_msg_last(mBox, "4!\n");
+    create_msg_first(mBox, "5!\n");
+    create_msg_first(mBox, "4!\n");
+
+    msg* iter = getFirstMsg(mBox);
+
+    while (iter != mBox->pTail) {
+        printf(iter->pData);
+        iter = iter->pNext;
     }
-    
+    */
+
+    printf("DONE");
+
     /*
     init_kernel();
     run();
@@ -43,3 +94,4 @@ int main(void) {
         LoadContext();
     }*/
 }
+

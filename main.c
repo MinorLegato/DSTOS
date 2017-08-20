@@ -43,18 +43,17 @@ static void insert(Node* new, Node* prev, Node* next) {
 
 int main(void) {
 
-    List list = { alloc(sizeof (Node)), list.pHead };
+    List list; 
+    list.pHead = alloc(sizeof (Node));
+    list.pTail = list.pHead;
 
     initList(&list);
 
-    Node n1 = { 1, NULL, NULL }, n2 =  { 2, NULL, NULL }, n3 = { 3, NULL, NULL };
-
-    addFirst(&list, &n1);
-    addFirst(&list, &n2);
-    addFirst(&list, &n3);
-
-    //addFirst(&list, &n2);
-    //addTask(&list, &n3);
+    for (int i = 0; i < 1000; i++) {
+        Node* node = alloc(sizeof (Node));
+        node->data = i + 1;
+        addLast(&list, node);
+    }
 
     forEach(Node, &list) { printf("%d!\n", iter->data); }
 

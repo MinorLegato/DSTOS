@@ -64,14 +64,12 @@ typedef uint64_t    u64;
 #define nextNode(N)             ((N)->pNext)
 #define prevNode(N)             ((N)->pPrevious)
 
-#define insertNode(E, P, N)     (prevNode(N) = (E), nextNode(E) = (N), prevNode(E) = (P), nextNode(P) = (E), 0)
+#define insertNode(E, P, N)     ((E)->pNext = (N), (E)->pPrevious = (P), (P)->pNext = (E), (N)->pPrevious = (E), 0)
 
 #define removeNode(N)           ((N)->pPrevious->pNext = (N)->pNext, (N)->pNext->pPrevious = (N)->pPrevious, (N))
 
-#define addFirst(L, N)          insertNode((N), dummyNode(L), firstNode(L))
-
-// NEJ
-//#define addLast(L, N)           insertNode((N), lastNode(L),  dummyNode(L))
+#define addFirst(L, N)          insertNode((N), (L)->pHead, (L)->pHead->pNext)
+#define addLast(L, N)           insertNode((N), (L)->pHead->pPrevious,  (L)->pHead)
 
 // TYPE : type of node
 // LIST : list variable

@@ -89,9 +89,11 @@ static void* alloc(size_t size) {
 }
 
 static void delete(void* data) {
-    isr_off();
-    free(data);
-    isr_on();
+    if (data) {
+        isr_off();
+        free(data);
+        isr_on();
+    }
 }
 
 #endif

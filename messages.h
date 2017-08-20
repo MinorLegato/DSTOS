@@ -15,6 +15,21 @@ static msg* createMsg(void* data) {
     return m;
 }
 
+static void deleteMsg(msg* m) {
+    delete(m->pData);
+    delete(m);
+}
+
+static b32 setMessage(msg* m, const void* data, i32 size) {
+    if (!data || size < 1) { return 0; }
+    delete(m->pData);
+
+    if (m->pData = alloc(size), !m->pData) { return 0; }
+
+    memcpy(m->pData, data, sizeof size);
+    return 1;
+}
+
 // =========================================== MAILBOX =========================================== //
 
 static inline i32 getDataSize   (const mailbox* mBox)   { return mBox->nDataSize; }
@@ -62,6 +77,26 @@ mailbox* create_mailbox(uint maxMsg, uint dataSize) {
 
 int no_messages(mailbox* mBox) {
     return mBox->pHead->pNext == mBox->pHead;
+}
+
+exception remove_mailbox(mailbox* mBox) {
+    if (!no_messages(mBox)) { return NOT_EMPTY; }
+    delete(mBox->pHead);
+    delete(mBox);
+    return OK;
+}
+
+
+exception send_wait(mailbox* mBox, void* pData) {
+    volatile int first = TRUE;
+
+    if (first) {
+        if (mBox->nBlockedMsg < 0) {
+            //
+        } else {
+            //
+        }
+    }
 }
 
 /*

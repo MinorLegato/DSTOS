@@ -20,69 +20,31 @@ void isr_on()  {}
 
 void TimerInt(void) { tickCounter++; }
 
-STRUCT(Node) {
-    int     data;
-    Node*   pNext;
-    Node*   pPrevious;
-};
-
-STRUCT(List) {
-    Node* pHead;
-    Node* pTail;
-};
-
-static void insert(Node* new, Node* prev, Node* next) {
-    next->pPrevious  = new;
-    new->pNext       = next;
-    new->pPrevious   = prev;
-    prev->pNext      = new;
-}
-
-//#define addFirst(L, N)          insert((N), dummyNode(L), firstNode(L))
-//#define addLast(L, N)           insert((N), lastNode(L),  dummyNode(L))
-
 int main(void) {
+    mailbox* mBox = create_mailbox(100, 100);
 
-    List list; 
-    list.pHead = alloc(sizeof (Node));
-    list.pTail = list.pHead;
+    if (no_messages(mBox)) { printf("\nEMPTY\n"); }
 
-    initList(&list);
+    msgPushBack(mBox, createMsg("1!\n"));
+    msgPushBack(mBox, createMsg("2!\n"));
+    msgPushBack(mBox, createMsg("3!\n"));
+    msgPushBack(mBox, createMsg("4!\n"));
+    msgPushBack(mBox, createMsg("5!\n"));
 
-    for (int i = 0; i < 1000; i++) {
-        Node* node = alloc(sizeof (Node));
-        node->data = i + 1;
-        addLast(&list, node);
-    }
+    if (no_messages(mBox)) { printf("\nEMPTY\n"); }
 
-    forEach(Node, &list) { printf("%d!\n", iter->data); }
+    msg* m;
+    forEach(m, mBox) { printf(m->pData); }
 
-    printf("\n");
+    msgPopFront(mBox);
+    msgPopBack(mBox);
 
-    forReve(Node, &list) { printf("%d!\n", iter->data); }
+    printf("\n\n");
+    forReve(m, mBox) { printf(m->pData); }
 
+    if (no_messages(mBox)) { printf("\nEMPTY\n"); }
 
-    //char strBuffer[] = "Hello, world!";
-
-    /*
-    mailbox* mBox = create_mailbox(10, 20);
-    
-    create_msg_first(mBox, "1!\n");
-    create_msg_first(mBox, "2!\n");
-    create_msg_first(mBox, "3!\n");
-    create_msg_last(mBox, "4!\n");
-    create_msg_first(mBox, "5!\n");
-    create_msg_first(mBox, "4!\n");
-
-    msg* iter = getFirstMsg(mBox);
-
-    while (iter != mBox->pTail) {
-        printf(iter->pData);
-        iter = iter->pNext;
-    }
-    */
-
-    printf("DONE");
+    printf("\nDONE");
 
     /*
     init_kernel();

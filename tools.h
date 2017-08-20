@@ -69,14 +69,14 @@ typedef uint64_t    u64;
 #define removeNode(N)           ((N)->pPrevious->pNext = (N)->pNext, (N)->pNext->pPrevious = (N)->pPrevious, (N))
 
 #define addFirst(L, N)          insertNode((N), (L)->pHead, (L)->pHead->pNext)
-#define addLast(L, N)           insertNode((N), (L)->pHead->pPrevious,  (L)->pHead)
+#define addLast(L, N)           insertNode((N), (L)->pHead->pPrevious, (L)->pHead)
 
 // TYPE : type of node
 // LIST : list variable
-#define forEach(TYPE, LIST)        for (TYPE* iter = firstNode(LIST); iter != dummyNode(LIST); iter = nextNode(iter))
+#define forEach(iter, LIST) for (iter = firstNode(LIST); iter != dummyNode(LIST); iter = nextNode(iter))
 
 // reverse iteration!
-#define forReve(TYPE, LIST)        for (TYPE* iter = lastNode(LIST); iter != dummyNode(LIST); iter = prevNode(iter))
+#define forReve(iter, LIST) for (iter = lastNode(LIST); iter != dummyNode(LIST); iter = prevNode(iter))
 
 // ======================================================================================================================= //
 

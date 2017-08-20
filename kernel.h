@@ -105,9 +105,9 @@ typedef struct {
   
 // Task administration
 int        init_kernel(void);
-exception  create_task( void (* body)(), uint d );
-void       terminate( void );
-void       run( void );
+exception  create_task(void (* body)(), uint d);
+void       terminate(void);
+void       run(void);
   
 // Communication
 mailbox*	    create_mailbox( uint nMessages, uint nDataSize );
@@ -116,12 +116,12 @@ int             no_messages( mailbox* mBox );
 exception       send_wait( mailbox* mBox, void* pData );
 exception       receive_wait( mailbox* mBox, void* pData );
   
-exception	   send_no_wait( mailbox* mBox, void* pData );
+exception	    send_no_wait( mailbox* mBox, void* pData );
 int             receive_no_wait( mailbox* mBox, void* pData );
   
   
 // Timing
-exception	   wait(uint nTicks);
+exception	    wait(uint nTicks);
 void            set_ticks( uint no_of_ticks );
 uint            ticks(void );
 uint		    deadline(void);

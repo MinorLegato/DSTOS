@@ -57,19 +57,25 @@ typedef uint64_t    u64;
 
 #define firstNode(L)    ((L)->pHead->pNext)
 #define lastNode(L)     ((L)->pHead->pPrevious)
+#define dummyNode(L)    ((L)->pHead)
+
+#define initList(L)     (nextNode(dummyNode(L)) = dummyNode(L), prevNode(dummyNode(L)) = dummyNode(L), 0)
 
 #define nextNode(N)             ((N)->pNext)
 #define prevNode(N)             ((N)->pPrevious)
-#define insertNode(E, P, N)     (nextNode(P) = (E), prevNode(N) = (E), nextNode(E) = (N), prevNode(E) = (P), 0)
+
+#define insertNode(E, P, N)     (prevNode(N) = (E), nextNode(E) = (N), prevNode(E) = (P), nextNode(P) = (E), 0)
 #define removeNode(N)           ((N)->pPrevious->pNext = (N)->pNext, (N)->pNext->pPrevious = (N)->pPrevious, (N))
+
+#define addFirst(L, N)          insertNode((N), dummyNode(L), firstNode(L))
+#define addLast(L, N)           insertNode((N), lastNode(L),  dummyNode(L))
 
 // TYPE : type of node
 // LIST : list variable
-#define forEach(TYPE, LIST)        for (TYPE* iter = firstNode(LIST); iter != lastNode(LIST)->pNext; iter = nextNode(iter))
+#define forEach(TYPE, LIST)        for (TYPE* iter = firstNode(LIST); iter != dummyNode(LIST); iter = nextNode(iter))
 
 // reverse iteration!
-#define forReve(TYPE, LIST)        for (TYPE* iter = lastNode(LIST); iter != firstNode(LIST)->pPrevious; iter = prevNode(iter))
-
+#define forReve(TYPE, LIST)        for (TYPE* iter = lastNode(LIST); iter != dummyNode(LIST); iter = prevNode(iter))
 
 // ======================================================================================================================= //
 

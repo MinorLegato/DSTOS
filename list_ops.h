@@ -12,7 +12,7 @@ typedef listobj TaskNode;
 
 // ================================ TASK LIST IMPLEMENTATION ======================== //
 
-static TaskNode* allocTask(void (*body)(), u32 d) {
+static TaskNode* allocTask(void (*body)(), uint d) {
     TaskNode* task = NULL;
     TCB*      tcb  = NULL;
     if (task = calloc(1, sizeof *task), !task) { return NULL; }
@@ -42,7 +42,6 @@ static void insertTask(TaskNode* newNode, TaskNode* prev, TaskNode* next) {
 
 static void addTask_First(TaskList* taskList, TaskNode* newNode) {
     if (!newNode) { return; }
-    
 }
 
 static void addTask_Deadline(TaskList* taskList, TaskNode* newNode) {

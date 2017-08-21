@@ -9,6 +9,9 @@
 static inline msg* nextMsg(const msg* node) { return node->pNext; }
 static inline msg* prevMsg(const msg* node) { return node->pPrevious; }
 
+static inline TaskNode* getTask(const msg* m) { return m->pBlock; }
+static inline void*     getData(const msg* m) { return m->pData; }
+
 static msg* createMsg(void* data) {
     msg* m = alloc(sizeof *m);
     m->pData = data;
@@ -23,9 +26,9 @@ static void deleteMsg(msg* m) {
 static b32 setMessage(msg* m, const void* data, i32 size) {
     if (!data || size < 1) { return 0; }
     delete(m->pData);
-
+    
     if (m->pData = alloc(size), !m->pData) { return 0; }
-
+    
     memcpy(m->pData, data, sizeof size);
     return 1;
 }
@@ -61,17 +64,16 @@ static void msgPushBack (mailbox* mBox, msg* m) { insertMsg(m,  getLastMsg(mBox)
 static msg* msgPopFront (mailbox* mBox) { return removeMsg(getFirstMsg(mBox)); }
 static msg* msgPopBack  (mailbox* mBox) { return removeMsg(getLastMsg(mBox)); }
 
-
 mailbox* create_mailbox(uint maxMsg, uint dataSize) {
     mailbox* mBox   = alloc(sizeof *mBox);
     mBox->pHead     = alloc(sizeof *mBox->pHead);
-
+    
     mBox->pHead->pNext      = mBox->pHead;
     mBox->pHead->pPrevious  = mBox->pHead;
-
+    
     mBox->nDataSize     = dataSize;
     mBox->nMaxMessages  = maxMsg;
-
+    
     return mBox;
 }
 
@@ -86,15 +88,69 @@ exception remove_mailbox(mailbox* mBox) {
     return OK;
 }
 
+static inline b32 msgIsWaiting(const mailbox* mBox) { return mBox->nBlockedMsg < 0; }
 
+// NOTE: not tested
 exception send_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
-
+    
     if (first) {
-        if (mBox->nBlockedMsg < 0) {
-            //
+        first = FALSE;
+        if (msgIsWaiting(mBox)) {
+            setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
+            msg* rec = msgPopFront(mBox);
+            addTask_Deadline(&readyList, getTask(rec));
+            deleteMsg(rec);
         } else {
-            //
+            msg* new = createMsg(pData); if (!m) { return FAIL; }
+            new->pBlock = NULL;
+            firstNode(&readyList)->pMessage = new;
+            msgPushBack(mBox, new);
+            // NOTE: maybe wrong
+            addTask_Deadline(&waitList, removeNode(firstNode(&readyList)));
+            Running = firstNode(&readyList)->pTask;
+        }
+        LoadContext();
+    } else {
+        if (Running->DeadLine <= ticks()) {
+            isr_off();
+            msg* m = msgPopFront(mBox);
+            deleteMsg(m);
+            isr_on();
+            return DEADLINE_REACHED;
+        } else {
+            return OK;
+        }
+    }
+}
+
+exception receive_wait(mailbox* mBox, void* data) {
+    volatile int first = TRUE;
+    isr_off();
+    SaveContext();
+    
+    if (first) {
+        first = FALSE;
+        // NOTE: ?
+        if (mBox->nBlockedMsg > 0) {
+            memcpy(data, getFirstMsg(mBox)->pData, getDataSize(mBox));
+            msg* snd = msgPopFront(mBox);
+            if (snd->pBlock != NULL) {
+                // TODO(fix): get the node the the snd block
+                addTask_Deadline(&readyList, removeNode(firstNode(&waitList)));
+                Running = getFirstNode(&readyList)->pTask;
+                snd->pBlock->pMessage = NULL;
+                delete(snd);
+            } else {
+                deleteMsg(snd);
+            }
+        } else {
+        }
+    } else {
+        if (1) {
+            return DEADLINE_REACHED;
+        } else {
+            return OK;
         }
     }
 }
@@ -226,5 +282,5 @@ int receive_no_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 */
-  
+
 #endif

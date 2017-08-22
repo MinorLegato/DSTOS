@@ -48,26 +48,22 @@ static void addTask_Deadline(TaskList* taskList, TaskNode* newNode) {
     if (!newNode) { return; }
     TaskNode* iter;
     forEach(iter, taskList) {
-        if(iter->pTask->DeadLine > newNode->pTask->DeadLine ){
+        if(iter->pTask->DeadLine > newNode->pTask->DeadLine) {
             break;
         }
     }
-    insertNode(newNode, prevNode(iter), iter);
+    insertTask(newNode, prevNode(iter), iter);
 }
 
 static void addTask_nTCnt(TaskList* taskList, TaskNode* newNode) {
     if (!newNode) { return; }
-    if (taskList->pHead == NULL) {
-        taskList->pHead = newNode;
-        taskList->pTail = newNode;
-    } else {
-        TaskNode* temp = taskList->pHead;
-        while (temp->pNext != taskList->pTail 
-               && newNode->nTCnt > temp->pNext->nTCnt){
-            temp->pNext = temp->pNext->pNext;
+    TaskNode* iter;
+    forEach(iter, taskList) {
+        if(iter->nTCnt > newNode->nTCnt) {
+            break;
         }
-        insertTask(newNode, temp, temp->pNext);
     }
+    insertNode(newNode, prevNode(iter), iter);
 }
 
 static void clearTasks(TaskList* head) {

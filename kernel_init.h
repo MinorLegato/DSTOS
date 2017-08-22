@@ -8,9 +8,9 @@ exception init_kernel(void) {
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
-    initTaskList(&timerList);
-    initTaskList(&waitList);
-    initTaskList(&readyList);
+    initTaskList(timerList);
+    initTaskList(waitList);
+    initTaskList(readyList);
     // Create an idle task
     create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode

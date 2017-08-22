@@ -10,9 +10,9 @@ enum Kernel_states {
     Kernel_running
 };
 
-TaskList timerList;
-TaskList waitList;
-TaskList readyList;
+TaskList* timerList = NULL;
+TaskList* waitList  = NULL;
+TaskList* readyList = NULL;
 
 TCB* Running = NULL;
 

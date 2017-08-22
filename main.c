@@ -21,10 +21,19 @@ void isr_on()  {}
 void TimerInt(void) { tickCounter++; }
 
 int main(void) {
-    
-    
-    printf("\nDONE");
-    
+    TaskList* tasks = allocTaskList();
+
+    for (int i = 0; i < 16; i++) {
+        //TaskNode* node = alloc(sizeof *node);
+        //node->pTask = alloc(sizeof *node->pTask);
+        //node->pTask->DeadLine = i + 1;
+        //addTask_Deadline(tasks, node);
+        addTask_Deadline(tasks, allocTask(NULL, i + 1));
+        
+        printTaskList(tasks);
+        printf("\n\n");
+    }
+
     /*
     init_kernel();
     run();

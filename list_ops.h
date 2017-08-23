@@ -31,23 +31,29 @@ static TaskNode* allocTask(void (*body)(), uint d) {
     tcb->PC         = body;
     tcb->SP         = tcb->StackSeg;
 
+    task->nTCnt      = ticks();
+
     task->pTask = tcb;
 
     return task;
 }
 
 static void insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next) {
-    next->pPrevious = new;
-    new->pNext      = next;
-    new->pPrevious  = prev;
-    prev->pNext     = new;
+    if (new && prev && next) {
+        next->pPrevious = new;
+        new->pNext      = next;
+        new->pPrevious  = prev;
+        prev->pNext     = new;
+    }
 }
 
 static TaskNode* removeTask(TaskNode* const task) {
-    TaskNode* p  = task->pPrevious;
-    TaskNode* n  = task->pNext;
-    p->pNext     = n;
-    n->pPrevious = p;
+    if (task) {
+        TaskNode* const p   = task->pPrevious;
+        TaskNode* const n   = task->pNext;
+        p->pNext            = n;
+        n->pPrevious        = p;
+    }
     return task;
 }
 
@@ -72,26 +78,13 @@ static TaskList* allocTaskList() {
     return taskList;
 }
 
-static b32 initTaskList(TaskList* taskList) {
-    TaskNode* dummy = alloc(sizeof *dummy);
-    if (dummy == NULL) { return 0; }
-    
-    taskList->pHead = NULL;
-    taskList->pTail = NULL;
-    
-    return 1;
+static int noTasks(const TaskList* const tasks) {
+    return tasks->pHead == tasks->pTail;
 }
 
-static int noTasks(TaskList* taskList) {
-    return taskList->pHead == taskList->pTail;
-}
-
-static void addTask_First(TaskList* taskList, TaskNode* newNode) {
-    if (!newNode) { return; }
-}
-
-static void addTask_Deadline(TaskList* tasks, TaskNode* new) {
+static void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
     if (!new) { return; }
+
     TaskNode* iter = getFirstTask(tasks);
 
     while (iter != getDummyTask(tasks) && getDeadline(new) > getDeadline(iter)) {
@@ -101,22 +94,23 @@ static void addTask_Deadline(TaskList* tasks, TaskNode* new) {
     insertTask(new, getPrevTask(iter), iter);
 }
 
-static void addTask_nTCnt(TaskList* taskList, TaskNode* newNode) {
-    if (!newNode) { return; }
-    TaskNode* iter;
-    forEach(iter, taskList) {
-        if(iter->nTCnt > newNode->nTCnt) {
-            break;
-        }
+static void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
+    if (!new) { return; }
+
+    TaskNode* iter = getFirstTask(tasks); // NULL;
+
+    while (iter != getDummyTask(tasks) && getnTCnt(new) > getnTCnt(iter)) {
+        iter = getNextTask(iter);
     }
-    insertNode(newNode, prevNode(iter), iter);
+
+    insertNode(new, prevNode(iter), iter);
 }
 
 static void printTaskList(const TaskList* const tasks) {
     TaskNode* iter = getFirstTask(tasks);
 
     while (iter != getDummyTask(tasks)) {
-        printf("%d\n", getDeadline(iter));
+        printf("deadline: %d,\tnCTnt %d\n", getDeadline(iter), getnTCnt(iter));
         iter = getNextTask(iter);
     }
 }

@@ -1,13 +1,13 @@
   #ifndef KERNEL_H
 #define KERNEL_H
-  
-  // Debug option
-  // #define       _DEBUG
-  
-  /*********************************************************/
-  /** Global variabels and definitions                     */
-  /*********************************************************/
-  
+
+// Debug option
+// #define       _DEBUG
+
+/*********************************************************/
+/** Global variabels and definitions                     */
+/*********************************************************/
+
 #include <stdlib.h>
 #ifdef texas_dsp
   
@@ -35,70 +35,70 @@
   
 #define SENDER          +1
 #define RECEIVER        -1
-  
-  typedef int             exception;
-  typedef int             bool;
-  typedef unsigned int    uint;
-  typedef int 		    action;
-  
-  struct  l_obj;         // Forward declaration
+
+typedef int             exception;
+typedef int             bool;
+typedef unsigned int    uint;
+typedef int 		    action;
+
+struct  l_obj;         // Forward declaration
   
   // Task Control Block, TCB
 #ifdef texas_dsp
 
 typedef struct {
-  void	(*PC)();
-  uint	*SP;
-  uint	Context[CONTEXT_SIZE];
-  uint	StackSeg[STACK_SIZE];
-  uint	DeadLine;
+    void	(*PC)();
+    uint	*SP;
+    uint	Context[CONTEXT_SIZE];
+    uint	StackSeg[STACK_SIZE];
+    uint	DeadLine;
 } TCB;
 
 #else
 
 typedef struct {
-  uint    Context[CONTEXT_SIZE];        
-  uint    *SP;
-  void    (*PC)();
-  uint    SPSR;     
-  uint    StackSeg[STACK_SIZE];
-  uint    DeadLine;
+    uint    Context[CONTEXT_SIZE];        
+    uint    *SP;
+    void    (*PC)();
+    uint    SPSR;     
+    uint    StackSeg[STACK_SIZE];
+    uint    DeadLine;
 } TCB;
   
 #endif
 
 // Message items
 typedef struct msgobj {
-  char            *pData;
-  exception       Status;
-  struct l_obj    *pBlock;
-  struct msgobj   *pPrevious;
-  struct msgobj   *pNext;
+    char            *pData;
+    exception       Status;
+    struct l_obj    *pBlock;
+    struct msgobj   *pPrevious;
+    struct msgobj   *pNext;
 } msg;
 
 // Mailbox structure
 typedef struct {
-  msg             *pHead;
-  msg             *pTail;
-  int             nDataSize;
-  int             nMaxMessages;
-  int             nMessages;
-  int             nBlockedMsg;
+    msg             *pHead;
+    msg             *pTail;
+    int             nDataSize;
+    int             nMaxMessages;
+    int             nMessages;
+    int             nBlockedMsg;
 } mailbox;
 
 // Generic list item
 typedef struct l_obj {
-  TCB            *pTask;
-  uint           nTCnt;
-  msg            *pMessage;
-  struct l_obj   *pPrevious;
-  struct l_obj   *pNext;
+    TCB            *pTask;
+    uint           nTCnt;
+    msg            *pMessage;
+    struct l_obj   *pPrevious;
+    struct l_obj   *pNext;
 } listobj;
 
 // Generic list
 typedef struct {
-  listobj        *pHead;
-  listobj        *pTail;
+    listobj        *pHead;
+    listobj        *pTail;
 } list;
 
 // Function prototypes

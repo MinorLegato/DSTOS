@@ -24,11 +24,9 @@ int main(void) {
     TaskList* tasks = allocTaskList();
 
     for (int i = 0; i < 16; i++) {
-        //TaskNode* node = alloc(sizeof *node);
-        //node->pTask = alloc(sizeof *node->pTask);
-        //node->pTask->DeadLine = i + 1;
-        //addTask_Deadline(tasks, node);
-        addTask_Deadline(tasks, allocTask(NULL, i + 1));
+        TimerInt();
+
+        addTask_nTCnt(tasks, allocTask(NULL, 16 - i));
         
         printTaskList(tasks);
         printf("\n\n");
@@ -42,6 +40,7 @@ int main(void) {
         SaveContext();
         TimerInt();
         LoadContext();
-    }*/
+    }
+    */
 }
 

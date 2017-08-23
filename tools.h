@@ -27,7 +27,7 @@ typedef uint64_t    u64;
 
 #define STRUCT(name) typedef struct name name; struct name
 
-// ===================================================== GENERIC ARRAY ==================================================== //
+// ============================================= GENERIC ARRAY ======================================== //
 
 #define ARRAY(TYPE, SIZE) struct { i32 size; TYPE data[SIZE]; }
 
@@ -53,7 +53,7 @@ typedef uint64_t    u64;
 #define MOVE(A, D, S)   { b32 b = D < S; i32 s = SIZE(A); (A)->data[s] = (A)->data[(S)]; OREM(A, S); INSERT(A, (A)->data[s], (D)); }
 
 
-// ===================================================== GENERIC LIST ==================================================== //
+// ========================================= GENERIC LIST ============================================== //
 
 #define firstNode(L)    ((L)->pHead->pNext)
 #define lastNode(L)     ((L)->pHead->pPrevious)
@@ -78,7 +78,7 @@ typedef uint64_t    u64;
 // reverse iteration!
 #define forReve(iter, LIST) for (iter = lastNode(LIST); iter != dummyNode(LIST); iter = prevNode(iter))
 
-// ======================================================================================================================= //
+// ===================================================================================================== //
 
 
 static void* alloc(size_t size) {

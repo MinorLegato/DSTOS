@@ -2,7 +2,7 @@
 #define KERNEL_H
   
   // Debug option
-  //#define       _DEBUG
+  // #define       _DEBUG
   
   /*********************************************************/
   /** Global variabels and definitions                     */
@@ -45,94 +45,94 @@
   
   // Task Control Block, TCB
 #ifdef texas_dsp
-  
-  typedef struct {
-      void	(*PC)();
-      uint	*SP;
-      uint	Context[CONTEXT_SIZE];
-      uint	StackSeg[STACK_SIZE];
-      uint	DeadLine;
-  } TCB;
-  
+
+typedef struct {
+  void	(*PC)();
+  uint	*SP;
+  uint	Context[CONTEXT_SIZE];
+  uint	StackSeg[STACK_SIZE];
+  uint	DeadLine;
+} TCB;
+
 #else
-  
-  typedef struct {
-      uint    Context[CONTEXT_SIZE];        
-      uint    *SP;
-      void    (*PC)();
-      uint    SPSR;     
-      uint    StackSeg[STACK_SIZE];
-      uint    DeadLine;
-  } TCB;
+
+typedef struct {
+  uint    Context[CONTEXT_SIZE];        
+  uint    *SP;
+  void    (*PC)();
+  uint    SPSR;     
+  uint    StackSeg[STACK_SIZE];
+  uint    DeadLine;
+} TCB;
   
 #endif
-  
-  // Message items
-  typedef struct msgobj {
-      char            *pData;
-      exception       Status;
-      struct l_obj    *pBlock;
-      struct msgobj   *pPrevious;
-      struct msgobj   *pNext;
-  } msg;
-  
-  // Mailbox structure
-  typedef struct {
-      msg             *pHead;
-      msg             *pTail;
-      int             nDataSize;
-      int             nMaxMessages;
-      int             nMessages;
-      int             nBlockedMsg;
-  } mailbox;
-  
-  // Generic list item
-  typedef struct l_obj {
-      TCB            *pTask;
-      uint           nTCnt;
-      msg            *pMessage;
-      struct l_obj   *pPrevious;
-      struct l_obj   *pNext;
-  } listobj;
-  
-  // Generic list
-  typedef struct {
-      listobj        *pHead;
-      listobj        *pTail;
-  } list;
-  
-  // Function prototypes
-  
-  // Task administration
-  int        init_kernel(void);
-  exception  create_task(void (* body)(), uint d);
-  void       terminate(void);
-  void       run(void);
-  
-  // Communication
-  mailbox*	    create_mailbox( uint nMessages, uint nDataSize );
-  int             no_messages( mailbox* mBox );
-  
-  exception       send_wait( mailbox* mBox, void* pData );
-  exception       receive_wait( mailbox* mBox, void* pData );
-  
-  exception	    send_no_wait( mailbox* mBox, void* pData );
-  int             receive_no_wait( mailbox* mBox, void* pData );
-  
-  // Timing
-  exception	    wait(uint nTicks);
-  void            set_ticks( uint no_of_ticks );
-  uint            ticks(void );
-  uint		    deadline(void);
-  void            set_deadline(uint nNew);
-  
-  //Interrupt
-  extern void     isr_off(void);
-  extern void     isr_on(void);
-  // Stores DSP registers in TCB pointed to by Running
-  extern void     SaveContext(void);	
-  // Restores DSP registers from TCB pointed to by Running
-  extern void     LoadContext(void);	
+
+// Message items
+typedef struct msgobj {
+  char            *pData;
+  exception       Status;
+  struct l_obj    *pBlock;
+  struct msgobj   *pPrevious;
+  struct msgobj   *pNext;
+} msg;
+
+// Mailbox structure
+typedef struct {
+  msg             *pHead;
+  msg             *pTail;
+  int             nDataSize;
+  int             nMaxMessages;
+  int             nMessages;
+  int             nBlockedMsg;
+} mailbox;
+
+// Generic list item
+typedef struct l_obj {
+  TCB            *pTask;
+  uint           nTCnt;
+  msg            *pMessage;
+  struct l_obj   *pPrevious;
+  struct l_obj   *pNext;
+} listobj;
+
+// Generic list
+typedef struct {
+  listobj        *pHead;
+  listobj        *pTail;
+} list;
+
+// Function prototypes
+
+// Task administration
+int        init_kernel(void);
+exception  create_task(void (* body)(), uint d);
+void       terminate(void);
+void       run(void);
+
+// Communication
+mailbox*	    create_mailbox( uint nMessages, uint nDataSize );
+int             no_messages( mailbox* mBox );
+
+exception       send_wait( mailbox* mBox, void* pData );
+exception       receive_wait( mailbox* mBox, void* pData );
+
+exception	    send_no_wait( mailbox* mBox, void* pData );
+int             receive_no_wait( mailbox* mBox, void* pData );
+
+// Timing
+exception	    wait(uint nTicks);
+void            set_ticks( uint no_of_ticks );
+uint            ticks(void );
+uint		    deadline(void);
+void            set_deadline(uint nNew);
+
+//Interrupt
+extern void     isr_off(void);
+extern void     isr_on(void);
+// Stores DSP registers in TCB pointed to by Running
+extern void     SaveContext(void);	
+// Restores DSP registers from TCB pointed to by Running
+extern void     LoadContext(void);	
   
 #endif
   

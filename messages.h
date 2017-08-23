@@ -93,6 +93,8 @@ static inline b32 msgIsWaiting(const mailbox* mBox) { return mBox->nBlockedMsg <
 // NOTE: not tested
 exception send_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
+    isr_off();
+    SaveContext();
     
     if (first) {
         first = FALSE;

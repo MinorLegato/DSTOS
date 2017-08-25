@@ -127,16 +127,13 @@ exception send_wait(mailbox* mBox, void* pData) {
             deleteMsg(rec);
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
-            new->pBlock = NULL;
-            firstNode(readyList)->pMessage = new;
             msgPushBack(mBox, new);
-            // NOTE: maybe wrong
             addTask_Deadline(waitList, removeNode(firstNode(readyList)));
             Running = firstNode(readyList)->pTask;
         }
         LoadContext();
     } else {
-        if (Running->DeadLine <= ticks()) {
+        if (deadline() <= ticks()) {
             isr_off();
             msg* m = msgPopFront(mBox);
             deleteMsg(m);
@@ -148,30 +145,36 @@ exception send_wait(mailbox* mBox, void* pData) {
     }
 }
 
-exception receive_wait(mailbox* mBox, void* data) {
+// NOTE: not tested
+exception receive_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
     SaveContext();
     
     if (first) {
         first = FALSE;
-        // NOTE: ?
         if (mBox->nBlockedMsg > 0) {
-            memcpy(data, getFirstMsg(mBox)->pData, getDataSize(mBox));
+            memcpy(pData, getFirstMsg(mBox)->pData, getDataSize(mBox));
             msg* snd = msgPopFront(mBox);
             if (snd->pBlock != NULL) {
-                // TODO(fix): get the node the the snd block
-                //addTask_Deadline(readyList, removeNode(firstNode(&waitList)));
-                //Running = getFirstNode(readyList)->pTask;
-                //snd->pBlock->pMessage = NULL;
-                //delete(snd);
+                addTask_Deadline(readyList, snd->pBlock);
+                Running = getFirstNode(readyList)->pTask;
+                deleteMsg(snd);
             } else {
                 deleteMsg(snd);
             }
         } else {
+            msg* new = createMsg(pData); if (!new) { return FAIL; }
+            msgPushBack(mBox, new);
+            addTask_Deadline(readyList, removeNode(firstNode(waitList)));
+            Running = firstNode(readyList)->pTask;
         }
+        LoadContext();
     } else {
-        if (1) {
+        if (firstTask(waitList)->pTask->DeadLine <= ticks()) {
+            isr_off();
+            deleteMsg(msgPopFront(mBox));
+            isr_on();
             return DEADLINE_REACHED;
         } else {
             return OK;

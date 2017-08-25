@@ -58,11 +58,33 @@ static msg* removeMsg(msg* const m) {
     return m;
 }
 
-static void msgPushFront(mailbox* const mBox, msg* const m) { insertMsg(m,  getDummyMsg(mBox),  getFirstMsg(mBox)); }
-static void msgPushBack (mailbox* const mBox, msg* const m) { insertMsg(m,  getLastMsg(mBox),   getDummyMsg(mBox)); }
+static b32 msgPushFront(mailbox* const mBox, msg* const m) {
+    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
 
-static msg* msgPopFront (mailbox* const mBox) { return removeMsg(getFirstMsg(mBox)); }
-static msg* msgPopBack  (mailbox* const mBox) { return removeMsg(getLastMsg(mBox)); }
+    mBox->nMessages++;
+    insertMsg(m, getDummyMsg(mBox), getFirstMsg(mBox));
+
+    return 1;
+}
+
+static b32 msgPushBack (mailbox* const mBox, msg* const m) {
+    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
+
+    mBox->nMessages++;
+    insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
+
+    return 1;
+}
+
+static msg* msgPopFront (mailbox* const mBox) {
+    mBox->nMessages--;
+    return removeMsg(getFirstMsg(mBox));
+}
+
+static msg* msgPopBack  (mailbox* const mBox) {
+    mBox->nMessages--;
+    return removeMsg(getLastMsg(mBox));
+}
 
 mailbox* create_mailbox(uint maxMsg, uint dataSize) {
     mailbox* mBox   = alloc(sizeof *mBox);

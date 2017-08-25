@@ -21,18 +21,6 @@ void isr_on()  {}
 void TimerInt(void) { tickCounter++; }
 
 int main(void) {
-    TaskList* tasks = allocTaskList();
-
-    for (int i = 0; i < 16; i++) {
-        TimerInt();
-
-        addTask_nTCnt(tasks, allocTask(NULL, 16 - i));
-        
-        printTaskList(tasks);
-        printf("\n\n");
-    }
-
-    /*
     init_kernel();
     run();
     
@@ -41,6 +29,5 @@ int main(void) {
         TimerInt();
         LoadContext();
     }
-    */
 }
 

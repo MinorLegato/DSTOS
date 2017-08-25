@@ -1,4 +1,4 @@
-  #ifndef KERNEL_H
+#ifndef KERNEL_H
 #define KERNEL_H
 
 // Debug option

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1282782491
+Checksum=466214040
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -42,7 +42,7 @@ ShowTimeSum=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "STD_CODE2" "{$PROJ_DIR$\messages.h}.110.30" 0 0 1 "" 0 ""
+Bp0=_ 0 "STD_CODE2" "{$PROJ_DIR$\messages.h}.110.5" 0 0 1 "" 0 ""
 Count=1
 [Interrupts]
 Enabled=1

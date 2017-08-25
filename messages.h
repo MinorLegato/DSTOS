@@ -6,11 +6,11 @@
 
 // =========================================== MESSAGE =========================================== //
 
-static inline msg* nextMsg(const msg* node) { return node->pNext; }
-static inline msg* prevMsg(const msg* node) { return node->pPrevious; }
+static inline msg* nextMsg(const msg* const node) { return node->pNext; }
+static inline msg* prevMsg(const msg* const node) { return node->pPrevious; }
 
-static inline TaskNode* getTask(const msg* m) { return m->pBlock; }
-static inline void*     getData(const msg* m) { return m->pData; }
+static inline TaskNode* getTask(const msg* const m) { return m->pBlock; }
+static inline void*     getData(const msg* const m) { return m->pData; }
 
 static msg* createMsg(void* data) {
     msg* m = alloc(sizeof *m);
@@ -23,7 +23,7 @@ static void deleteMsg(msg* m) {
     delete(m);
 }
 
-static b32 setMessage(msg* m, const void* data, i32 size) {
+static b32 setMessage(msg* const m, const void* data, i32 size) {
     if (!data || size < 1) { return 0; }
     delete(m->pData);
     
@@ -35,22 +35,22 @@ static b32 setMessage(msg* m, const void* data, i32 size) {
 
 // =========================================== MAILBOX =========================================== //
 
-static inline i32 getDataSize   (const mailbox* mBox)   { return mBox->nDataSize; }
-static inline i32 getMsgMax     (const mailbox* mBox)   { return mBox->nMaxMessages; }
-static inline i32 getMsgCount   (const mailbox* mBox)   { return mBox->nMessages; }
+static inline i32 getDataSize   (const mailbox* const mBox)   { return mBox->nDataSize; }
+static inline i32 getMsgMax     (const mailbox* const mBox)   { return mBox->nMaxMessages; }
+static inline i32 getMsgCount   (const mailbox* const mBox)   { return mBox->nMessages; }
 
-static inline msg* getFirstMsg  (const mailbox* mBox)   { return mBox->pHead->pNext; }
-static inline msg* getLastMsg   (const mailbox* mBox)   { return mBox->pHead->pPrevious; }
-static inline msg* getDummyMsg  (const mailbox* mBox)   { return mBox->pHead; }
+static inline msg* getFirstMsg  (const mailbox* const mBox)   { return mBox->pHead->pNext; }
+static inline msg* getLastMsg   (const mailbox* const mBox)   { return mBox->pHead->pPrevious; }
+static inline msg* getDummyMsg  (const mailbox* const mBox)   { return mBox->pHead; }
 
-static void insertMsg(msg* new, msg* prev, msg* next) {
+static void insertMsg(msg* const new, msg* const prev, msg* const next) {
     next->pPrevious = new;
     new->pNext      = next;
     new->pPrevious  = prev;
     prev->pNext     = new;
 }
 
-static msg* removeMsg(msg* m) {
+static msg* removeMsg(msg* const m) {
     msg* p       = m->pPrevious;
     msg* n       = m->pNext;
     p->pNext     = n;
@@ -58,11 +58,33 @@ static msg* removeMsg(msg* m) {
     return m;
 }
 
-static void msgPushFront(mailbox* mBox, msg* m) { insertMsg(m,  getDummyMsg(mBox),  getFirstMsg(mBox)); }
-static void msgPushBack (mailbox* mBox, msg* m) { insertMsg(m,  getLastMsg(mBox),   getDummyMsg(mBox)); }
+static b32 msgPushFront(mailbox* const mBox, msg* const m) {
+    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
 
-static msg* msgPopFront (mailbox* mBox) { return removeMsg(getFirstMsg(mBox)); }
-static msg* msgPopBack  (mailbox* mBox) { return removeMsg(getLastMsg(mBox)); }
+    mBox->nMessages++;
+    insertMsg(m, getDummyMsg(mBox), getFirstMsg(mBox));
+
+    return 1;
+}
+
+static b32 msgPushBack (mailbox* const mBox, msg* const m) {
+    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
+
+    mBox->nMessages++;
+    insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
+
+    return 1;
+}
+
+static msg* msgPopFront (mailbox* const mBox) {
+    mBox->nMessages--;
+    return removeMsg(getFirstMsg(mBox));
+}
+
+static msg* msgPopBack  (mailbox* const mBox) {
+    mBox->nMessages--;
+    return removeMsg(getLastMsg(mBox));
+}
 
 mailbox* create_mailbox(uint maxMsg, uint dataSize) {
     mailbox* mBox   = alloc(sizeof *mBox);

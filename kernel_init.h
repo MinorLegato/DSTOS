@@ -8,13 +8,14 @@ exception init_kernel(void) {
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
-    initTaskList(timerList);
-    initTaskList(waitList);
-    initTaskList(readyList);
+    if (timerList = allocTaskList(), timerList == NULL) { return FAIL; };
+    if (waitList  = allocTaskList(), waitList  == NULL) { return FAIL; };
+    if (readyList = allocTaskList(), readyList == NULL) { return FAIL; };
+
     // Create an idle task
     create_task(idleTask, 0xFFFFFFFF);
     // Set the kernel in start up mode
-    kernelMode = Kernel_start_up;
+    kernelMode = INIT;
     // Return status
     return SUCCESS;
 }
@@ -23,7 +24,7 @@ void run(void) {
     // Initialize interrupt timer
     isr_on();
     // Set the kernel in running mode
-    kernelMode = Kernel_running;
+    kernelMode = RUNNING;
     // Enable interrupts
     LoadContext();
 }

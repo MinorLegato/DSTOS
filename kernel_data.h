@@ -3,24 +3,14 @@
 
 #include "kernel.h"
 #include "tools.h"
-#include "list_ops.h"
 
-enum Kernel_states {
-    Kernel_start_up,
-    Kernel_running
-};
-
-TaskList* timerList = NULL;
-TaskList* waitList  = NULL;
-TaskList* readyList = NULL;
-
-TCB* Running = NULL;
-
+i32 kernelMode  = 0;
+// from kernel.h
 i32 tickCounter = 0;
-
-i32 kernelMode  = Kernel_start_up;
-
+//
 void idleTask() { while (1); }
+
+#include "tasks.h"
 
 #endif
 

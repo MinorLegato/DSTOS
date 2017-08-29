@@ -134,24 +134,26 @@ exception create_task(void (*body)(), uint d) {
     volatile int firstExec = 1;
     // Allocate memory for TCB
     TaskNode* task = allocTask(body, d);
+    if (task == NULL) { return FAIL; }
     
     // IF start-up mode THEN
     if (kernelMode == INIT) {
-        insertTask(task, getDummyTask(readyList), getFirstTask(readyList));
-        return 1;
+        addTask_Deadline(readyList, task);
+        return SUCCESS;
     } else  {
         // Disable interrupts
+        isr_off();
         SaveContext();
         
         if (firstExec) { // IF first execution THEN
             firstExec = 0;
-            insertTask(task, getDummyTask(readyList), getFirstTask(readyList));
+            addTask_Deadline(readyList, task);
             LoadContext();
         }
     }
     // ENDIF
     // Return status
-    return 1;
+    return SUCCESS;
 }
 
 void terminate(void) {

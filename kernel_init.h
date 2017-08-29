@@ -11,9 +11,8 @@ exception init_kernel(void) {
     if (timerList = allocTaskList(), timerList == NULL) { return FAIL; };
     if (waitList  = allocTaskList(), waitList  == NULL) { return FAIL; };
     if (readyList = allocTaskList(), readyList == NULL) { return FAIL; };
-
     // Create an idle task
-    create_task(idleTask, 0xFFFFFFFF);
+    if (!create_task(idleTask, 0xFFFFFFFF)) { return FAIL; }
     // Set the kernel in start up mode
     kernelMode = INIT;
     // Return status
@@ -26,6 +25,8 @@ void run(void) {
     // Set the kernel in running mode
     kernelMode = RUNNING;
     // Enable interrupts
+    Running = getFirstTask(readyList)->pTask;
+    //
     LoadContext();
 }
 

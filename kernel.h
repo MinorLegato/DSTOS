@@ -105,7 +105,7 @@ typedef struct {
 
 // Task administration
 int        init_kernel(void);
-exception  create_task(void (* body)(), uint d);
+exception  create_task(void (*body)(), uint d);
 void       terminate(void);
 void       run(void);
 

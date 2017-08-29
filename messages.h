@@ -147,6 +147,7 @@ exception send_wait(mailbox* mBox, void* pData) {
             return OK;
         }
     }
+    return OK;
 }
 
 // NOTE: not tested
@@ -183,6 +184,7 @@ exception receive_wait(mailbox* mBox, void* pData) {
             return OK;
         }
     }
+    return OK;
 }
 
 

@@ -58,6 +58,10 @@ static msg* removeMsg(msg* const m) {
     return m;
 }
 
+static b32 isFull(mailbox* const mBox){
+    return mBox->nMessages >= mBox->nMaxMessages;
+}
+
 static b32 msgPushFront(mailbox* const mBox, msg* const m) {
     if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
 
@@ -157,7 +161,7 @@ exception receive_wait(mailbox* mBox, void* pData) {
             msg* snd = msgPopFront(mBox);
             if (snd->pBlock != NULL) {
                 addTask_Deadline(readyList, snd->pBlock);
-                Running = getFirstNode(readyList)->pTask;
+                Running = getFirstTask(readyList)->pTask;
                 deleteMsg(snd);
             } else {
                 deleteMsg(snd);
@@ -166,11 +170,11 @@ exception receive_wait(mailbox* mBox, void* pData) {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
             msgPushBack(mBox, new);
             addTask_Deadline(readyList, removeNode(firstNode(waitList)));
-            Running = firstNode(readyList)->pTask;
+            Running = getFirstTask(readyList)->pTask;
         }
         LoadContext();
     } else {
-        if (firstTask(waitList)->pTask->DeadLine <= ticks()) {
+        if (getFirstTask(waitList)->pTask->DeadLine <= ticks()) {
             isr_off();
             deleteMsg(msgPopFront(mBox));
             isr_on();
@@ -219,7 +223,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
             msg* snd = msgPopFront(mBox);
             if (snd->pBlock != NULL) {
                 addTask_Deadline(readyList, snd->pBlock);
-                Running = getFirstNode(readyList)->pTask;
+                Running = getFirstTask(readyList)->pTask;
                 deleteMsg(snd);
             } else {
                 deleteMsg(snd);

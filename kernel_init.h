@@ -5,6 +5,7 @@
 #include "kernel_data.h"
 
 exception init_kernel(void) { 
+    set_ticks(0);
     // Set tick counter to zero
     tickCounter = 0;
     // Create necessary data structures
@@ -21,12 +22,13 @@ exception init_kernel(void) {
 
 void run(void) {
     // Initialize interrupt timer
-    isr_on();
     // Set the kernel in running mode
     kernelMode = RUNNING;
     // Enable interrupts
+    isr_on();
+
     Running = getFirstTask(readyList)->pTask;
-    //
+
     LoadContext();
 }
 

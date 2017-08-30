@@ -28,7 +28,6 @@ static void t0() {
 
 static void t1() {
     static char str[100];
-
     receive_wait(mBox, str);
     printf(str);
     terminate();

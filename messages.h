@@ -127,12 +127,12 @@ exception send_wait(mailbox* mBox, void* pData) {
         if (msgRecIsWaiting(mBox)) {
             setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
-            addTask_Deadline(readyList, getTask(rec));
+            addTask_Deadline(readyList, removeNode(getTask(rec)));
             deleteMsg(rec);
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
             msgPushBack(mBox, new);
-            addTask_Deadline(waitList, removeNode(firstNode(readyList)));
+            addTask_Deadline(waitList, removeNode(getFirstTask(readyList)));
             Running = firstNode(readyList)->pTask;
         }
         LoadContext();

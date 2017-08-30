@@ -6,12 +6,12 @@
 
 // Timing
 exception wait(uint nTicks) {
-    volatile int isFirst = TRUE;
+    volatile int first = TRUE;
     isr_off();
     SaveContext();
-    if (isFirst) {
-        isFirst = FALSE;
-        //addTask(timerList, getTask(Running));
+    if (first) {
+        first = FALSE;
+        addTask_nTCnt(timerList, removeNode(getFirstTask(readyList)));
         LoadContext();
     } else {
         if (Running->DeadLine <= tickCounter) {

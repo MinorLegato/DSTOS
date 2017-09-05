@@ -129,11 +129,13 @@ exception send_wait(mailbox* mBox, void* pData) {
             msg* rec = msgPopFront(mBox);
             addTask_Deadline(readyList, removeNode(getTask(rec)));
             deleteMsg(rec);
+            mBox->nBlockedMsg++;
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
             msgPushBack(mBox, new);
             addTask_Deadline(waitList, removeNode(getFirstTask(readyList)));
             Running = firstNode(readyList)->pTask;
+            mBox->nBlockedMsg++;
         }
         LoadContext();
     } else {
@@ -141,6 +143,7 @@ exception send_wait(mailbox* mBox, void* pData) {
             isr_off();
             msg* m = msgPopFront(mBox);
             deleteMsg(m);
+            mBox->nBlockedMsg--;
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -163,21 +166,22 @@ exception receive_wait(mailbox* mBox, void* pData) {
             if (snd->pBlock != NULL) {
                 addTask_Deadline(readyList, snd->pBlock);
                 Running = getFirstTask(readyList)->pTask;
-                deleteMsg(snd);
-            } else {
-                deleteMsg(snd);
             }
+            mBox->nBlockedMsg--;
+            deleteMsg(snd);
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
             msgPushBack(mBox, new);
             addTask_Deadline(readyList, removeNode(firstNode(waitList)));
             Running = getFirstTask(readyList)->pTask;
+            mBox->nBlockedMsg--;
         }
         LoadContext();
     } else {
         if (getFirstTask(waitList)->pTask->DeadLine <= ticks()) {
             isr_off();
             deleteMsg(msgPopFront(mBox));
+            mBox->nBlockedMsg++;
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -200,7 +204,9 @@ exception send_no_wait(mailbox* mBox, void* pData) {
             setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
             addTask_Deadline(readyList, getTask(rec));
+            Running = getFirstTask(readyList)->pTask;
             deleteMsg(rec);
+            mBox->nBlockedMsg++;
             LoadContext();
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
@@ -208,6 +214,7 @@ exception send_no_wait(mailbox* mBox, void* pData) {
                 deleteMsg(msgPopFront(mBox));
             }
             msgPushBack(mBox, new);
+            mBox->nBlockedMsg++;
         }
     }
     return OK;
@@ -226,10 +233,9 @@ int receive_no_wait(mailbox* mBox, void* pData) {
             if (snd->pBlock != NULL) {
                 addTask_Deadline(readyList, snd->pBlock);
                 Running = getFirstTask(readyList)->pTask;
-                deleteMsg(snd);
-            } else {
-                deleteMsg(snd);
             }
+            mBox->nBlockedMsg--;
+            deleteMsg(snd);
         } else {
             msg* new = createMsg(pData); if (!new) { return FAIL; }
             msgPushBack(mBox, new);

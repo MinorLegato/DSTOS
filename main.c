@@ -21,15 +21,26 @@ void isr_on()  {}
 mailbox* mBox = NULL;
 
 static void t0() {
-    static char str[] = "Hello, world!";
-    send_wait(mBox, str);
+    static char snd[] = "from task 1!";
+    static char rec[100];
+
+    send_wait(mBox, snd);
+
+    receive_wait(mBox, rec);
+    printf("%s\n", rec);
+
     terminate();
 }
 
 static void t1() {
-    static char str[100];
-    receive_wait(mBox, str);
-    printf(str);
+    static char snd[] = "from task 2!";
+    static char rec[100];
+
+    receive_wait(mBox, rec);
+
+    printf("%s\n", rec);
+    send_wait(mBox, snd);
+
     terminate();
 }
 

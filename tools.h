@@ -1,6 +1,7 @@
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
+#include <assert.h>
 #include <stdint.h>
 #include <string.h>
 

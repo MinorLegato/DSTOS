@@ -8,7 +8,9 @@ i32 kernelMode  = 0;
 // from kernel.h
 i32 tickCounter = 0;
 //
-void idleTask() { while (1); }
+
+void TimerInt(void) { tickCounter++; }
+void idleTask() { while (1) { SaveContext(); TimerInt(); LoadContext(); } }
 
 #include "tasks.h"
 

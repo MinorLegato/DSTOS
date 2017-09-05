@@ -18,7 +18,7 @@ void isr_on()  {}
 #include <string.h>
 #include <stdint.h>
 
-static mailbox* mBox = NULL;
+mailbox* mBox = NULL;
 
 static void t0() {
     static char str[] = "Hello, world!";
@@ -33,22 +33,13 @@ static void t1() {
     terminate();
 }
 
-void TimerInt(void) { tickCounter++; }
-
 int main(void) {
-    if (!init_kernel()) { printf("init_kernel: FAIL"); }
-
-    mBox = create_mailbox(100, 100);
+    assert(init_kernel());
+    assert(mBox = create_mailbox(100, 100));
 
     create_task(t0, 10);
     create_task(t1, 100);
 
     run();
-
-    while (1) {
-        SaveContext();
-        TimerInt();
-        LoadContext();
-    }
 }
 

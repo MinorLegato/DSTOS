@@ -33,11 +33,11 @@ static TaskNode* allocTask(void (*body)(), uint d) {
     TCB*      tcb  = NULL;
 
     if (task = alloc(sizeof *task), !task)  { return NULL; }
-    if (tcb  = alloc(sizeof *tcb),  !tcb)   { free(task); return NULL; }
+    if (tcb  = alloc(sizeof *tcb),  !tcb)   { delete(task); return NULL; }
 
-    tcb->DeadLine   = d;
+    tcb->DeadLine   = ticks() + d;
     tcb->PC         = body;
-    tcb->SP         = tcb->StackSeg;
+    tcb->SP         = &tcb->StackSeg[STACK_SIZE - 1];
 
     task->nTCnt      = ticks();
 
@@ -83,10 +83,10 @@ static TaskList* allocTaskList() {
     if (taskList = alloc(sizeof *taskList), !taskList)  { return NULL; }
     if (dummy    = alloc(sizeof *dummy), !dummy)        { delete(taskList); return NULL; }
 
-    dummy->pNext        = dummy;
-    dummy->pPrevious    = dummy;
-    taskList->pHead     = dummy;
-    taskList->pTail     = dummy;
+    dummy->pNext     = dummy;
+    dummy->pPrevious = dummy;
+    taskList->pHead  = dummy;
+    taskList->pTail  = dummy;
 
     return taskList;
 }
@@ -144,10 +144,13 @@ exception create_task(void (*body)(), uint d) {
         // Disable interrupts
         isr_off();
         SaveContext();
-        
+
         if (firstExec) { // IF first execution THEN
             firstExec = 0;
+
             addTask_Deadline(readyList, task);
+            Running = getFirstTask(readyList)->pTask;
+
             LoadContext();
         }
     }

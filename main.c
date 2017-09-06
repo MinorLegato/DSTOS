@@ -21,25 +21,35 @@ void isr_on()  {}
 mailbox* mBox = NULL;
 
 static void t0() {
-    static char snd[] = "from task 1!";
-    static char rec[100];
+    static char data[] = "from task 1!";
 
-    send_wait(mBox, snd);
-
-    receive_wait(mBox, rec);
-    printf("%s\n", rec);
+    send_wait(mBox, data);
 
     terminate();
 }
 
 static void t1() {
-    static char snd[] = "from task 2!";
-    static char rec[100];
+    static char data[100];
 
-    receive_wait(mBox, rec);
+    receive_wait(mBox, data);
+    printf("%s\n", data);
 
-    printf("%s\n", rec);
-    send_wait(mBox, snd);
+    terminate();
+}
+
+static void t2() {
+    static char data[] = "from task 2!";
+
+    send_wait(mBox, data);
+
+    terminate();
+}
+
+static void t3() {
+    static char data[100];
+
+    receive_wait(mBox, data);
+    printf("%s\n", data);
 
     terminate();
 }
@@ -48,9 +58,13 @@ int main(void) {
     assert(init_kernel());
     assert(mBox = create_mailbox(100, 100));
 
-    create_task(t0, 10);
-    create_task(t1, 100);
+    create_task(t0, 1);
+    create_task(t1, 3);
+    create_task(t2, 4);
+    create_task(t3, 5);
 
     run();
+
+    while (1) { SaveContext(); TimerInt(); LoadContext(); }
 }
 

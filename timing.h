@@ -3,6 +3,7 @@
 
 #include "kernel.h"
 #include "kernel_data.h"
+#include "tasks.h"
 
 // Timing
 exception wait(uint nTicks) {
@@ -12,6 +13,7 @@ exception wait(uint nTicks) {
     if (first) {
         first = FALSE;
         addTask_nTCnt(timerList, removeNode(getFirstTask(readyList)));
+        Running = getFirstTask(readyList)->pTask;
         LoadContext();
     } else {
         if (Running->DeadLine <= tickCounter) {
@@ -43,8 +45,9 @@ void set_deadline(uint nNew) {
     SaveContext();
     if (isFirst) {
         isFirst = FALSE;
-        Running->DeadLine = nNew + tickCounter;
-        // Reschedule Readylist
+        TaskNode* task = removeNode(getFirstTask(readyList));
+        task->pTask->DeadLine = nNew;
+        addTask_Deadline(readyList, task);
         LoadContext();
     }
 }

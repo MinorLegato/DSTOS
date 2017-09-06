@@ -101,16 +101,8 @@
           <name>BICOMP</name>
           <file> 2</file>
         </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 11</file>
-        </tool>
       </outputs>
       <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 15 35 13 20 10 4 23 18 33 5 8 16 29 27 34 31 9 1 6 3 19 0</file>
-        </tool>
         <tool>
           <name>ICCARM</name>
           <file> 29 5 15 20 1 6 3 9 13 23 16 8 4 10 19 18 0 27 34 33 35 31</file>

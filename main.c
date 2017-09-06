@@ -24,6 +24,7 @@ static void t0() {
     static char data[] = "from task 1!";
 
     send_wait(mBox, data);
+    wait(10);
 
     terminate();
 }
@@ -33,6 +34,7 @@ static void t1() {
 
     receive_wait(mBox, data);
     printf("%s\n", data);
+    wait(10);
 
     terminate();
 }
@@ -41,6 +43,7 @@ static void t2() {
     static char data[] = "from task 2!";
 
     send_wait(mBox, data);
+    wait(10);
 
     terminate();
 }
@@ -49,6 +52,7 @@ static void t3() {
     static char data[100];
 
     receive_wait(mBox, data);
+    wait(10);
     printf("%s\n", data);
 
     terminate();

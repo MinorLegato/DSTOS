@@ -23,13 +23,14 @@ void isr_on()  {}
 
 mailbox* mb = NULL;
 
+void t0(void);
+void t1(void);
+
 void t0(void){
     static char msg[100] = "Hello, world!";
 
     send_wait(mb, msg);
-    
-    wait(500);
-    
+
     terminate();
 }
 
@@ -39,8 +40,6 @@ void t1(void) {
     receive_wait(mb, buffer);
 
     printf("%s\n", buffer);
-
-    wait(1000);
     
     terminate();
 }
@@ -51,6 +50,9 @@ int main(void) {
 
     assert(create_task(t0, 100));
     assert(create_task(t1, 150));
+
+    assert(create_task(t0, 500));
+    assert(create_task(t1, 700));
 
     run();
 

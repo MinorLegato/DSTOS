@@ -18,54 +18,39 @@ void isr_on()  {}
 #include <string.h>
 #include <stdint.h>
 
-mailbox* mBox = NULL;
+#define TEST_PATTERN_1 0xAA
+#define TEST_PATTERN_2 0x55
 
-static void t0() {
-    static char data[] = "from task 1!";
+mailbox* mb = NULL;
 
-    send_wait(mBox, data);
-    wait(10);
+void t0(void){
+    static char msg[100] = "Hello, world!";
 
+    send_wait(mb, msg);
+    
+    wait(500);
+    
     terminate();
 }
 
-static void t1() {
-    static char data[100];
+void t1(void) {
+    static char buffer[100];
 
-    receive_wait(mBox, data);
-    printf("%s\n", data);
-    wait(10);
+    receive_wait(mb, buffer);
 
-    terminate();
-}
+    printf("%s\n", buffer);
 
-static void t2() {
-    static char data[] = "from task 2!";
-
-    send_wait(mBox, data);
-    wait(10);
-
-    terminate();
-}
-
-static void t3() {
-    static char data[100];
-
-    receive_wait(mBox, data);
-    wait(10);
-    printf("%s\n", data);
-
+    wait(1000);
+    
     terminate();
 }
 
 int main(void) {
     assert(init_kernel());
-    assert(mBox = create_mailbox(100, 100));
+    assert(mb = create_mailbox(100, 100));
 
-    create_task(t0, 1);
-    create_task(t1, 3);
-    create_task(t2, 4);
-    create_task(t3, 5);
+    assert(create_task(t0, 100));
+    assert(create_task(t1, 150));
 
     run();
 

@@ -12,7 +12,9 @@ exception wait(uint nTicks) {
     SaveContext();
     if (first) {
         first = FALSE;
-        addTask_nTCnt(timerList, removeNode(getFirstTask(readyList)));
+        TaskNode* node = removeNode(getFirstTask(readyList));
+        node->nTCnt = nTicks + ticks();
+        addTask_nTCnt(timerList, node);
         Running = getFirstTask(readyList)->pTask;
         LoadContext();
     } else {

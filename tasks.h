@@ -143,8 +143,8 @@ exception create_task(void (*body)(), uint d) {
     } else  {
         // Disable interrupts
         isr_off();
-        SaveContext();
 
+        SaveContext();
         if (firstExec) { // IF first execution THEN
             firstExec = 0;
 
@@ -164,6 +164,7 @@ void terminate(void) {
     deleteTask(removeTask(readyList->pHead->pNext));
     // Set next task to be the running task
     Running = getFirstTask(readyList)->pTask;
+
     LoadContext();
 }
 

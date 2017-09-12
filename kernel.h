@@ -57,10 +57,10 @@ typedef struct {
 #else
 
 typedef struct {
-    uint    Context[CONTEXT_SIZE];        
+    uint    Context[CONTEXT_SIZE];
     uint    *SP;
     void    (*PC)();
-    uint    SPSR;     
+    uint    SPSR;
     uint    StackSeg[STACK_SIZE];
     uint    DeadLine;
 } TCB;

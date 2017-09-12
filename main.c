@@ -18,8 +18,7 @@ void isr_on()  {}
 #include <string.h>
 #include <stdint.h>
 
-#define TEST_PATTERN_1 0xAA
-#define TEST_PATTERN_2 0x55
+#include <string.h>
 
 mailbox* mb = NULL;
 
@@ -27,15 +26,15 @@ void t0(void);
 void t1(void);
 
 void t0(void){
-    static char msg[100] = "Hello, world!";
+    char msg[100] = "Hello, world!";
 
     send_wait(mb, msg);
-
+    
     terminate();
 }
 
 void t1(void) {
-    static char buffer[100];
+    char buffer[100];
 
     receive_wait(mb, buffer);
 

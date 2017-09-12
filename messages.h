@@ -162,12 +162,14 @@ exception receive_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
-            memcpy(pData, getFirstMsg(mBox)->pData, getDataSize(mBox));
             msg* snd = msgPopFront(mBox);
+            memcpy(pData, snd->pData, getDataSize(mBox));
+
             if (snd->pBlock != NULL) {
                 addTask_Deadline(readyList, snd->pBlock);
                 Running = getFirstTask(readyList)->pTask;
             }
+
             mBox->nBlockedMsg--;
             deleteMsg(snd);
         } else {

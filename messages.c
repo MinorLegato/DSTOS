@@ -248,7 +248,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
     SaveContext();
-    if (first)  {
+    if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
             memcpy(pData, getFirstMsg(mBox)->pData, getDataSize(mBox));
@@ -260,12 +260,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
             mBox->nBlockedMsg--;
             deleteMsg(snd);
         } else {
-            msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
-            new->Status = RECEIVER;
-            new->pBlock = getFirstTask(readyList);
-            msgPushBack(mBox, new);
-            addTask_Deadline(readyList, removeTask(getFirstTask(waitList)));
-            Running = getFirstTask(readyList)->pTask;
+            return FAIL;
         }     
         LoadContext();
     }

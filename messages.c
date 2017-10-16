@@ -8,30 +8,15 @@ msg* prevMsg(const msg* const node) { return node->pPrevious; }
 TaskNode* getTask(const msg* const m) { return m->pBlock; }
 void*     getData(const msg* const m) { return m->pData; }
 
-b32 setMessage(msg* m, void* data, i32 size) {
-    if (!data || size < 1) { return 0; }
-    delete(m->pData);
-    if (m->pData = alloc(size), !m->pData) { return 0; }
-    memcpy(m->pData, data, size);
-    return 1;
-}
-
 msg* createMsg(void* data, i32 size) {
     msg* m = alloc(sizeof *m);
     m->pData = data;
     return m;
 }
 
-void deleteMsg(msg* m) {
-    delete(m->pData);
-    delete(m);
-}
-
 // =========================================== MAILBOX =========================================== //
 
 i32 getDataSize   (const mailbox* const mBox)   { return mBox->nDataSize; }
-i32 getMsgMax     (const mailbox* const mBox)   { return mBox->nMaxMessages; }
-i32 getMsgCount   (const mailbox* const mBox)   { return mBox->nMessages; }
 
 msg* getFirstMsg  (const mailbox* const mBox)   { return mBox->pHead->pNext; }
 msg* getLastMsg   (const mailbox* const mBox)   { return mBox->pHead->pPrevious; }
@@ -184,7 +169,8 @@ exception receive_wait(mailbox* mBox, void* pData) {
             	mBox->nBlockedMsg--;
             	delete(snd);
             } else {
-            	deleteMsg(snd);
+                delete(snd->pData);
+            	delete(snd);
             }
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
@@ -222,7 +208,6 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgRecIsWaiting(mBox))  {
-            //setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
             memcpy(rec->pData, pData, getDataSize(mBox));
             rec->pBlock->pMessage = NULL;

@@ -51,14 +51,9 @@ msg*        prevMsg         (const msg* const node);
 TaskNode*   getTask         (const msg* const m);
 void*       getData         (const msg* const m);
 
-b32         setMessage      (msg* m, void* data, i32 size);
 msg*        createMsg       (void* data, i32 size);
-void        deleteMsg       (msg* m);
 
 i32         getDataSize     (const mailbox* const mBox);
-i32         getMsgMax       (const mailbox* const mBox);
-i32         getMsgCount     (const mailbox* const mBox);
-
 b32         isEmpty         (const mailbox* const mBox);
 
 msg*        getFirstMsg     (const mailbox* const mBox);

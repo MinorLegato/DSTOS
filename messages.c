@@ -259,7 +259,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
                 Running = getFirstTask(readyList)->pTask;
             }
             mBox->nBlockedMsg--;
-            deleteMsg(snd);
+            delete(snd);
         } else {
             return FAIL;
         }     

@@ -2,13 +2,13 @@
 
 // ================================= TASK NODE FUNCTIONS ========================== //
 
-inline TCB* getTCB       (const TaskNode* const task)    { return task->pTask; }
-inline uint getDeadline  (const TaskNode* const task)    { return getTCB(task)->DeadLine; }
-inline uint getnTCnt     (const TaskNode* const task)    { return task->nTCnt; }
-inline msg* getTaskMsg   (const TaskNode* const task)    { return task->pMessage; }
+TCB* getTCB       (const TaskNode* const task)    { return task->pTask; }
+uint getDeadline  (const TaskNode* const task)    { return getTCB(task)->DeadLine; }
+uint getnTCnt     (const TaskNode* const task)    { return task->nTCnt; }
+msg* getTaskMsg   (const TaskNode* const task)    { return task->pMessage; }
 
-inline TaskNode* getNextTask(const TaskNode* const task) { return task->pNext; }
-inline TaskNode* getPrevTask(const TaskNode* const task) { return task->pPrevious; }
+TaskNode* getNextTask(const TaskNode* const task) { return task->pNext; }
+TaskNode* getPrevTask(const TaskNode* const task) { return task->pPrevious; }
 
 TaskNode* allocTask(void (*body)(), uint d) {
     TaskNode* task = NULL;
@@ -22,7 +22,6 @@ TaskNode* allocTask(void (*body)(), uint d) {
     tcb->SP         = &tcb->StackSeg[STACK_SIZE - 1];
 
     task->nTCnt     = ticks();
-
     task->pTask     = tcb;
 
     return task;
@@ -54,9 +53,9 @@ TaskNode* removeTask(TaskNode* const task) {
 
 // ================================ TASK LIST FUNCTIONS ======================== //
 
-inline TaskNode* getDummyTask (const TaskList* const tasks) { return tasks->pHead; }
-inline TaskNode* getFirstTask (const TaskList* const tasks) { return getDummyTask(tasks)->pNext; }
-inline TaskNode* getLastTask  (const TaskList* const tasks) { return getDummyTask(tasks)->pPrevious; }
+TaskNode* getDummyTask (const TaskList* const tasks) { return tasks->pHead; }
+TaskNode* getFirstTask (const TaskList* const tasks) { return getDummyTask(tasks)->pNext; }
+TaskNode* getLastTask  (const TaskList* const tasks) { return getDummyTask(tasks)->pPrevious; }
 
 TaskList* allocTaskList() {
     TaskList* taskList  = NULL;
@@ -141,7 +140,7 @@ exception create_task(void (*body)(), uint d) {
 
 void terminate(void) {
     // Remove running task from Readylist
-    deleteTask(removeTask(readyList->pHead->pNext));
+    deleteTask(removeTask(getFirstTask(readyList)));
     // Set next task to be the running task
     Running = getFirstTask(readyList)->pTask;
 

@@ -6,13 +6,12 @@ char smsg[100] = "Hello, world!";
 char buffer[100];
 
 void s0() {
-    send_wait(mb, smsg);
+    send_no_wait(mb, smsg);
     terminate();
 }
 
 void r0() {
     receive_wait(mb, buffer);
-    printf("%s\n", buffer);
     terminate();
 }
 

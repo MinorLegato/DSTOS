@@ -226,7 +226,7 @@ exception send_no_wait(mailbox* mBox, void* pData) {
             msg* rec = msgPopFront(mBox);
             addTask_Deadline(readyList, getTask(rec));
             Running = getFirstTask(readyList)->pTask;
-            deleteMsg(rec);
+            delete(rec);
             mBox->nBlockedMsg++;
             LoadContext();
         } else {
@@ -234,7 +234,7 @@ exception send_no_wait(mailbox* mBox, void* pData) {
             new->Status = SENDER;
             new->pBlock = getFirstTask(readyList);
             if(isFull(mBox)) {
-                deleteMsg(msgPopFront(mBox));
+                delete(msgPopFront(mBox));
             }
             msgPushBack(mBox, new);
             mBox->nBlockedMsg++;
@@ -258,7 +258,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
                 Running = getFirstTask(readyList)->pTask;
             }
             mBox->nBlockedMsg--;
-            deleteMsg(snd);
+            delete(snd);
         } else {
             return FAIL;
         }     

@@ -5,17 +5,17 @@ mailbox* mb = NULL;
 char smsg[100] = "Hello, world!";
 char buffer[100];
 
-void s0(void) {
+void s0() {
     send_wait(mb, smsg);
     terminate();
 }
 
-void r0(void) {
+void r0() {
     receive_wait(mb, buffer);
     terminate();
 }
 
-void p0(void) {
+void p0() {
     printf("%s\n", buffer);
     terminate();
 }

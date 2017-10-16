@@ -1,12 +1,30 @@
 #include "kernel_data.h"
 
-extern i32 kernelMode   = 0;
-extern i32 tickCounter  = 0;
+extern i32 memoryCounter    = 0;
+extern i32 kernelMode       = 0;
+extern i32 tickCounter      = 0;
 
 extern TaskList*   timerList    = NULL;
 extern TaskList*   waitList     = NULL;
 extern TaskList*   readyList    = NULL;
 extern TCB*        Running      = NULL;
+
+void* alloc(size_t size) {
+    isr_off();
+    void* data = calloc(1, size);
+    if (data != NULL) { memoryCounter++; }
+    isr_on();
+    return data;
+}
+
+void delete(void* data) {
+    if (data) {
+        isr_off();
+        free(data);
+        memoryCounter--;
+        isr_on();
+    }
+}
 
 void TimerInt(void) {
     tickCounter++;

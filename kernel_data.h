@@ -9,6 +9,7 @@ typedef listobj TaskNode;
 
 // ================================= TYPES/DATA =================================== //
 
+extern i32 memoryCounter;
 extern i32 kernelMode;
 extern i32 tickCounter;
 
@@ -28,9 +29,9 @@ TaskNode*   getNextTask (const TaskNode* const task);
 TaskNode*   getPrevTask (const TaskNode* const task);
 TaskNode*   allocTask   (void (*body)(), uint d);
 
-void        deleteTask(TaskNode* tasks);
-void        insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next);
-TaskNode*   removeTask(TaskNode* const task);
+void        deleteTask  (TaskNode* tasks);
+void        insertTask  (TaskNode* const new, TaskNode* const prev, TaskNode* const next);
+TaskNode*   removeTask  (TaskNode* const task);
 
 TaskNode*   getDummyTask    (const TaskList* const tasks);
 TaskNode*   getFirstTask    (const TaskList* const tasks);
@@ -58,6 +59,8 @@ i32         getDataSize     (const mailbox* const mBox);
 i32         getMsgMax       (const mailbox* const mBox);
 i32         getMsgCount     (const mailbox* const mBox);
 
+b32         isEmpty         (const mailbox* const mBox);
+
 msg*        getFirstMsg     (const mailbox* const mBox);
 msg*        getLastMsg      (const mailbox* const mBox);
 msg*        getDummyMsg     (const mailbox* const mBox);
@@ -76,6 +79,9 @@ b32         msgSndIsWaiting (const mailbox* const mBox);
 // ============================================================================================ //
 
 void TimerInt(void);
+
+void* alloc(size_t size);
+void delete(void* data);
 
 #endif
 

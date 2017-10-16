@@ -1,7 +1,37 @@
-#ifndef __KERNEL_INIT_H__
-#define __KERNEL_INIT_H__
-
 #include "kernel_data.h"
+
+extern i32 kernelMode   = 0;
+extern i32 tickCounter  = 0;
+
+extern TaskList*   timerList    = NULL;
+extern TaskList*   waitList     = NULL;
+extern TaskList*   readyList    = NULL;
+extern TCB*        Running      = NULL;
+
+void TimerInt(void) {
+    tickCounter++;
+
+    TaskNode* iter = getFirstTask(timerList);
+
+    while (iter != getDummyTask(timerList) && getnTCnt(iter) <= ticks()) {
+        addTask_nTCnt(readyList, removeTask(iter));
+        iter = getFirstTask(timerList);
+    }
+
+    iter = getFirstTask(waitList);
+
+    while (iter != getDummyTask(waitList) && getDeadline(iter) <= ticks()) {
+        addTask_Deadline(readyList, removeTask(iter));
+        iter = getFirstTask(waitList);
+    }
+
+    Running = getFirstTask(readyList)->pTask;
+}
+
+void idleTask() { while (1) { SaveContext(); TimerInt(); LoadContext(); } }
+
+void isr_off() {  }
+void isr_on()  {  }
 
 exception init_kernel(void) { 
     set_ticks(0);
@@ -32,6 +62,4 @@ void run(void) {
     isr_on();
     LoadContext();
 }
-
-#endif
 

@@ -1,6 +1,3 @@
-#ifndef __TIMING_H__
-#define __TIMING_H__
-
 #include "kernel_data.h"
 
 // Timing
@@ -51,6 +48,4 @@ void set_deadline(uint nNew) {
         LoadContext();
     }
 }
-
-#endif
 

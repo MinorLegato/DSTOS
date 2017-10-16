@@ -1,19 +1,16 @@
-#ifndef __TASKS_H__
-#define __TASKS_H__
-
 #include "kernel_data.h"
 
 // ================================= TASK NODE FUNCTIONS ========================== //
 
-static inline TCB* getTCB       (const TaskNode* const task)    { return task->pTask; }
-static inline uint getDeadline  (const TaskNode* const task)    { return getTCB(task)->DeadLine; }
-static inline uint getnTCnt     (const TaskNode* const task)    { return task->nTCnt; }
-static inline msg* getTaskMsg   (const TaskNode* const task)    { return task->pMessage; }
+inline TCB* getTCB       (const TaskNode* const task)    { return task->pTask; }
+inline uint getDeadline  (const TaskNode* const task)    { return getTCB(task)->DeadLine; }
+inline uint getnTCnt     (const TaskNode* const task)    { return task->nTCnt; }
+inline msg* getTaskMsg   (const TaskNode* const task)    { return task->pMessage; }
 
-static inline TaskNode* getNextTask(const TaskNode* const task) { return task->pNext; }
-static inline TaskNode* getPrevTask(const TaskNode* const task) { return task->pPrevious; }
+inline TaskNode* getNextTask(const TaskNode* const task) { return task->pNext; }
+inline TaskNode* getPrevTask(const TaskNode* const task) { return task->pPrevious; }
 
-static TaskNode* allocTask(void (*body)(), uint d) {
+TaskNode* allocTask(void (*body)(), uint d) {
     TaskNode* task = NULL;
     TCB*      tcb  = NULL;
 
@@ -31,12 +28,12 @@ static TaskNode* allocTask(void (*body)(), uint d) {
     return task;
 }
 
-static void deleteTask(TaskNode* tasks) {
+void deleteTask(TaskNode* tasks) {
     delete(tasks->pTask);
     delete(tasks);
 }
 
-static void insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next) {
+void insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next) {
     if (new && prev && next) {
         next->pPrevious = new;
         new->pNext      = next;
@@ -45,7 +42,7 @@ static void insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* cons
     }
 }
 
-static TaskNode* removeTask(TaskNode* const task) {
+TaskNode* removeTask(TaskNode* const task) {
     if (task) {
         TaskNode* const p   = task->pPrevious;
         TaskNode* const n   = task->pNext;
@@ -57,11 +54,11 @@ static TaskNode* removeTask(TaskNode* const task) {
 
 // ================================ TASK LIST FUNCTIONS ======================== //
 
-static inline TaskNode* getDummyTask (const TaskList* const tasks) { return tasks->pHead; }
-static inline TaskNode* getFirstTask (const TaskList* const tasks) { return getDummyTask(tasks)->pNext; }
-static inline TaskNode* getLastTask  (const TaskList* const tasks) { return getDummyTask(tasks)->pPrevious; }
+inline TaskNode* getDummyTask (const TaskList* const tasks) { return tasks->pHead; }
+inline TaskNode* getFirstTask (const TaskList* const tasks) { return getDummyTask(tasks)->pNext; }
+inline TaskNode* getLastTask  (const TaskList* const tasks) { return getDummyTask(tasks)->pPrevious; }
 
-static TaskList* allocTaskList() {
+TaskList* allocTaskList() {
     TaskList* taskList  = NULL;
     TaskNode* dummy     = NULL;
 
@@ -76,11 +73,11 @@ static TaskList* allocTaskList() {
     return taskList;
 }
   
-static int noTasks(const TaskList* const tasks) {
+int noTasks(const TaskList* const tasks) {
     return tasks->pHead == tasks->pTail;
 }
 
-static void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
+void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
     if (!new) { return; }
 
     TaskNode* iter = getFirstTask(tasks);
@@ -92,7 +89,7 @@ static void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
     insertTask(new, getPrevTask(iter), iter);
 }
 
-static void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
+void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
     if (!new) { return; }
 
     TaskNode* iter = getFirstTask(tasks); // NULL;
@@ -104,7 +101,7 @@ static void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
     insertTask(new, getPrevTask(iter), iter);
 }
 
-static void printTaskList(const TaskList* const tasks) {
+void printTaskList(const TaskList* const tasks) {
     TaskNode* iter = getFirstTask(tasks);
 
     while (iter != getDummyTask(tasks)) {
@@ -150,6 +147,4 @@ void terminate(void) {
 
     LoadContext();
 }
-
-#endif
 

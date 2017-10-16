@@ -2324,19 +2324,28 @@
     <name>$PROJ_DIR$\kernel_data.h</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\kernel_init.h</name>
+    <name>$PROJ_DIR$\kernel_hwdep.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\kernel_hwdep.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\kernel_init.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\messages.h</name>
+    <name>$PROJ_DIR$\messages.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\tasks.h</name>
+    <name>$PROJ_DIR$\tasks.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\timing.h</name>
+    <name>$PROJ_DIR$\timing.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\tools.h</name>
   </file>
 </project>
 

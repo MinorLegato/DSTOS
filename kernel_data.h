@@ -4,18 +4,18 @@
 #include "kernel.h"
 #include "tools.h"
 
-i32 kernelMode  = 0;
-i32 tickCounter = 0;
-
 typedef list    TaskList;
 typedef listobj TaskNode;
 
 // ================================= TYPES/DATA =================================== //
 
-TaskList*   timerList   = NULL;
-TaskList*   waitList    = NULL;
-TaskList*   readyList   = NULL;
-TCB*        Running     = NULL;
+extern i32 kernelMode;
+extern i32 tickCounter;
+
+extern TaskList*   timerList;
+extern TaskList*   waitList;
+extern TaskList*   readyList;
+extern TCB*        Running;
 
 // ====================================== TASKS API  ====================================== //
 
@@ -75,30 +75,7 @@ b32         msgSndIsWaiting (const mailbox* mBox);
 
 // ============================================================================================ //
 
-void TimerInt(void) {
-    tickCounter++;
-
-    TaskNode* iter = getFirstTask(timerList);
-
-    while (iter != getDummyTask(timerList) && getnTCnt(iter) <= ticks()) {
-        addTask_nTCnt(readyList, removeTask(iter));
-        iter = getFirstTask(timerList);
-    }
-
-    iter = getFirstTask(waitList);
-
-    while (iter != getDummyTask(waitList) && getDeadline(iter) <= ticks()) {
-        addTask_Deadline(readyList, removeTask(iter));
-        iter = getFirstTask(waitList);
-    }
-
-    Running = getFirstTask(readyList)->pTask;
-}
-
-void idleTask() { while (1) { SaveContext(); TimerInt(); LoadContext(); } }
-
-void isr_off() {  }
-void isr_on()  {  }
+void TimerInt(void);
 
 #endif
 

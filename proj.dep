@@ -2,11 +2,21 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>2270820451</fileChecksum>
+  <fileChecksum>3193065339</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
       <file>$PROJ_DIR$\kernel_init.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\timing.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\messages.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\messages.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\kernel_hwdep.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\kernel_init.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\timing.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\kernel_hwdep.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\kernel_init.o</file>
       <file>$PROJ_DIR$\tasks.h</file>
       <file>$PROJ_DIR$\tools.h</file>
       <file>$TOOLKIT_DIR$\lib\m4t_al.a</file>
@@ -32,11 +42,13 @@
       <file>$PROJ_DIR$\timing.h</file>
       <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
       <file>$PROJ_DIR$\messages.h</file>
+      <file>$PROJ_DIR$\kernel_hwdep.h</file>
       <file>$PROJ_DIR$\Debug\Exe\proj.out</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$PROJ_DIR$\messages.c</file>
       <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
       <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\kernel_hwdep.c</file>
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$PROJ_DIR$\timing.c</file>
       <file>$TOOLKIT_DIR$\lib\rt4t_al.a</file>
@@ -53,30 +65,53 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 26</file>
+          <file> 37</file>
         </tool>
       </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\kernel_init.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 10</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 6</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31 30 40 46 25 38 22 32 43 19 20 12 34 47 49 21 29 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40 46 25 29 23 12 20 19 49 47 30 43 38 22 32 34 21 31</file>
+        </tool>
+      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 7</file>
+          <file> 17</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 30</file>
+          <file> 41</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 28 21 20 29 34 15 27 12 22 31 9 10 2 24 35 37 11 19 13 40 32 0</file>
+          <file> 31 30 40 46 25 38 22 32 43 19 20 12 34 47 49 21 29 23</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 34 2 31 32 21 12 11 40 0 20 29 15 27 22 24 10 28 9 37 19 35 13</file>
+          <file> 12 25 40 46 29 23 30 20 19 49 47 31 43 38 22 32 34 21</file>
         </tool>
       </inputs>
     </file>
@@ -85,7 +120,7 @@
       <outputs>
         <tool>
           <name>AARM</name>
-          <file> 16</file>
+          <file> 26</file>
         </tool>
       </outputs>
     </file>
@@ -94,21 +129,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 5</file>
+          <file> 15</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 38</file>
+          <file> 50</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 20 29 34 15 27 12 22 31 9 10</file>
+          <file> 30 40 46 25 38 22 32 43 19 20</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 20 29 34 15 27 22 31 9 10</file>
+          <file> 30 40 46 25 38 32 43 19 20</file>
         </tool>
       </inputs>
     </file>
@@ -117,10 +152,102 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 14 16 7 36 33 3 39</file>
+          <file> 24 26 9 10 17 3 8 7 48 45 13 51</file>
         </tool>
       </inputs>
     </file>
+    <file>
+      <name>$PROJ_DIR$\messages.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 3</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 2</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31 30 40 46 25 38 22 32 43 19 20 12 34 47 49 21 29 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46 25 29 40 12 20 19 49 47 23 30 43 38 22 32 34 21 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\kernel_hwdep.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 38 20 25 46 43 19 22 32 40 36</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\timing.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 7</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31 30 40 46 25 38 22 32 43 19 20 12 34 47 49 21 29 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 30 25 40 46 29 23 12 20 19 49 47 31 43 38 22 32 34 21</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\tasks.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 8</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31 30 40 46 25 38 22 32 43 19 20 12 34 47 49 21 29 23</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40 25 46 29 12 20 19 49 47 23 30 43 38 22 32 34 21 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
   </configuration>
   <configuration>
     <name>Release</name>

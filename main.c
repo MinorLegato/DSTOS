@@ -1,7 +1,4 @@
-#include "messages.c"
-#include "tasks.c"
-#include "timing.c"
-#include "kernel_init.c"
+#include "kernel_data.h"
 
 mailbox* mb = NULL;
 

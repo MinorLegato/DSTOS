@@ -161,18 +161,19 @@ exception receive_wait(mailbox* mBox, void* pData) {
             memcpy(pData, snd->pData, getDataSize(mBox));
 
             if (snd->pBlock != NULL && mBox->nBlockedMsg != 0) {
+            	snd->pBlock->pMessage = NULL;
                 addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
-            	mBox->nBlockedMsg--;
-            	delete(snd);
+            	  mBox->nBlockedMsg--;
             } else {
-                delete(snd->pData);
-            	delete(snd);
+            	  delete(snd->pData);
             }
+            delete(snd);
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = RECEIVER;
             new->pBlock = getFirstTask(readyList);
+            getFirstTask(readyList)->pMessage = new;
             msgPushBack(mBox, new);
             addTask_Deadline(readyList, removeTask(getFirstTask(waitList)));
             Running = getFirstTask(readyList)->pTask;
@@ -234,13 +235,16 @@ int receive_no_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
-            memcpy(pData, getFirstMsg(mBox)->pData, getDataSize(mBox));
-            msg* snd = msgPopFront(mBox);
-            if (snd->pBlock != NULL) {
-                addTask_Deadline(readyList, snd->pBlock);
+        	msg* snd = msgPopFront(mBox);
+            memcpy(pData, snd->pData, getDataSize(mBox));
+            if (snd->pBlock != NULL && mBox->nBlockedMsg != 0) {
+            	snd->pBlock->pMessage = NULL;
+                addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
+                mBox->nBlockedMsg--;
+            } else {
+            	delete(snd->pData);
             }
-            mBox->nBlockedMsg--;
             delete(snd);
         } else {
             return FAIL;

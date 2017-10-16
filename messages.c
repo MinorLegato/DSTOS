@@ -185,7 +185,7 @@ exception receive_wait(mailbox* mBox, void* pData) {
             }
 
             mBox->nBlockedMsg--;
-            deleteMsg(snd);
+            delete(snd);
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = RECEIVER;

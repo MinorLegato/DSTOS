@@ -39,15 +39,12 @@ TaskNode*   getLastTask     (const TaskList* const tasks);
 
 TaskList*   allocTaskList();
 
-int     noTasks             (const TaskList* const tasks);
 void    addTask_Deadline    (TaskList* const tasks, TaskNode* const new);
 void    addTask_nTCnt       (TaskList* const tasks, TaskNode* const new);
 void    printTaskList       (const TaskList* const tasks);
 
 // ================================== MESSAGES API ========================================= //
 
-msg*        nextMsg         (const msg* const node);
-msg*        prevMsg         (const msg* const node);
 TaskNode*   getTask         (const msg* const m);
 void*       getData         (const msg* const m);
 

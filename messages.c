@@ -2,9 +2,6 @@
 
 // =========================================== MESSAGE =========================================== //
 
-msg* nextMsg(const msg* const node) { return node->pNext; }
-msg* prevMsg(const msg* const node) { return node->pPrevious; }
-
 TaskNode* getTask(const msg* const m) { return m->pBlock; }
 void*     getData(const msg* const m) { return m->pData; }
 

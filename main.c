@@ -1,7 +1,7 @@
 #include "messages.c"
 #include "tasks.c"
 #include "timing.c"
-#include "kernel_init.h"
+#include "kernel_init.c"
 
 mailbox* mb = NULL;
 
@@ -13,7 +13,7 @@ void s0(void) {
 
 void r0(void) {
     char buffer[100];
-    receive_no_wait(mb, buffer);
+    receive_wait(mb, buffer);
     printf("%s\n", buffer);
     terminate();
 }
@@ -22,8 +22,8 @@ int main(void) {
     assert(init_kernel());
     assert(mb = create_mailbox(100, 100));
 
-    assert(create_task(s0, 1000));
-    assert(create_task(r0, 2000));
+    assert(create_task(s0, 500));
+    assert(create_task(r0, 1000));
 
     run();
 }

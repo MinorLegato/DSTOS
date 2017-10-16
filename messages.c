@@ -120,12 +120,12 @@ static inline b32 msgSndIsWaiting(const mailbox* mBox) { return mBox->nBlockedMs
 
 // NOTE: not tested
 exception send_wait(mailbox* mBox, void* pData) {
-    volatile int firstExec = TRUE;
+    volatile int first = TRUE;
     isr_off();
     SaveContext();
 
-    if (firstExec) {
-        firstExec = FALSE;
+    if (first) {
+        first = FALSE;
         if (msgRecIsWaiting(mBox)) {
             setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
@@ -253,3 +253,4 @@ int receive_no_wait(mailbox* mBox, void* pData) {
 }
 
 #endif
+

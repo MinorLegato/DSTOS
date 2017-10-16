@@ -97,8 +97,8 @@ void TimerInt(void) {
 
 void idleTask() { while (1) { SaveContext(); TimerInt(); LoadContext(); } }
 
-void isr_off() {}
-void isr_on()  {}
+void isr_off() {  }
+void isr_on()  {  }
 
 #endif
 

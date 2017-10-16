@@ -61,7 +61,7 @@ LoadContext
 
     cmp r14,#0
     beq trap
-    ldr r0,[r0,#8]                    ; Load value for SPSR
+      ldr r0,[r0,#8]                    ; Load value for SPSR
     cmp r0,#0                         ; If SPSR = 0, first loading.
     beq skipSPSR                      ; then skip loading SPSR.
     msr CPSR_c,r0                     ; else CPSR = TCB->SPSR

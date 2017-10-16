@@ -3,9 +3,6 @@
 
 #include "kernel_data.h"
 
-#include "string.h"
-#include <stdlib.h>
-
 // ================================= TASK NODE FUNCTIONS ========================== //
 
 static inline TCB* getTCB       (const TaskNode* const task)    { return task->pTask; }
@@ -27,9 +24,9 @@ static TaskNode* allocTask(void (*body)(), uint d) {
     tcb->PC         = body;
     tcb->SP         = &tcb->StackSeg[STACK_SIZE - 1];
 
-    task->nTCnt      = ticks();
+    task->nTCnt     = ticks();
 
-    task->pTask = tcb;
+    task->pTask     = tcb;
 
     return task;
 }
@@ -120,20 +117,20 @@ static void printTaskList(const TaskList* const tasks) {
 
 exception create_task(void (*body)(), uint d) {
     volatile int firstExec = 1;
-    // Allocate memory for TCB
+    // allocate memory for TCB
     TaskNode* task = allocTask(body, d);
     if (task == NULL) { return FAIL; }
     
-    // IF start-up mode THEN
+    // if start-up mode then
     if (kernelMode == INIT) {
         addTask_Deadline(readyList, task);
         return SUCCESS;
     } else  {
-        // Disable interrupts
+        // disable interrupts
         isr_off();
 
         SaveContext();
-        if (firstExec) { // IF first execution THEN
+        if (firstExec) { // if first execution then
             firstExec = 0;
 
             addTask_Deadline(readyList, task);
@@ -142,8 +139,6 @@ exception create_task(void (*body)(), uint d) {
             LoadContext();
         }
     }
-    // ENDIF
-    // Return status
     return SUCCESS;
 }
 
@@ -152,6 +147,7 @@ void terminate(void) {
     deleteTask(removeTask(readyList->pHead->pNext));
     // Set next task to be the running task
     Running = getFirstTask(readyList)->pTask;
+
     LoadContext();
 }
 

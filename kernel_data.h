@@ -70,8 +70,8 @@ b32         msgPushBack     (mailbox* const mBox, msg* const m);
 msg*        msgPopFront     (mailbox* const mBox);
 msg*        msgPopBack      (mailbox* const mBox);
 
-b32         msgRecIsWaiting (const mailbox* mBox);
-b32         msgSndIsWaiting (const mailbox* mBox);
+b32         msgRecIsWaiting (const mailbox* const mBox);
+b32         msgSndIsWaiting (const mailbox* const mBox);
 
 // ============================================================================================ //
 

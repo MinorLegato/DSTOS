@@ -19,8 +19,8 @@ int main(void) {
     assert(init_kernel());
     assert(mb = create_mailbox(100, 100));
 
-    assert(create_task(s0, 500));
-    assert(create_task(r0, 1000));
+    assert(create_task(s0, 1000));
+    assert(create_task(r0, 500));
 
     run();
 }

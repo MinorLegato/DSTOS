@@ -6,17 +6,12 @@ char smsg[100] = "Hello, world!";
 char buffer[100];
 
 void s0() {
-    send_wait(mb, smsg);
+    send_no_wait(mb, smsg);
     terminate();
 }
 
 void r0() {
     receive_wait(mb, buffer);
-    terminate();
-}
-
-void p0() {
-    printf("%s\n", buffer);
     terminate();
 }
 
@@ -26,7 +21,6 @@ int main(void) {
 
     assert(create_task(s0, 1000));
     assert(create_task(r0, 500));
-    assert(create_task(p0, 2000));
 
     run();
 }

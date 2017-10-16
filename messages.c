@@ -169,7 +169,6 @@ exception send_wait(mailbox* mBox, void* pData) {
 // NOTE: not tested
 exception receive_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
-
     isr_off();
     SaveContext();
 
@@ -179,13 +178,14 @@ exception receive_wait(mailbox* mBox, void* pData) {
             msg* snd = msgPopFront(mBox);
             memcpy(pData, snd->pData, getDataSize(mBox));
 
-            if (snd->pBlock != NULL) {
-                addTask_Deadline(readyList, snd->pBlock);
+            if (snd->pBlock != NULL && mBox->nBlockedMsg != 0) {
+                addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
+            	mBox->nBlockedMsg--;
+            	delete(snd);
+            } else {
+            	deleteMsg(snd);
             }
-
-            mBox->nBlockedMsg--;
-            deleteMsg(snd);
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = RECEIVER;
@@ -222,19 +222,20 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgRecIsWaiting(mBox))  {
-            setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
+            //setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
-            addTask_Deadline(readyList, getTask(rec));
+            memcpy(rec->pData, pData, getDataSize(mBox));
+            rec->pBlock->pMessage = NULL;
+            addTask_Deadline(readyList, removeTask(getTask(rec)));
             Running = getFirstTask(readyList)->pTask;
-            deleteMsg(rec);
-            mBox->nBlockedMsg++;
+            delete(rec);
             LoadContext();
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = SENDER;
             new->pBlock = getFirstTask(readyList);
             if(isFull(mBox)) {
-                deleteMsg(msgPopFront(mBox));
+                delete(msgPopFront(mBox));
             }
             msgPushBack(mBox, new);
             mBox->nBlockedMsg++;

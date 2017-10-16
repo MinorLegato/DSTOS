@@ -67,7 +67,7 @@ msg*        getDummyMsg     (const mailbox* const mBox);
 
 void        insertMsg       (msg* const new, msg* const prev, msg* const next);
 msg*        removeMsg       (msg* const m);
-b32         isFull          (mailbox* const mBox);
+b32         isFull          (const mailbox* const mBox);
 b32         msgPushFront    (mailbox* const mBox, msg* const m);
 b32         msgPushBack     (mailbox* const mBox, msg* const m);
 msg*        msgPopFront     (mailbox* const mBox);

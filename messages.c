@@ -52,7 +52,7 @@ msg* removeMsg(msg* const m) {
     return m;
 }
 
-b32 isFull(mailbox* const mBox){
+b32 isFull(const mailbox* const mBox){
     return mBox->nMessages >= mBox->nMaxMessages;
 }
 
@@ -75,7 +75,6 @@ b32 msgPushFront(mailbox* const mBox, msg* const m) {
 
 b32 msgPushBack(mailbox* const mBox, msg* const m) {
     if (isFull(mBox)) { return 0; }
-
     mBox->nMessages++;
     insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
 
@@ -84,15 +83,15 @@ b32 msgPushBack(mailbox* const mBox, msg* const m) {
 
 msg* msgPopFront(mailbox* const mBox) {
     if (isEmpty(mBox)) { return NULL; }
-
     mBox->nMessages--;
+    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getFirstMsg(mBox));
 }
 
 msg* msgPopBack(mailbox* const mBox) {
     if (isEmpty(mBox)) { return NULL; }
-
     mBox->nMessages--;
+    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getLastMsg(mBox));
 }
 
@@ -136,9 +135,8 @@ exception send_wait(mailbox* mBox, void* pData) {
             msg* rec = msgPopFront(mBox);
             memcpy(rec->pData, pData, getDataSize(mBox));
             addTask_Deadline(readyList, removeTask(getTask(rec)));
-            delete(rec);
             Running = getFirstTask(readyList)->pTask;
-            mBox->nBlockedMsg++;
+            delete(rec);
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = SENDER;
@@ -153,8 +151,12 @@ exception send_wait(mailbox* mBox, void* pData) {
     } else {
         if (deadline() <= ticks()) {
             isr_off();
-            deleteMsg(msgPopFront(mBox));
+
+            TaskNode* rTask = getFirstTask(readyList);
+            delete(getTaskMsg(rTask));
+            rTask->pMessage = NULL;
             mBox->nBlockedMsg--;
+
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -195,10 +197,14 @@ exception receive_wait(mailbox* mBox, void* pData) {
         }
         LoadContext();
     } else {
-        if (getFirstTask(waitList)->pTask->DeadLine <= ticks()) {
+        if (deadline() <= ticks()) {
             isr_off();
-            deleteMsg(msgPopFront(mBox));
-            mBox->nBlockedMsg++;
+            
+            TaskNode* rTask = getFirstTask(readyList);
+            delete(getTaskMsg(rTask));
+            rTask->pMessage = NULL;
+            mBox->nBlockedMsg--;
+
             isr_on();
             return DEADLINE_REACHED;
         } else {

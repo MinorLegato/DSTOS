@@ -221,6 +221,10 @@
       <name>$PROJ_DIR$\messages.c</name>
       <outputs>
         <tool>
+          <name>ICCARM</name>
+          <file> 30</file>
+        </tool>
+        <tool>
           <name>BICOMP</name>
           <file> 42</file>
         </tool>
@@ -232,7 +236,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 48 18 7 2 5 28 20 21 12 11 35 17 26 22 8 9 6 47</file>
+          <file> 11 21 20 7 12 48 5 18 2 28 35 17 26 22 8 9 6 47</file>
         </tool>
       </inputs>
     </file>

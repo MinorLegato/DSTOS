@@ -5,9 +5,6 @@
 
 #include "kernel_data.h"
 
-void isr_off() {}
-void isr_on()  {}
-
 #include "messages.h"
 #include "tasks.h"
 #include "timing.h"
@@ -22,24 +19,16 @@ void isr_on()  {}
 
 mailbox* mb = NULL;
 
-void t0(void);
-void t1(void);
-
-void t0(void){
+void s0(void) {
     char msg[100] = "Hello, world!";
-
     send_wait(mb, msg);
-    
     terminate();
 }
 
-void t1(void) {
+void r0(void) {
     char buffer[100];
-
-    receive_wait(mb, buffer);
-
+    receive_no_wait(mb, buffer);
     printf("%s\n", buffer);
-    
     terminate();
 }
 
@@ -47,14 +36,9 @@ int main(void) {
     assert(init_kernel());
     assert(mb = create_mailbox(100, 100));
 
-    assert(create_task(t0, 100));
-    assert(create_task(t1, 150));
-
-    assert(create_task(t0, 500));
-    assert(create_task(t1, 700));
+    assert(create_task(s0, 1000));
+    assert(create_task(r0, 2000));
 
     run();
-
-    while (1) { SaveContext(); TimerInt(); LoadContext(); }
 }
 

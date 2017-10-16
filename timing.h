@@ -12,7 +12,7 @@ exception wait(uint nTicks) {
     SaveContext();
     if (first) {
         first = FALSE;
-        TaskNode* node = removeNode(getFirstTask(readyList));
+        TaskNode* node = removeTask(getFirstTask(readyList));
         node->nTCnt = nTicks + ticks();
         addTask_nTCnt(timerList, node);
         Running = getFirstTask(readyList)->pTask;
@@ -47,7 +47,7 @@ void set_deadline(uint nNew) {
     SaveContext();
     if (isFirst) {
         isFirst = FALSE;
-        TaskNode* task = removeNode(getFirstTask(readyList));
+        TaskNode* task = removeTask(getFirstTask(readyList));
         task->pTask->DeadLine = nNew;
         addTask_Deadline(readyList, task);
         LoadContext();

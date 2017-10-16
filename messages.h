@@ -4,6 +4,36 @@
 #include "kernel.h"
 #include "kernel_data.h"
 
+// ============================================= API ============================================= //
+
+msg*        nextMsg         (const msg* const node);
+msg*        prevMsg         (const msg* const node);
+TaskNode*   getTask         (const msg* const m);
+void*       getData         (const msg* const m);
+
+b32         setMessage      (msg* const m, const void* const data, i32 size);
+msg*        createMsg       (void* data, i32 size);
+void        deleteMsg       (msg* m);
+
+i32         getDataSize     (const mailbox* const mBox);
+i32         getMsgMax       (const mailbox* const mBox);
+i32         getMsgCount     (const mailbox* const mBox);
+
+msg*        getFirstMsg     (const mailbox* const mBox);
+msg*        getLastMsg      (const mailbox* const mBox);
+msg*        getDummyMsg     (const mailbox* const mBox);
+
+void        insertMsg       (msg* const new, msg* const prev, msg* const next);
+msg*        removeMsg       (msg* const m);
+b32         isFull          (mailbox* const mBox);
+b32         msgPushFront    (mailbox* const mBox, msg* const m);
+b32         msgPushBack     (mailbox* const mBox, msg* const m);
+msg*        msgPopFront     (mailbox* const mBox);
+msg*        msgPopBack      (mailbox* const mBox);
+
+b32         msgRecIsWaiting (const mailbox* mBox);
+b32         msgSndIsWaiting (const mailbox* mBox);
+
 // =========================================== MESSAGE =========================================== //
 
 static inline msg* nextMsg(const msg* const node) { return node->pNext; }
@@ -12,7 +42,7 @@ static inline msg* prevMsg(const msg* const node) { return node->pPrevious; }
 static inline TaskNode* getTask(const msg* const m) { return m->pBlock; }
 static inline void*     getData(const msg* const m) { return m->pData; }
 
-static b32 setMessage(msg* const m, const void* data, i32 size) {
+static b32 setMessage(msg* const m, const void* const data, i32 size) {
     if (!data || size < 1) { return 0; }
     delete(m->pData);
     if (m->pData = alloc(size), !m->pData) { return 0; }
@@ -60,8 +90,12 @@ static b32 isFull(mailbox* const mBox){
     return mBox->nMessages >= mBox->nMaxMessages;
 }
 
+int no_messages(mailbox* mBox) {
+    return mBox->pHead->pNext == mBox->pHead;
+}
+
 static b32 msgPushFront(mailbox* const mBox, msg* const m) {
-    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
+    if (isFull(mBox)) { return 0; }
 
     mBox->nMessages++;
     insertMsg(m, getDummyMsg(mBox), getFirstMsg(mBox));
@@ -70,7 +104,7 @@ static b32 msgPushFront(mailbox* const mBox, msg* const m) {
 }
 
 static b32 msgPushBack (mailbox* const mBox, msg* const m) {
-    if (mBox->nMessages >= mBox->nMaxMessages) { return 0; }
+    if (isFull(mBox)) { return 0; }
 
     mBox->nMessages++;
     insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
@@ -79,11 +113,15 @@ static b32 msgPushBack (mailbox* const mBox, msg* const m) {
 }
 
 static msg* msgPopFront (mailbox* const mBox) {
+    if (no_messages(mBox)) { return NULL; }
+
     mBox->nMessages--;
     return removeMsg(getFirstMsg(mBox));
 }
 
 static msg* msgPopBack  (mailbox* const mBox) {
+    if (no_messages(mBox)) { return NULL; }
+
     mBox->nMessages--;
     return removeMsg(getLastMsg(mBox));
 }
@@ -99,10 +137,6 @@ mailbox* create_mailbox(uint maxMsg, uint dataSize) {
     mBox->nMaxMessages  = maxMsg;
     
     return mBox;
-}
-
-int no_messages(mailbox* mBox) {
-    return mBox->pHead->pNext == mBox->pHead;
 }
 
 exception remove_mailbox(mailbox* mBox) {
@@ -141,9 +175,7 @@ exception send_wait(mailbox* mBox, void* pData) {
     } else {
         if (deadline() <= ticks()) {
             isr_off();
-            msg* m = msgPopFront(mBox);
-            deleteMsg(m);
-            mBox->nMessages--;
+            deleteMsg(msgPopFront(mBox));
             mBox->nBlockedMsg--;
             isr_on();
             return DEADLINE_REACHED;
@@ -194,8 +226,6 @@ exception receive_wait(mailbox* mBox, void* pData) {
     }
     return OK;
 }
-
-
 
 // NOTE: not tested
 exception send_no_wait(mailbox* mBox, void* pData) {

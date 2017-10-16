@@ -7,16 +7,41 @@
 
 #include <stdlib.h>
 
-// ================================= TYPES/DATA =================================== //
+// ===================================== API  ==================================== //
 
 typedef list    TaskList;
 typedef listobj TaskNode;
 
-TaskList* timerList = NULL;
-TaskList* waitList  = NULL;
-TaskList* readyList = NULL;
+TCB*    getTCB      (const TaskNode* const task);
+uint    getDeadline (const TaskNode* const task);
+uint    getnTCnt    (const TaskNode* const task);
+msg*    getTaskMsg  (const TaskNode* const task);
 
-TCB* Running = NULL;
+TaskNode*   getNextTask (const TaskNode* const task);
+TaskNode*   getPrevTask (const TaskNode* const task);
+TaskNode*   allocTask   (void (*body)(), uint d);
+
+void        deleteTask(TaskNode* tasks);
+void        insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next);
+TaskNode*   removeTask(TaskNode* const task);
+
+TaskNode*   getDummyTask    (const TaskList* const tasks);
+TaskNode*   getFirstTask    (const TaskList* const tasks);
+TaskNode*   getLastTask     (const TaskList* const tasks);
+
+TaskList*   allocTaskList();
+
+int     noTasks             (const TaskList* const tasks);
+void    addTask_Deadline    (TaskList* const tasks, TaskNode* const new);
+void    addTask_nTCnt       (TaskList* const tasks, TaskNode* const new);
+void    printTaskList       (const TaskList* const tasks);
+
+// ================================= TYPES/DATA =================================== //
+
+TaskList*   timerList   = NULL;
+TaskList*   waitList    = NULL;
+TaskList*   readyList   = NULL;
+TCB*        Running     = NULL;
 
 // ================================= TASK NODE FUNCTIONS ========================== //
 
@@ -116,7 +141,7 @@ static void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
         iter = getNextTask(iter);
     }
 
-    insertNode(new, prevNode(iter), iter);
+    insertTask(new, getPrevTask(iter), iter);
 }
 
 static void printTaskList(const TaskList* const tasks) {
@@ -164,7 +189,6 @@ void terminate(void) {
     deleteTask(removeTask(readyList->pHead->pNext));
     // Set next task to be the running task
     Running = getFirstTask(readyList)->pTask;
-
     LoadContext();
 }
 

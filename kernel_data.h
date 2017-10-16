@@ -16,19 +16,24 @@ void TimerInt(void) {
     TaskNode* iter = getFirstTask(timerList);
 
     while (iter != getDummyTask(timerList) && getnTCnt(iter) <= ticks()) {
-        addTask_Deadline(readyList, removeNode(iter));
+        addTask_nTCnt(readyList, removeTask(iter));
         iter = getFirstTask(timerList);
     }
 
     iter = getFirstTask(waitList);
 
     while (iter != getDummyTask(waitList) && getDeadline(iter) <= ticks()) {
-        addTask_Deadline(readyList, removeNode(iter));
+        addTask_Deadline(readyList, removeTask(iter));
         iter = getFirstTask(waitList);
     }
+
+    Running = getFirstTask(readyList)->pTask;
 }
 
 void idleTask() { while (1) { SaveContext(); TimerInt(); LoadContext(); } }
+
+void isr_off() {}
+void isr_on()  {}
 
 #endif
 

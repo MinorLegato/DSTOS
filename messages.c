@@ -8,7 +8,7 @@ msg* prevMsg(const msg* const node) { return node->pPrevious; }
 TaskNode* getTask(const msg* const m) { return m->pBlock; }
 void*     getData(const msg* const m) { return m->pData; }
 
-b32 setMessage(msg* const m, const void* const data, i32 size) {
+b32 setMessage(msg* m, void* data, i32 size) {
     if (!data || size < 1) { return 0; }
     delete(m->pData);
     if (m->pData = alloc(size), !m->pData) { return 0; }
@@ -18,7 +18,8 @@ b32 setMessage(msg* const m, const void* const data, i32 size) {
 
 msg* createMsg(void* data, i32 size) {
     msg* m = alloc(sizeof *m);
-    setMessage(m, data, size);
+    m->pData = data;
+    //setMessage(m, data, size);
     return m;
 }
 
@@ -132,8 +133,8 @@ exception send_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgRecIsWaiting(mBox)) {
-            setMessage(getFirstMsg(mBox), pData, getDataSize(mBox));
             msg* rec = msgPopFront(mBox);
+            memcpy(rec->pData, pData, getDataSize(mBox));
             addTask_Deadline(readyList, removeTask(getTask(rec)));
             Running = getFirstTask(readyList)->pTask;
             mBox->nBlockedMsg++;
@@ -146,6 +147,7 @@ exception send_wait(mailbox* mBox, void* pData) {
             Running = getFirstTask(readyList)->pTask;
             mBox->nBlockedMsg++;
         }
+
         LoadContext();
     } else {
         if (deadline() <= ticks()) {
@@ -164,8 +166,10 @@ exception send_wait(mailbox* mBox, void* pData) {
 // NOTE: not tested
 exception receive_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
+
     isr_off();
     SaveContext();
+
     if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {

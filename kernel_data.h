@@ -50,7 +50,7 @@ msg*        prevMsg         (const msg* const node);
 TaskNode*   getTask         (const msg* const m);
 void*       getData         (const msg* const m);
 
-b32         setMessage      (msg* const m, const void* const data, i32 size);
+b32         setMessage      (msg* m, void* data, i32 size);
 msg*        createMsg       (void* data, i32 size);
 void        deleteMsg       (msg* m);
 

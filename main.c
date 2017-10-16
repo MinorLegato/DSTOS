@@ -2,15 +2,20 @@
 
 mailbox* mb = NULL;
 
+char smsg[100] = "Hello, world!";
+char buffer[100];
+
 void s0(void) {
-    char msg[100] = "Hello, world!";
-    send_wait(mb, msg);
+    send_wait(mb, smsg);
     terminate();
 }
 
 void r0(void) {
-    char buffer[100];
     receive_wait(mb, buffer);
+    terminate();
+}
+
+void p0(void) {
     printf("%s\n", buffer);
     terminate();
 }
@@ -21,6 +26,7 @@ int main(void) {
 
     assert(create_task(s0, 1000));
     assert(create_task(r0, 500));
+    assert(create_task(p0, 2000));
 
     run();
 }

@@ -19,7 +19,6 @@ b32 setMessage(msg* m, void* data, i32 size) {
 msg* createMsg(void* data, i32 size) {
     msg* m = alloc(sizeof *m);
     m->pData = data;
-    //setMessage(m, data, size);
     return m;
 }
 
@@ -53,12 +52,16 @@ msg* removeMsg(msg* const m) {
     return m;
 }
 
-b32 isFull(mailbox* const mBox){
+b32 isFull(const mailbox* const mBox){
     return mBox->nMessages >= mBox->nMaxMessages;
 }
 
-int no_messages(mailbox* mBox) {
+b32 isEmpty(const mailbox* const mBox) {
     return mBox->pHead->pNext == mBox->pHead;
+}
+
+int no_messages(mailbox* mBox) {
+    return mBox->nMessages;
 }
 
 b32 msgPushFront(mailbox* const mBox, msg* const m) {
@@ -70,26 +73,25 @@ b32 msgPushFront(mailbox* const mBox, msg* const m) {
     return 1;
 }
 
-b32 msgPushBack (mailbox* const mBox, msg* const m) {
+b32 msgPushBack(mailbox* const mBox, msg* const m) {
     if (isFull(mBox)) { return 0; }
-
     mBox->nMessages++;
     insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
 
     return 1;
 }
 
-msg* msgPopFront (mailbox* const mBox) {
-    if (no_messages(mBox)) { return NULL; }
-
+msg* msgPopFront(mailbox* const mBox) {
+    if (isEmpty(mBox)) { return NULL; }
     mBox->nMessages--;
+    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getFirstMsg(mBox));
 }
 
-msg* msgPopBack  (mailbox* const mBox) {
-    if (no_messages(mBox)) { return NULL; }
-
+msg* msgPopBack(mailbox* const mBox) {
+    if (isEmpty(mBox)) { return NULL; }
     mBox->nMessages--;
+    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getLastMsg(mBox));
 }
 
@@ -107,21 +109,18 @@ mailbox* create_mailbox(uint maxMsg, uint dataSize) {
 }
 
 exception remove_mailbox(mailbox* mBox) {
-    if (!no_messages(mBox)) { return NOT_EMPTY; }
+    if (!isEmpty(mBox)) { return NOT_EMPTY; }
     delete(mBox->pHead);
     delete(mBox);
     return OK;
 }
 
-//b32 msgRecIsWaiting(const mailbox* mBox) { return mBox->nBlockedMsg < 0; }
-//b32 msgSndIsWaiting(const mailbox* mBox) { return mBox->nBlockedMsg > 0; }
-
 b32 msgRecIsWaiting(const mailbox* const mBox) {
-    return mBox->pHead->pNext != mBox->pHead && getFirstMsg(mBox)->Status == RECEIVER;
+    return !isEmpty(mBox) && getFirstMsg(mBox)->Status == RECEIVER;
 }
 
 b32 msgSndIsWaiting(const mailbox* const mBox) {
-    return mBox->pHead->pNext != mBox->pHead && getFirstMsg(mBox)->Status == SENDER;
+    return !isEmpty(mBox) && getFirstMsg(mBox)->Status == SENDER;
 }
 
 // NOTE: not tested
@@ -137,7 +136,7 @@ exception send_wait(mailbox* mBox, void* pData) {
             memcpy(rec->pData, pData, getDataSize(mBox));
             addTask_Deadline(readyList, removeTask(getTask(rec)));
             Running = getFirstTask(readyList)->pTask;
-            mBox->nBlockedMsg++;
+            delete(rec);
         } else {
             msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
             new->Status = SENDER;
@@ -152,8 +151,12 @@ exception send_wait(mailbox* mBox, void* pData) {
     } else {
         if (deadline() <= ticks()) {
             isr_off();
-            deleteMsg(msgPopFront(mBox));
+
+            TaskNode* rTask = getFirstTask(readyList);
+            delete(getTaskMsg(rTask));
+            rTask->pMessage = NULL;
             mBox->nBlockedMsg--;
+
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -194,10 +197,14 @@ exception receive_wait(mailbox* mBox, void* pData) {
         }
         LoadContext();
     } else {
-        if (getFirstTask(waitList)->pTask->DeadLine <= ticks()) {
+        if (deadline() <= ticks()) {
             isr_off();
-            deleteMsg(msgPopFront(mBox));
-            mBox->nBlockedMsg++;
+            
+            TaskNode* rTask = getFirstTask(readyList);
+            delete(getTaskMsg(rTask));
+            rTask->pMessage = NULL;
+            mBox->nBlockedMsg--;
+
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -241,7 +248,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
     SaveContext();
-    if (first)  {
+    if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
             memcpy(pData, getFirstMsg(mBox)->pData, getDataSize(mBox));
@@ -253,12 +260,7 @@ int receive_no_wait(mailbox* mBox, void* pData) {
             mBox->nBlockedMsg--;
             deleteMsg(snd);
         } else {
-            msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
-            new->Status = RECEIVER;
-            new->pBlock = getFirstTask(readyList);
-            msgPushBack(mBox, new);
-            addTask_Deadline(readyList, removeTask(getFirstTask(waitList)));
-            Running = getFirstTask(readyList)->pTask;
+            return FAIL;
         }     
         LoadContext();
     }

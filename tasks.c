@@ -71,11 +71,7 @@ TaskList* allocTaskList() {
 
     return taskList;
 }
-  
-int noTasks(const TaskList* const tasks) {
-    return tasks->pHead == tasks->pTail;
-}
-
+ 
 void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
     if (!new) { return; }
 

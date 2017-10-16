@@ -11,7 +11,7 @@ void s0() {
 }
 
 void r0() {
-    receive_wait(mb, buffer);
+    receive_no_wait(mb, buffer);
     terminate();
 }
 
@@ -19,8 +19,8 @@ int main(void) {
     assert(init_kernel());
     assert(mb = create_mailbox(100, 100));
 
-    assert(create_task(s0, 1000));
-    assert(create_task(r0, 500));
+    assert(create_task(s0, 500));
+    assert(create_task(r0, 1000));
   
     run();
 }

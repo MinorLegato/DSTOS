@@ -1,38 +1,7 @@
 #ifndef __MESSAGES_H__
 #define __MESSAGES_H__
 
-#include "kernel.h"
 #include "kernel_data.h"
-
-// ============================================= API ============================================= //
-
-msg*        nextMsg         (const msg* const node);
-msg*        prevMsg         (const msg* const node);
-TaskNode*   getTask         (const msg* const m);
-void*       getData         (const msg* const m);
-
-b32         setMessage      (msg* const m, const void* const data, i32 size);
-msg*        createMsg       (void* data, i32 size);
-void        deleteMsg       (msg* m);
-
-i32         getDataSize     (const mailbox* const mBox);
-i32         getMsgMax       (const mailbox* const mBox);
-i32         getMsgCount     (const mailbox* const mBox);
-
-msg*        getFirstMsg     (const mailbox* const mBox);
-msg*        getLastMsg      (const mailbox* const mBox);
-msg*        getDummyMsg     (const mailbox* const mBox);
-
-void        insertMsg       (msg* const new, msg* const prev, msg* const next);
-msg*        removeMsg       (msg* const m);
-b32         isFull          (mailbox* const mBox);
-b32         msgPushFront    (mailbox* const mBox, msg* const m);
-b32         msgPushBack     (mailbox* const mBox, msg* const m);
-msg*        msgPopFront     (mailbox* const mBox);
-msg*        msgPopBack      (mailbox* const mBox);
-
-b32         msgRecIsWaiting (const mailbox* mBox);
-b32         msgSndIsWaiting (const mailbox* mBox);
 
 // =========================================== MESSAGE =========================================== //
 

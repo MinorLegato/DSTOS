@@ -1,9 +1,7 @@
 #ifndef __TIMING_H__
 #define __TIMING_H__
 
-#include "kernel.h"
 #include "kernel_data.h"
-#include "tasks.h"
 
 // Timing
 exception wait(uint nTicks) {

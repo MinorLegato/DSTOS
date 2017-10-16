@@ -1,47 +1,10 @@
 #ifndef __TASKS_H__
 #define __TASKS_H__
 
-#include "kernel.h"
 #include "kernel_data.h"
+
 #include "string.h"
-
 #include <stdlib.h>
-
-// ===================================== API  ==================================== //
-
-typedef list    TaskList;
-typedef listobj TaskNode;
-
-TCB*    getTCB      (const TaskNode* const task);
-uint    getDeadline (const TaskNode* const task);
-uint    getnTCnt    (const TaskNode* const task);
-msg*    getTaskMsg  (const TaskNode* const task);
-
-TaskNode*   getNextTask (const TaskNode* const task);
-TaskNode*   getPrevTask (const TaskNode* const task);
-TaskNode*   allocTask   (void (*body)(), uint d);
-
-void        deleteTask(TaskNode* tasks);
-void        insertTask(TaskNode* const new, TaskNode* const prev, TaskNode* const next);
-TaskNode*   removeTask(TaskNode* const task);
-
-TaskNode*   getDummyTask    (const TaskList* const tasks);
-TaskNode*   getFirstTask    (const TaskList* const tasks);
-TaskNode*   getLastTask     (const TaskList* const tasks);
-
-TaskList*   allocTaskList();
-
-int     noTasks             (const TaskList* const tasks);
-void    addTask_Deadline    (TaskList* const tasks, TaskNode* const new);
-void    addTask_nTCnt       (TaskList* const tasks, TaskNode* const new);
-void    printTaskList       (const TaskList* const tasks);
-
-// ================================= TYPES/DATA =================================== //
-
-TaskList*   timerList   = NULL;
-TaskList*   waitList    = NULL;
-TaskList*   readyList   = NULL;
-TCB*        Running     = NULL;
 
 // ================================= TASK NODE FUNCTIONS ========================== //
 
@@ -115,7 +78,7 @@ static TaskList* allocTaskList() {
 
     return taskList;
 }
-
+  
 static int noTasks(const TaskList* const tasks) {
     return tasks->pHead == tasks->pTail;
 }

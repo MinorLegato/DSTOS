@@ -1,3 +1,7 @@
+[DebugChecksum]
+Checksum=1129111094
+[CodeCoverage]
+Enabled=_ 0
 [Stack]
 FillEnabled=0
 OverflowWarningsEnabled=1
@@ -8,8 +12,6 @@ UseTrigger=1
 TriggerName=main
 LimitSize=0
 ByteLimit=50
-[DebugChecksum]
-Checksum=1055034821
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -17,32 +19,6 @@ StopOnThrow=_ 0
 ShowArgs=0
 [Disassembly]
 MixedMode=1
-[MemoryMap]
-Enabled=0
-Base=0
-UseAuto=0
-TypeViolation=1
-UnspecRange=1
-ActionState=1
-[CodeCoverage]
-Enabled=_ 0
-[DriverProfiling]
-Enabled=0
-Mode=1
-Graph=0
-Symbiont=0
-Exclusions=
-[CallStackLog]
-Enabled=0
-[CallStackStripe]
-ShowTiming=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [InterruptLog]
 LogEnabled=0
 GraphEnabled=0
@@ -59,8 +35,18 @@ ShowTimeSum=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "STD_CODE2" "{$PROJ_DIR$\messages.c}.248.14" 0 0 1 "" 0 ""
-Count=1
+Bp0=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.14.5" 0 0 1 "" 0 ""
+Bp1=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.15.5" 0 0 1 "" 0 ""
+Bp2=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.16.5" 0 0 1 "" 0 ""
+Bp3=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.23.5" 0 0 1 "" 0 ""
+Bp4=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.23.5" 0 0 1 "" 0 ""
+Bp5=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.23.5" 0 0 1 "" 0 ""
+Bp6=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.17.5" 0 0 1 "" 0 ""
+Bp7=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.24.5" 0 0 1 "" 0 ""
+Bp8=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.21.5" 0 0 1 "" 0 ""
+Bp9=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.22.5" 0 0 1 "" 0 ""
+Bp10=_ 1 "STD_CODE2" "{$PROJ_DIR$\main.c}.25.5" 0 0 1 "" 0 ""
+Count=11
 [Interrupts]
 Enabled=1
 [MemConfig]
@@ -69,14 +55,29 @@ Manual=0
 Ddf=1
 TypeViol=0
 Stop=1
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
 [Trace1]
 Enabled=0
 ShowSource=1
+[CallStackLog]
+Enabled=0
+[CallStackStripe]
+ShowTiming=1
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
-A0=_ "C:\Users\nicholas\Desktop\art-arm-hwdep-iar-6.30\art-arm-simulator-iar-6.30\context.s79" "C:\Users\Anton\Documents\GitHub\DSTOS\context.s79"
-A1=_ "C:\Users\nicholas\Desktop\cse2_bb\proj\context.s79" "D:\GITHUB\DSTOS\context.s79"
-Count=2
-SuppressDialog=1
+Count=0
+SuppressDialog=0
 [Simulator]
 Freq=10000000
 MultiCoreRunAll=1

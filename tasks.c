@@ -73,9 +73,10 @@ TaskList* allocTaskList() {
 }
  
 void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
+    TaskNode* iter ;
     if (!new) { return; }
 
-    TaskNode* iter = getFirstTask(tasks);
+    iter = getFirstTask(tasks);
 
     while (iter != getDummyTask(tasks) && getDeadline(new) > getDeadline(iter)) {
         iter = getNextTask(iter);
@@ -85,9 +86,10 @@ void addTask_Deadline(TaskList* const tasks, TaskNode* const new) {
 }
 
 void addTask_nTCnt(TaskList* const tasks, TaskNode* const new) {
+    TaskNode* iter ;
     if (!new) { return; }
 
-    TaskNode* iter = getFirstTask(tasks); // NULL;
+    iter = getFirstTask(tasks); // NULL;
 
     while (iter != getDummyTask(tasks) && getnTCnt(new) > getnTCnt(iter)) {
         iter = getNextTask(iter);

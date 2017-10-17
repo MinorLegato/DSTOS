@@ -5,8 +5,9 @@ exception wait(uint nTicks) {
     isr_off();
     SaveContext();
     if (first) {
+        TaskNode* node;
         first = FALSE;
-        TaskNode* node = removeTask(getFirstTask(readyList));
+        node = removeTask(getFirstTask(readyList));
         node->nTCnt = nTicks + ticks();
         addTask_nTCnt(timerList, node);
         Running = getFirstTask(readyList)->pTask;
@@ -36,8 +37,9 @@ void set_deadline(uint nNew) {
     isr_off();
     SaveContext();
     if (isFirst) {
+        TaskNode* task;
         isFirst = FALSE;
-        TaskNode* task = removeTask(getFirstTask(readyList));
+        task = removeTask(getFirstTask(readyList));
         task->pTask->DeadLine = nNew;
         addTask_Deadline(readyList, task);
         LoadContext();

@@ -48,10 +48,10 @@ int no_messages(mailbox* mBox) {
 
 b32 msgPushFront(mailbox* const mBox, msg* const m) {
     if (isFull(mBox)) { return 0; }
-
+    
     mBox->nMessages++;
     insertMsg(m, getDummyMsg(mBox), getFirstMsg(mBox));
-
+    
     return 1;
 }
 
@@ -59,7 +59,7 @@ b32 msgPushBack(mailbox* const mBox, msg* const m) {
     if (isFull(mBox)) { return 0; }
     mBox->nMessages++;
     insertMsg(m, getLastMsg(mBox), getDummyMsg(mBox));
-
+    
     return 1;
 }
 
@@ -109,7 +109,7 @@ exception send_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
     SaveContext();
-
+    
     if (first) {
         first = FALSE;
         if (msgRecIsWaiting(mBox)) {
@@ -129,12 +129,13 @@ exception send_wait(mailbox* mBox, void* pData) {
             addTask_Deadline(waitList, removeTask(getFirstTask(readyList)));
             Running = getFirstTask(readyList)->pTask;
         }
-
+        
         LoadContext();
     } else {
         if (deadline() <= ticks()) {
+            TaskNode* rTask ;
             isr_off();
-            TaskNode* rTask = getFirstTask(readyList);
+            rTask = getFirstTask(readyList);
             delete(removeMsg(getTaskMsg(rTask)));
             rTask->pMessage = NULL;
             mBox->nBlockedMsg--;
@@ -151,20 +152,20 @@ exception receive_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
     SaveContext();
-
+    
     if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
             msg* snd = msgPopFront(mBox);
             memcpy(pData, snd->pData, getDataSize(mBox));
-
+            
             if (snd->pBlock != NULL && mBox->nBlockedMsg != 0) {
-            	snd->pBlock->pMessage = NULL;
+                snd->pBlock->pMessage = NULL;
                 addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
                 mBox->nBlockedMsg--;
             } else {
-            	delete(snd->pData);
+                delete(snd->pData);
             }
             delete(snd);
         } else {
@@ -173,20 +174,21 @@ exception receive_wait(mailbox* mBox, void* pData) {
             new->pBlock = getFirstTask(readyList);
             getFirstTask(readyList)->pMessage = new;
             msgPushBack(mBox, new);
-            addTask_Deadline(readyList, removeTask(getFirstTask(waitList)));
+            addTask_Deadline(waitList, removeTask(getFirstTask(readyList)));
             Running = getFirstTask(readyList)->pTask;
-            mBox->nBlockedMsg--;
+            mBox->nBlockedMsg++;
         }
         LoadContext();
     } else {
         if (deadline() <= ticks()) {
+            TaskNode* rTask ;
             isr_off();
             
-            TaskNode* rTask = getFirstTask(readyList);
-            delete(getTaskMsg(rTask));
+            rTask = getFirstTask(readyList);
+            delete(removeMsg(getTaskMsg(rTask)));
             rTask->pMessage = NULL;
             mBox->nBlockedMsg--;
-
+            
             isr_on();
             return DEADLINE_REACHED;
         } else {
@@ -209,23 +211,19 @@ exception send_no_wait(mailbox* mBox, void* pData) {
             addTask_Deadline(readyList, removeTask(getTask(rec)));
             Running = getFirstTask(readyList)->pTask;
             delete(rec);
-            LoadContext();
         } else {
             msg* new    = alloc(sizeof *new);       if (!new)        { return FAIL; }
             new->pData  = alloc(getDataSize(mBox)); if (!new->pData) { return FAIL; }
-
             memcpy(new->pData, pData, mBox->nDataSize);
-
             new->Status = SENDER;
             new->pBlock = getFirstTask(readyList);
-
+            getFirstTask(readyList)->pMessage = new;            
             if(isFull(mBox)) {
                 delete(msgPopFront(mBox));
             }
-
             msgPushBack(mBox, new);
-            mBox->nBlockedMsg++;
         }
+        LoadContext();
     }
     return OK;
 }
@@ -237,15 +235,15 @@ int receive_no_wait(mailbox* mBox, void* pData) {
     if (first) {
         first = FALSE;
         if (msgSndIsWaiting(mBox)) {
-        	msg* snd = msgPopFront(mBox);
+            msg* snd = msgPopFront(mBox);
             memcpy(pData, snd->pData, getDataSize(mBox));
             if (snd->pBlock != NULL && mBox->nBlockedMsg != 0) {
-            	snd->pBlock->pMessage = NULL;
+                snd->pBlock->pMessage = NULL;
                 addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
                 mBox->nBlockedMsg--;
             } else {
-            	delete(snd->pData);
+                delete(snd->pData);
             }
             delete(snd);
         } else {

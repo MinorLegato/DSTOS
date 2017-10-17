@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <stdint.h>
+//#include <stdint.h>
 #include <string.h>
 
 typedef uint32_t    b32;

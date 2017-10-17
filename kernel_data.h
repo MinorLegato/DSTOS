@@ -2,7 +2,10 @@
 #define __KERNEL_DATA_H__
 
 #include "kernel.h"
-#include "tools.h"
+//#include "tools.h"
+
+#define i32 int
+#define b32 int
 
 typedef list    TaskList;
 typedef listobj TaskNode;

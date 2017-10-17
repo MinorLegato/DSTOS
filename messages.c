@@ -66,14 +66,14 @@ b32 msgPushBack(mailbox* const mBox, msg* const m) {
 msg* msgPopFront(mailbox* const mBox) {
     if (isEmpty(mBox)) { return NULL; }
     mBox->nMessages--;
-    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
+    //if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getFirstMsg(mBox));
 }
 
 msg* msgPopBack(mailbox* const mBox) {
     if (isEmpty(mBox)) { return NULL; }
     mBox->nMessages--;
-    if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
+    //if (mBox->nBlockedMsg != 0) { mBox->nBlockedMsg--; }
     return removeMsg(getLastMsg(mBox));
 }
 
@@ -162,9 +162,9 @@ exception receive_wait(mailbox* mBox, void* pData) {
             	snd->pBlock->pMessage = NULL;
                 addTask_Deadline(readyList, removeTask(snd->pBlock));
                 Running = getFirstTask(readyList)->pTask;
-            	  mBox->nBlockedMsg--;
+                mBox->nBlockedMsg--;
             } else {
-            	  delete(snd->pData);
+            	delete(snd->pData);
             }
             delete(snd);
         } else {

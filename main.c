@@ -6,7 +6,7 @@ char smsg[100] = "Hello, world!";
 char buffer[100];
 
 void s0() {
-    send_no_wait(mb, smsg);
+    send_wait(mb, smsg);
     terminate();
 }
 

@@ -105,7 +105,6 @@ b32 msgSndIsWaiting(const mailbox* const mBox) {
     return !isEmpty(mBox) && getFirstMsg(mBox)->Status == SENDER;
 }
 
-// NOTE: not tested
 exception send_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
@@ -148,7 +147,6 @@ exception send_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
-// NOTE: not tested
 exception receive_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
@@ -198,7 +196,6 @@ exception receive_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
-// NOTE: not tested
 exception send_no_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
@@ -214,12 +211,18 @@ exception send_no_wait(mailbox* mBox, void* pData) {
             delete(rec);
             LoadContext();
         } else {
-            msg* new = createMsg(pData, getDataSize(mBox)); if (!new) { return FAIL; }
+            msg* new    = alloc(sizeof *new);       if (!new)        { return FAIL; }
+            new->pData  = alloc(getDataSize(mBox)); if (!new->pData) { return FAIL; }
+
+            memcpy(new->pData, pData, mBox->nDataSize);
+
             new->Status = SENDER;
             new->pBlock = getFirstTask(readyList);
+
             if(isFull(mBox)) {
                 delete(msgPopFront(mBox));
             }
+
             msgPushBack(mBox, new);
             mBox->nBlockedMsg++;
         }
@@ -227,7 +230,6 @@ exception send_no_wait(mailbox* mBox, void* pData) {
     return OK;
 }
 
-// NOTE: not tested
 int receive_no_wait(mailbox* mBox, void* pData) {
     volatile int first = TRUE;
     isr_off();
